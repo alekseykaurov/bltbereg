@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /
+Disallow: /admin
+Disallow: /backup
+Disallow: /config
+Disallow: /modules
+Disallow: /updates
+Disallow: /rezultatyi-poiska.html
+Disallow: /*cmp_action
+Host: blt-bereg.ru
+Sitemap: http://blt-bereg.ru/sitemap.xml

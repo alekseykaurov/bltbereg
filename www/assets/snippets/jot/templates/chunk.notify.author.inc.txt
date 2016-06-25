@@ -1,0 +1,15 @@
+﻿
+
+На сайте добавлен новый отзыв: 
+"[+jot.title+]"
+
+-----
+Имя: [+comment.custom.name+]
+Email: [+comment.custom.email+] 
+
+Отзыв:
+
+[+comment.content+]
+-----
+
+http://new.blt-bereg.ru/otzyivyi.html
