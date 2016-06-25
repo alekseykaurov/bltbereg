@@ -7,7 +7,7 @@ $modx = new DocumentParser;
 $modx->db->connect();
 $modx->getSettings();
 
-$special = $_POST['special'];
+$product = $_POST['special'];
 $product = $_POST['product'];
 
 $params = Array(
@@ -97,15 +97,14 @@ if ($result['steklopaket_id']['value'] != '' && $result['steklopaket_id']['value
 }
 $result['ruchka']['value'] = $TVs[19]['value'];
 $result['ruchka']['changable'] = true;
-$special_offer = $modx->getDocument($special);
-if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_offer["parent"]==30 || $special_offer["parent"]==31 || $special_offer["parent"]==32 || $special_offer["parent"]==33){
+$product_offer = $modx->getDocument($product);
+if($product_offer["parent"]==506 || $product_offer["parent"]==9){
 
-	$result["special_name"] = $special_offer["pagetitle"];
+	$result["special_name"] = $product_offer["pagetitle"];
 
 	$params = Array(
 				"add-lock",
 				"dovodchik",
-				"glazok-konstr",
 				"inside-color",
 				"inside-frezer",
 				"inside-view",
@@ -124,12 +123,28 @@ if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_off
 				"window_position",
 				"steklopaket",
 				"default_ruchka");
-	$specialTVs = $modx->getTemplateVars($params, '*', $special);
-	$cena_main_color = $modx->getTemplateVars(Array('cena_main-color'), '*', $special);
-	$cena_inside_color = $modx->getTemplateVars(Array('cena_inside-color'), '*', $special);
-	$cena_outside_color = $modx->getTemplateVars(Array('cena_outside-color'), '*', $special);
+	$productTVs = $modx->getTemplateVars($params, '*', $product);
 
-	foreach ($specialTVs as $key => $value){
+	$stvorka = $modx->getTemplateVars(Array('stvorka'), '*', $product);
+	$stvorka_width = $modx->getTemplateVars(Array('stvorka_width'), '*', $product);
+	$friz = $modx->getTemplateVars(Array('friz'), '*', $product);
+	$friz_height = $modx->getTemplateVars(Array('friz_height'), '*', $product);
+
+	$cena_main_color = $modx->getTemplateVars(Array('cena_main-color'), '*', $product);
+	$cena_inside_color = $modx->getTemplateVars(Array('cena_inside-color'), '*', $product);
+	$cena_outside_color = $modx->getTemplateVars(Array('cena_outside-color'), '*', $product);
+	$cena_add_lock = $modx->getTemplateVars(Array('cena_add-lock'), '*', $product);
+	$cena_dovodchik = $modx->getTemplateVars(Array('cena_dovodchik'), '*', $product);
+	$cena_glazok = $modx->getTemplateVars(Array('cena_glazok'), '*', $product);
+	$cena_main_lock = $modx->getTemplateVars(Array('cena_main-lock'), '*', $product);
+	$cena_metallokonstr = $modx->getTemplateVars(Array('cena_metallokonstr'), '*', $product);
+	$cena_nalichnik = $modx->getTemplateVars(Array('cena_nalichnik'), '*', $product);
+	$cena_zadvijka = $modx->getTemplateVars(Array('cena_zadvijka'), '*', $product);
+	$cena_ruchka = $modx->getTemplateVars(Array('cena_ruchka'), '*', $product);
+	$cena_steklopak = $modx->getTemplateVars(Array('cena_steklopak'), '*', $product);
+
+
+	foreach ($productTVs as $key => $value){
 
 		if($value["value"]!=""){
 
@@ -140,16 +155,16 @@ if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_off
 		}
 
 	}
-	if($specialTVs[1]['value']!=""){
-		$result['width']["value"] = $specialTVs[1]['value'];
+	if($productTVs[1]['value']!=""){
+		$result['width']["value"] = $productTVs[1]['value'];
 		$result['width']["changable"] = true;
 	}
-	if($specialTVs[0]['value']!=""){
-		$result['height']["value"] = $specialTVs[0]['value'];
+	if($productTVs[0]['value']!=""){
+		$result['height']["value"] = $productTVs[0]['value'];
 		$result['height']["changable"] = true;
 	}
-	if($specialTVs[2]['value']!=""){
-		$door_side = $specialTVs[2]['value'];
+	if($productTVs[2]['value']!=""){
+		$door_side = $productTVs[2]['value'];
 		if ($door_side == 'налево'){
 			$result['door_side']["value"] = 'left';
 		}else if($door_side == 'направо'){
@@ -159,7 +174,7 @@ if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_off
 	}
 
 	//если не заполнено окрашивание, приваиваем первого ребенка из заполненного типа цвета
-	if($specialTVs[4]["value"]==""){
+	if($productTVs[4]["value"]==""){
 		if($result["main_color_type_id"]["value"]==196){
 			$result["okrashivanie_id"]["value"] = $result['child_standart_color']["value"];
 		} else if($result["main_color_type_id"]["value"]==198){
@@ -172,7 +187,7 @@ if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_off
 	//если внешняя отделка не "Покраска"
 	if($result['outside-view_id']['value']!=195){
 		//проверяем, заполнен ли цвет
-		if($specialTVs[7]["value"]==""){
+		if($productTVs[7]["value"]==""){
 			//если не заполнен, то меняем цвет на тот, что есть в мдф
 			
 			//присваиваем первый цвет из списка
@@ -180,7 +195,7 @@ if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_off
 		}
 
 		//проверяем, заполнена ли фрезеровка
-		if($specialTVs[9]["value"]==""){
+		if($productTVs[9]["value"]==""){
 			if($result['outside-view_id']['value']==202){
 				$result['outside-frezer_id']['value'] = $result['child_frezer_6']["value"];
 			} else if($result['outside-view_id']['value']==210){
@@ -196,7 +211,7 @@ if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_off
 	//если внутренняя отделка не "Покраска"
 	if($result['inside-view_id']['value']!=195){
 		//проверяем, заполнен ли цвет
-		if($specialTVs[11]["value"]==""){
+		if($productTVs[11]["value"]==""){
 			//получаем список всех цветов
 			// $childs = $modx->getActiveChildren(208);
 			//присваиваем первый цвет из списка
@@ -208,7 +223,7 @@ if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_off
 		}
 
 		//проверяем, заполнена ли фрезеровка
-		if($specialTVs[12]["value"]==""){
+		if($productTVs[12]["value"]==""){
 			if($result['inside-view_id']['value']==202){
 				$result['inside-frezer_id']['value'] = $result['child_frezer_6']["value"];
 			} else if($result['inside-view_id']['value']==210){
@@ -221,12 +236,23 @@ if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_off
 		$result['inside-color_id']['value'] = $result['okrashivanie_id']['value'];
 	}
 
-	for($i=13;$i<=17;$i++){
-		if($specialTVs[$i]["value"]=="-"){
-			$result[$specialTVs[$i]["name"]."_id"]["value"] = "";
-			$result[$specialTVs[$i]["name"]."_id"]["changable"] = true;
+	for($i=13;$i<=18;$i++){
+		if($productTVs[$i]["value"]==""){
+			$result[$productTVs[$i]["name"]."_id"]["value"] = "";
+			$result[$productTVs[$i]["name"]."_id"]["changable"] = true;
 		}
 	}
+
+	$result['stvorka']['value'] = $stvorka[0]["value"];
+	$result['stvorka']['changable'] = true;
+	$result['stvorka_width']['value'] = $stvorka_width[0]["value"];
+	$result['stvorka_width']['changable'] = true;
+
+	$result['friz']['value'] = $friz[0]["value"];
+	$result['friz']['changable'] = true;
+	$result['friz_height']['value'] = $friz_height[0]["value"];
+	$result['friz_height']['changable'] = true;
+
 	if ($cena_main_color[0]['value'] != ''){
 		$result['okrashivanie_id']['changable'] = false;
 	}else{
@@ -235,7 +261,6 @@ if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_off
 	if ($cena_outside_color[0]['value'] != ''){
 		$result['outside-color_id']['changable'] = false;
 	}else{
-
 		$result['outside-color_id']['changable'] = true;
 	}
 	if ($cena_inside_color[0]['value'] != ''){
@@ -243,8 +268,78 @@ if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_off
 	}else{
 		$result['inside-color_id']['changable'] = true;
 	}
+	if ($cena_add_lock[0]['value'] != ''){
+		$result['add-lock_id']['changable'] = false;
+	} else {
+		$result['add-lock_id']['changable'] = true;
+	}
+	if ($cena_dovodchik[0]['value'] != ''){
+		$result['dovodchik_id']['changable'] = false;
+	} else {
+		$result['dovodchik_id']['changable'] = true;
+	}
+	if ($cena_glazok[0]['value'] != ''){
+		$result['glazok_id']['changable'] = false;
+	} else {
+		$result['glazok_id']['changable'] = true;
+	}
+	if ($cena_main_lock[0]['value'] != ''){
+		$result['main-lock_id']['changable'] = false;
+	} else {
+		$result['main-lock_id']['changable'] = true;
+	}
+	if ($cena_metallokonstr[0]['value'] != ''){
+		$result['metallokonstrikcii_id']['changable'] = false;
+	} else {
+		$result['metallokonstrikcii_id']['changable'] = true;
+	}
+	if ($cena_nalichnik[0]['value'] != ''){
+		$result['nalichnik_id']['changable'] = false;
+	} else {
+		$result['nalichnik_id']['changable'] = true;
+	}
+	if ($cena_zadvijka[0]['value'] != ''){
+		$result['zadvijka_id']['changable'] = false;
+	} else {
+		$result['zadvijka_id']['changable'] = true;
+	}
+	if ($cena_ruchka[0]['value'] != ''){
+		$result['ruchka_id']['changable'] = false;
+	} else {
+		$result['ruchka_id']['changable'] = true;
+	}
 	$result['outside-frezer_id']['changable'] = true;
 	$result['inside-frezer_id']['changable'] = true;
+
+	if($productTVs[16]["value"]!=""){
+		$result['steklopaket_position']["value"] = $productTVs[16]['value'];
+		$result['steklopaket_position']["changable"] = false;
+	}
+	if ($cena_steklopak[0]['value'] != ''){
+		$result['steklopaket_id']['changable'] = false;
+	} else {
+		$result['steklopaket_id']['changable'] = true;
+	}
+	if ($result['steklopaket_id']['value'] != '' && $result['steklopaket_id']['value'] !== null){
+		$steklopaket_width_tv = $modx->getTemplateVars(Array("glass_width"), '*', $result['steklopaket_id']['value']);
+		$result['steklopaket_width']['value'] = $steklopaket_width_tv[0]['value'];
+		$steklopaket_height_tv = $modx->getTemplateVars(Array("glass_height"), '*', $result['steklopaket_id']['value']);
+		$result['steklopaket_height']['value'] = $steklopaket_height_tv[0]['value'];
+	} else {
+		$result['steklopaket_width']['value'] = "";
+		$result['steklopaket_height']['value'] = "";
+	}
+	if($productTVs[18]["value"]!=""){
+		$result['ruchka']['value'] = $productTVs[18]['value'];
+	}
+	$result["SPECIAL"] = $productTVs;
+
+	//техническая дверь
+	if($product==141){
+		$result["steklopaket_id"]["value"]="";
+		$result["steklopaket_height"]["value"]="";
+		$result["steklopaket_width"]["value"]="";
+	}
 }
 
 
