@@ -87,7 +87,10 @@ $(document).ready(function() {
 		width: b_w,
 		height: b_h
 	});
-	canvas.add(background, friz, door, stvorka, ruchka, main_lock, zadvijka, shadow);
+	var antipanika = new fabric.Rect({
+		width: w_d - 10,
+	});
+	canvas.add(background, friz, door, stvorka, ruchka, main_lock, zadvijka, antipanika, shadow);
 
 	//функции для изменений всего вот этого
 
@@ -232,6 +235,104 @@ $(document).ready(function() {
 				repeat: 'repeat'
 			});
 			main_lock.set({fill: pattern});
+			change_handle();
+			// canvas.renderAll();
+		});
+	}
+	function change_handle(){
+		var pattern_image =  new fabric.Image.fromURL(color.main_lock_ruchka_image, function(pattern_image){
+			var handle_left;
+			var handle_top;
+			if (color.main_lock_ruchka == 'Без ручки' || color.main_lock_ruchka == ''){
+				pattern_image.scaleToWidth(25);
+			}else if(color.main_lock_ruchka == 'С ручкой'){
+				pattern_image.scaleToWidth(36);
+			}
+			switch (order.stvorka){
+				case 'left':
+					handle_left = s_w + rama_side + 5;
+					pattern_image.set({flipX: true});
+					break;
+				case 'right':
+					handle_left = w_d - pattern_image.getWidth()  + rama_side + 5;
+					break;
+			}
+			switch (order.friz){
+				case 'true':
+					handle_top = 175 - pattern_image.getHeight()/2 + f_h;
+					break;
+				case 'false':
+					handle_top = 175 - pattern_image.getHeight()/2;
+					break;
+			}
+			ruchka.set({
+				width: pattern_image.getWidth(), 
+				height: pattern_image.getHeight(),
+				left: handle_left,
+				top: handle_top
+			});
+
+			var patternSourceCanvas = new fabric.StaticCanvas();
+			patternSourceCanvas.add(pattern_image);
+
+			var pattern = new fabric.Pattern({
+				source: function(){
+					patternSourceCanvas.setDimensions({
+						width: pattern_image.getWidth(),
+						height: pattern_image.getHeight()
+					});
+					return patternSourceCanvas.getElement();
+				},
+				repeat: 'repeat'
+			});
+			ruchka.set({fill: pattern});
+			canvas.renderAll();
+		});
+	}
+	function draw_antipanika(){
+		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/antipanika.png', function(pattern_image){
+			var handle_left;
+			var handle_top;
+			pattern_image.scaleToWidth(w_d - 10);
+			switch (order.stvorka){
+				case 'left':
+					handle_left = s_w + rama_side + 5;
+					break;
+				case 'right':
+					handle_left = rama_side + 5;
+					break;
+			}
+			switch (order.friz){
+				case 'true':
+					handle_top = 200 - pattern_image.getHeight()/2 + f_h;
+					break;
+				case 'false':
+					handle_top = 200 - pattern_image.getHeight()/2;
+					break;
+			}
+			antipanika.set({
+				width: pattern_image.getWidth(), 
+				height: pattern_image.getHeight(),
+				left: handle_left,
+				top: handle_top
+			});
+
+			var patternSourceCanvas = new fabric.StaticCanvas();
+			patternSourceCanvas.add(pattern_image);
+
+			var pattern = new fabric.Pattern({
+				source: function(){
+					patternSourceCanvas.setDimensions({
+						width: pattern_image.getWidth(),
+						height: pattern_image.getHeight()
+					});
+					return patternSourceCanvas.getElement();
+				},
+				repeat: 'repeat'
+			});
+			ruchka.set({width: 0});
+			main_lock.set({width: 0});
+			antipanika.set({fill: pattern});
 			canvas.renderAll();
 		});
 	}
@@ -780,6 +881,7 @@ $(document).ready(function() {
 							$('#check_ruchka').prop('disabled', false);
 							$('#check_ruchka').prop('checked', true);
 							check_color(order);
+							draw_antipanika();
 							// draw(color);
 						}else{
 							order.ruchka = 'false';
