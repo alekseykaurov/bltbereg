@@ -64,6 +64,7 @@ $(document).ready(function() {
 		strokeWidth: 1,
 		stroke: 'rgb(0, 0, 0)'
 	});
+	var f_h;
 	var door = new fabric.Rect({
 		width: w_d,
 		height: h_d,
@@ -77,31 +78,37 @@ $(document).ready(function() {
 		top: rama_top,
 		stroke: 'rgb(0, 0, 0)'
 	});
+	var s_w;
 	var ruchka = new fabric.Rect();
 	var main_lock = new fabric.Rect();
 	var zadvijka = new fabric.Rect();
 
-	canvas.add(background, friz, door, stvorka, ruchka, main_lock, zadvijka);
+	var shadow = new fabric.Rect({
+		width: b_w,
+		height: b_h
+	});
+	canvas.add(background, friz, door, stvorka, ruchka, main_lock, zadvijka, shadow);
 
 	//функции для изменений всего вот этого
 
 	function check_canvas_sizes(){
 		if (order.friz != 'false'){
 			var p_h = order.height_door/order.friz_height;
-			var f_h = h_d/p_h;
+			f_h = h_d/p_h;
 			friz.set({height: f_h});
-			var b_h = h_d + f_h;
-			background.set({height: b_h + rama_top + rama_bottom});
+			b_h = h_d + f_h + rama_top + rama_bottom;
+			background.set({height: b_h});
 			door.set({top: f_h + rama_top});
 			stvorka.set({top: f_h + rama_top});
+
 		}
 		if (order.stvorka != 'none'){
 			var p_w = order.width_door/order.stvorka_width;
-			var s_w = w_d/p_w;
+			s_w = w_d/p_w;
 			stvorka.set({width: s_w});
-			var b_w = s_w + w_d;
-			background.set({width: b_w + 2*rama_side});
-			friz.set({width: b_w});
+			b_w = s_w + w_d + 2*rama_side;
+			background.set({width: b_w});
+			friz.set({width: b_w - 2*rama_side});
 			switch (order.stvorka){
 				case 'left':
 					stvorka.set({left: rama_side});
@@ -123,11 +130,12 @@ $(document).ready(function() {
 			friz.set({fill: color.main_color_color});
 			canvas.renderAll();
 		}else{
-			var pattern_image = fabric.Image.fromURL(color.main_color_color, function(pattern_image){
+			var pattern_image =  new fabric.Image.fromURL(color.main_color_color, function(pattern_image){
 				pattern_image.scaleToWidth(90);
 
 				var patternSourceCanvas = new fabric.StaticCanvas();
 				patternSourceCanvas.add(pattern_image);
+				// alert(pattern_image.getWidth());
 
 				var pattern = new fabric.Pattern({
 					source: function(){
@@ -146,6 +154,86 @@ $(document).ready(function() {
 				canvas.renderAll();
 			});
 		}
+	}
+	function change_shadow(){
+		var pattern_image =  new fabric.Image.fromURL('/images/stvorki/shadow.png', function(pattern_image){
+			pattern_image.set({width: b_w, height: b_h});
+
+			shadow.set({width: b_w, height: b_h});
+
+			var patternSourceCanvas = new fabric.StaticCanvas();
+			patternSourceCanvas.add(pattern_image);
+
+			var pattern = new fabric.Pattern({
+				source: function(){
+					patternSourceCanvas.setDimensions({
+						width: pattern_image.getWidth(),
+						height: pattern_image.getHeight()
+					});
+					return patternSourceCanvas.getElement();
+				},
+				repeat: 'repeat'
+			});
+			shadow.set({fill: pattern, globalCompositeOperation: 'soft-light'});
+			canvas.renderAll();
+		});
+	}
+	function change_main_lock(){
+		var pattern_image =  new fabric.Image.fromURL(color.main_lock, function(pattern_image){
+			if (color.main_lock_ruchka != "Ручка на планке"){
+				pattern_image.scaleToWidth(13);
+			}else{
+				pattern_image.scaleToWidth(45);
+			}
+			var main_lock_left;
+			var main_lock_top;
+			console.log('stvorka:'+order.stvorka);
+			switch (order.stvorka){
+				case 'left':
+					main_lock_left = s_w + rama_side;
+					if (color.main_lock_ruchka != 'Ручка на планке'){
+						main_lock_left = main_lock_left + 5;
+					}
+					pattern_image.set({flipX: true});
+					break;
+				case 'right':
+					main_lock_left = w_d - pattern_image.getWidth()  + rama_side;
+					if (color.main_lock_ruchka != 'Ручка на планке'){
+						main_lock_left = main_lock_left - 5;
+					}
+					break;
+			}
+			switch (order.friz){
+				case 'true':
+					main_lock_top = 200 - pattern_image.getHeight()/2 + f_h;
+					break;
+				case 'false':
+					main_lock_top = 200 - pattern_image.getHeight()/2;
+					break;
+			}
+			main_lock.set({
+				width: pattern_image.getWidth(), 
+				height: pattern_image.getHeight(),
+				left: main_lock_left,
+				top: main_lock_top
+			});
+
+			var patternSourceCanvas = new fabric.StaticCanvas();
+			patternSourceCanvas.add(pattern_image);
+
+			var pattern = new fabric.Pattern({
+				source: function(){
+					patternSourceCanvas.setDimensions({
+						width: pattern_image.getWidth(),
+						height: pattern_image.getHeight()
+					});
+					return patternSourceCanvas.getElement();
+				},
+				repeat: 'repeat'
+			});
+			main_lock.set({fill: pattern});
+			canvas.renderAll();
+		});
 	}
 	//функция для включения\отключения активности у кнопок меню
 	function isDisabled(canChange){
@@ -508,6 +596,9 @@ $(document).ready(function() {
 				// color['is_add_lock_barier'] = data['is_add_lock_barier'];''
 				// width_1 = (order.width_door * height_1)/order.height_door;
 				// draw(color);
+				change_main_color();
+				change_main_lock();
+				change_shadow();
 			}
 		});
 		console.log(color);
@@ -706,7 +797,35 @@ $(document).ready(function() {
 			console.log("click!");
 			console.log(order);
 	});
-	
+	function check_furniture(filter_1, filter_2, type, id_zamok, sort_value){
+		$.ajax({
+			url: '/ajax_protivopojar/draw_furniture.php',
+			type: 'POST',
+			async: false,
+			dataType: 'html',
+			data: {
+				'pageid': id_zamok,
+				'zamok_type': filter_1,
+				'zamok_color': filter_2,
+				'metallokonstr': order.metallokonstr,
+				'outside_view': order.outside_view,
+				'inside_view': order.inside_view,
+				'type': type,
+				'sort_price': sort_value
+			},
+			success: function(data){
+				$('.zamok_list').html(data);
+
+				$(".zamok_list div[data-pageid="+order[type]+"]").addClass("active-child");
+				$('.zamok-price').each(function(){
+					var str = $(this).html();
+					str = str.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, "$1 ");
+					$(this).html(str);
+				});
+
+			}
+		})
+	}
 	//клик на чекбокс стеклопакета
 	$('body').on("change", '#check_steklopak', function(){
 		type = 'steklopak';
@@ -1553,7 +1672,7 @@ $(document).ready(function() {
 		});		
 	}
 	//хехе
-	order.stvorka = 'Двустворчатая';
+	// order.stvorka = 'Двустворчатая';
 
 	$('.order-button').click(function(){
 		// $(".order_wrap").show(200);
