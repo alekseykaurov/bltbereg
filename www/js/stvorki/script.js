@@ -50,7 +50,9 @@ $(document).ready(function() {
 	//Пока нарисуем фронт
 
 	var canvas = new fabric.Canvas('canvas_1');
+	var canvas_inside = new fabric.Canvas('canvas_2');
 	canvas.selection = false;
+	canvas_inside.selection = false;
 	var background = new fabric.Rect({
 		strokeWidth: 1,
 		stroke: 'rgb(0, 0, 0)'
@@ -81,6 +83,9 @@ $(document).ready(function() {
 	var s_w;
 	var ruchka = new fabric.Rect();
 	var main_lock = new fabric.Rect();
+	var main_lock_back = new fabric.Rect();
+	var add_lock = new fabric.Rect();
+	var add_lock_back = new fabric.Rect();
 	var zadvijka = new fabric.Rect();
 
 	var shadow = new fabric.Rect({
@@ -160,10 +165,27 @@ $(document).ready(function() {
 	// 	top: petlya_top_3 + petlya_height/2
 	// });
 
-	canvas.add(background, friz, door, stvorka, ruchka, main_lock, zadvijka, antipanika, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, shadow);
+	canvas.add(background, friz, door, stvorka, ruchka, main_lock, add_lock, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, shadow);
+	canvas_inside.add(background, friz, door, stvorka, ruchka, main_lock_back, add_lock_back, zadvijka, antipanika, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, shadow);
 
+	var renderCount = 0;
 	//функции для изменений всего вот этого
-
+	// $('.inside').click(function(){
+	// 	canvas_inside.deactivateAll();
+	// 	window.open(canvas_inside.toDataURL('png'));
+	// })
+	var reverseFlag = false;
+	function reverse(){
+		// canvas_inside.deactivateAll();
+		var img = new fabric.Image.fromURL(canvas_inside.toDataURL(), function(img){
+			img.set({flipX: true, left: 0, top: 0});
+			// renderCount = renderCount -1;
+			reverseFlag = true;
+			canvas_inside.add(img);
+		});
+		// $('.canvas_types_2').append('<img src = "'+img+'" />');
+		// $('.canvas_types_2 .canvas-container').hide();
+	}
 	function check_canvas_sizes(){
 		if (order.friz != 'false'){
 			var p_h = order.height_door/order.friz_height;
@@ -192,6 +214,7 @@ $(document).ready(function() {
 			stvorka.set({width: s_w});
 			b_w = s_w + w_d + 2*rama_side;
 			background.set({width: b_w});
+			canvas_inside.setWidth(b_w + 1);
 			friz.set({width: b_w - 2*rama_side});
 			petlya_right_1.set({left: b_w - rama_side - petlya_width});
 			petlya_right_2.set({left: b_w - rama_side - petlya_width});
@@ -211,6 +234,7 @@ $(document).ready(function() {
 			}
 		}
 		canvas.renderAll();
+		canvas_inside.renderAll();
 	}
 	function change_main_color(){
 		if (color.main_color_type == "tablicza-czvetov-ral1"){
@@ -219,6 +243,7 @@ $(document).ready(function() {
 			stvorka.set({fill: color.main_color_color});
 			friz.set({fill: color.main_color_color});
 			canvas.renderAll();
+			canvas_inside.renderAll();
 		}else{
 			var pattern_image =  new fabric.Image.fromURL(color.main_color_color, function(pattern_image){
 				pattern_image.scaleToWidth(90);
@@ -242,6 +267,7 @@ $(document).ready(function() {
 				stvorka.set({fill: pattern});
 				friz.set({fill: pattern});
 				canvas.renderAll();
+				canvas_inside.renderAll();
 			});
 		}
 	}
@@ -269,6 +295,7 @@ $(document).ready(function() {
 			petlya.set({fill: pattern});
 			// line.set({width: petlya_width, height: 1});
 			canvas.renderAll();
+			canvas_inside.renderAll();
 		});
 	}
 	function change_shadow(){
@@ -292,6 +319,8 @@ $(document).ready(function() {
 			});
 			shadow.set({fill: pattern, globalCompositeOperation: 'soft-light'});
 			canvas.renderAll();
+			canvas_inside.renderAll();
+			// reverse();
 		});
 	}
 
@@ -354,8 +383,13 @@ $(document).ready(function() {
 		});
 	}
 	function change_handle(){
-		if (color.main_lock_ruchka_image == ''){
+		if (color.main_lock_ruchka_image == '' && (color.main_lock_ruchka == 'Без ручки' || color.main_lock_ruchka == '')){
 			color.main_lock_ruchka_image = '/images/metalcount/ruchka_round.png';
+		}else if (color.main_lock_ruchka == ''){
+			ruchka.set({width: 0});
+			canvas.renderAll();
+			canvas_inside.renderAll();
+			return false;
 		}
 		var pattern_image =  new fabric.Image.fromURL(color.main_lock_ruchka_image, function(pattern_image){
 			var handle_left;
@@ -404,6 +438,9 @@ $(document).ready(function() {
 			});
 			ruchka.set({fill: pattern});
 			canvas.renderAll();
+			if (order.ruchka != 'true'){
+				canvas_inside.renderAll();
+			}
 		});
 	}
 	function change_add_lock(){
@@ -449,6 +486,7 @@ $(document).ready(function() {
 			});
 			add_lock.set({fill: pattern});
 			canvas.renderAll();
+			canvas_inside.renderAll();
 		});
 	}
 	function draw_antipanika(){
@@ -495,7 +533,7 @@ $(document).ready(function() {
 			ruchka.set({width: 0});
 			main_lock.set({width: 0});
 			antipanika.set({fill: pattern});
-			canvas.renderAll();
+			canvas_inside.renderAll();
 		});
 	}
 	function change_zadvijka(){
@@ -540,7 +578,7 @@ $(document).ready(function() {
 				repeat: 'repeat'
 			});
 			zadvijka.set({fill: pattern});
-			canvas.renderAll();
+			canvas_inside.renderAll();
 		});
 	}
 	var corner_height;
@@ -854,6 +892,7 @@ $(document).ready(function() {
 			});
 			steklopak_horizont_bottom.set({fill: pattern});
 			canvas.renderAll();
+			canvas_inside.renderAll();
 		});
 	}
 	//функция для включения\отключения активности у кнопок меню
@@ -1235,7 +1274,7 @@ $(document).ready(function() {
 	// получаем картинки для order
 	check_color(order);
 	change_main_color();
-	console.log(order);
+	renderCount = renderCount + 1;
 	if (order.stvorka != 'none'){
 		draw_petlya(petlya_left_1, 'left');
 		draw_petlya(petlya_left_2, 'left');
@@ -1243,37 +1282,61 @@ $(document).ready(function() {
 		draw_petlya(petlya_right_1, 'right');
 		draw_petlya(petlya_right_2, 'right');
 		draw_petlya(petlya_right_3, 'right');
+		renderCount = renderCount + 6;
 	}else{
 		switch (order.door_side){
 			case 'left':
 				draw_petlya(petlya_left_1, 'left');
 				draw_petlya(petlya_left_2, 'left');
 				draw_petlya(petlya_left_3, 'left');
+				renderCount = renderCount + 3;
 				break;
 			case 'right':
 				draw_petlya(petlya_right_1, 'right');
 				draw_petlya(petlya_right_2, 'right');
 				draw_petlya(petlya_right_3, 'right');
+				renderCount = renderCount + 3;
 				break;
 		}
 	}
 	if ((order.main_lock != '' && order.main_lock != null) && order.ruchka != 'true'){
 		change_main_lock();
+		renderCount = renderCount + 1;
 	}else if ((order.main_lock != '' && order.main_lock != null) && order.ruchka == 'true'){
 		draw_antipanika();
+		renderCount = renderCount + 1;
 	}else{
 		change_handle();
+		renderCount = renderCount + 1;
 	}
 	if (order.add_lock != '' && order.add_lock != null){
 		change_add_lock();
+		renderCount = renderCount + 1;
 	}
 	if (order.zadvijka != '' && order.zadvijka != null){
 		change_zadvijka();
+		renderCount = renderCount + 1;
 	}
 	if (order.steklopak != '' && order.steklopak != null){
 		draw_steklopak();
+		renderCount = renderCount + 1;
 	}
 	change_shadow();
+	renderCount = renderCount + 1;
+	var kk = 1;
+	canvas_inside.on('after:render', function(e){
+		if (reverseFlag == false){
+			console.log('renderCount = '+renderCount+'   kk =' +kk + '   reverseFlag = '+reverseFlag);
+			if (kk == renderCount){
+				reverseFlag = true;
+				reverse();
+				kk = kk + 1;
+			}else if (kk < renderCount){
+				kk = kk+1;
+			}
+		}
+	});
+	// reverse();
 	//клик на чекбоксы
 	$('.options_box').on('change', '#check_main_lock, #check_add_lock, #check_glazok, #check_dovodchik, #check_zadvijka, #check_ruchka', function(){
 		var classList = $(this).parent().next().attr('class').split(/\s+/);
@@ -1308,11 +1371,26 @@ $(document).ready(function() {
 					$("#check_ruchka").prop('disabled', false);
 					$("#check_ruchka").prop('checked', false);
 				}
-				if(type == 'main_lock' || type == 'add_lock' || type == 'glazok' || type == 'zadvijka' || type == 'ruchka'){
-					check_color(order);
-					// draw(color);
+				check_color(order);
+				// if(type == 'main_lock' || type == 'add_lock' || type == 'glazok' || type == 'zadvijka' || type == 'ruchka'){
+				// 	check_color(order);
+				// 	// draw(color);
+				// }
+				switch (type){
+					case 'main_lock':
+						change_main_lock();
+						break;
+					case 'add_lock':
+						change_add_lock();
+						break;
+					case 'zadvijka':
+						change_zadvijka();
+						break;
+					default:
+						break;
 				}
 			}else{
+				alert(type);
 				if (type != 'ruchka'){
 					$('.checkbox_main_lock, .checkbox_add_lock, .checkbox_glazok, .checkbox_dovodchik, .checkbox_zadvijka, .checkbox_steklopak').removeClass('active');
 					$(this).addClass('active');
@@ -1437,6 +1515,7 @@ $(document).ready(function() {
 							$('#check_ruchka').prop('disabled', false);
 							$('#check_ruchka').prop('checked', true);
 							check_color(order);
+							change_main_lock();
 							draw_antipanika();
 							// draw(color);
 						}else{
