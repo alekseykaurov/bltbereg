@@ -59,6 +59,8 @@ $(document).ready(function() {
 	});
 	var b_w = w_d + 2*rama_side;
 	var b_h = h_d + rama_top + rama_bottom;
+	var b_top = 0;
+	var b_side = 0;
 	background.set({width: b_w, height: b_h, fill: '#ccc'});
 	var friz = new fabric.Rect({
 		left: rama_side,
@@ -66,7 +68,7 @@ $(document).ready(function() {
 		strokeWidth: 1,
 		stroke: 'rgb(0, 0, 0)'
 	});
-	var f_h;
+	var f_h = 0;
 	var door = new fabric.Rect({
 		width: w_d,
 		height: h_d,
@@ -84,8 +86,8 @@ $(document).ready(function() {
 	var ruchka = new fabric.Rect();
 	var main_lock = new fabric.Rect();
 	var main_lock_back = new fabric.Rect();
-	var add_lock = new fabric.Rect();
-	var add_lock_back = new fabric.Rect();
+	// var add_lock = new fabric.Rect();
+	// var add_lock_back = new fabric.Rect();
 	var zadvijka = new fabric.Rect();
 
 	var shadow = new fabric.Rect({
@@ -165,8 +167,10 @@ $(document).ready(function() {
 	// 	top: petlya_top_3 + petlya_height/2
 	// });
 
-	canvas.add(background, friz, door, stvorka, ruchka, main_lock, add_lock, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, shadow);
-	canvas_inside.add(background, friz, door, stvorka, ruchka, main_lock_back, add_lock_back, zadvijka, antipanika, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, shadow);
+	var back_door = new fabric.Rect();
+
+	canvas.add(background, friz, door, stvorka, ruchka, main_lock, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, shadow);
+	canvas_inside.add(background, friz, door, stvorka, ruchka, main_lock_back, zadvijka, antipanika, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, shadow, back_door);
 
 	var renderCount = 0;
 	//функции для изменений всего вот этого
@@ -175,26 +179,72 @@ $(document).ready(function() {
 	// 	window.open(canvas_inside.toDataURL('png'));
 	// })
 	var reverseFlag = false;
+
+	var pp = 1;
+
 	function reverse(){
 		// canvas_inside.deactivateAll();
-		var img = new fabric.Image.fromURL(canvas_inside.toDataURL(), function(img){
-			img.set({flipX: true, left: 0, top: 0});
-			// renderCount = renderCount -1;
-			reverseFlag = true;
-			canvas_inside.add(img);
+		// var img = new fabric.Image.fromURL(canvas_inside.toDataURL(), function(img){
+		// 	img.set({flipX: true, left: 0, top: 0});
+		// 	// renderCount = renderCount -1;
+		// 	reverseFlag = true;
+		// 	canvas_inside.add(img);
+		// });
+		back_door.set({width: 0});
+		var pattern_image =  new fabric.Image.fromURL(canvas_inside.toDataURL(), function(pattern_image){
+			// pattern_image.scaleToWidth(b_h);
+			pattern_image.set({flipX: true});
+			var back_door_left;
+			if (order.outside_nalichnik == 220){
+				back_door_left = rama_side - rama_bottom;
+			}else{
+				back_door_left = 0;
+			}
+			back_door.set({
+				width: pattern_image.getWidth(), 
+				height: pattern_image.getHeight(),
+				left: back_door_left,
+				top: 0
+			});
+
+			var patternSourceCanvas = new fabric.StaticCanvas();
+			patternSourceCanvas.add(pattern_image);
+
+			var pattern = new fabric.Pattern({
+				source: function(){
+					patternSourceCanvas.setDimensions({
+						width: pattern_image.getWidth(),
+						height: pattern_image.getHeight()
+					});
+					return patternSourceCanvas.getElement();
+				},
+				repeat: 'no-repeat'
+			});
+			back_door.set({fill: pattern});
+			canvas_inside.renderAll();
 		});
 		// $('.canvas_types_2').append('<img src = "'+img+'" />');
 		// $('.canvas_types_2 .canvas-container').hide();
 	}
-	function check_canvas_sizes(){
+	function check_canvas_sizes(need_start){
 		if (order.friz != 'false'){
 			var p_h = order.height_door/order.friz_height;
 			f_h = h_d/p_h;
+
 			friz.set({height: f_h});
 			b_h = h_d + f_h + rama_top + rama_bottom;
-			background.set({height: b_h});
+			b_top = 0;
+			b_side = 0;
+			if (order.outside_nalichnik == 220){
+				b_h = b_h - (rama_top - rama_bottom);
+				b_w = w_d + 2*rama_bottom;
+				b_top = rama_top - rama_bottom;
+				b_side = b_top;
+			}
+			background.set({height: b_h, top: b_top, width: b_w, left: b_side});
 			door.set({top: f_h + rama_top});
 			stvorka.set({top: f_h + rama_top});
+			shadow.set({width: b_w, height: b_h, left: b_side, top: b_top});
 			petlya_left_1.set({top: petlya_top_1 + f_h});
 			petlya_left_2.set({top: petlya_top_2 + f_h});
 			petlya_left_3.set({top: petlya_top_3 + f_h});
@@ -211,14 +261,46 @@ $(document).ready(function() {
 		if (order.stvorka != 'none'){
 			var p_w = order.width_door/order.stvorka_width;
 			s_w = w_d/p_w;
-			stvorka.set({width: s_w});
+			while (s_w + w_d + 2*rama_side > 325){
+				s_w = s_w/pp;
+				w_d = w_d/pp;
+				f_h = f_h/pp;
+				b_h = b_h/pp;
+				h_d = b_h - rama_top - rama_bottom;
+				petlya_top_1 = petlya_top_1/pp;
+				petlya_top_2 = petlya_top_2/pp;
+				petlya_top_3 = petlya_top_3/pp;
+				pp = pp + 0.05;
+			}
+			door.set({width: w_d, height: h_d});
+			stvorka.set({width: s_w, height: h_d});
 			b_w = s_w + w_d + 2*rama_side;
-			background.set({width: b_w});
-			canvas_inside.setWidth(b_w + 1);
+			b_side = 0;
+			b_top = 0;
+			var petlya_left = b_w - rama_side - petlya_width;
+			var canvas_inside_w = b_w + 2;
+			if (order.outside_nalichnik == 220){
+				b_w = s_w + w_d + 2*rama_bottom;
+				b_h = h_d + 2*rama_bottom;
+				b_side = rama_side - rama_bottom;
+				b_top = b_side;
+				petlya_left = b_w;
+				canvas_inside_w = s_w + w_d + 5*rama_bottom;
+			}
+			console.log('b_w = '+ b_w + ' s_w = ' + s_w + ' w_d = ' + w_d + ' rama_side = ' + rama_side + ' canvas_inside_w' + canvas_inside_w);
+			background.set({width: b_w, left: b_side, height: b_h, top: b_top});
+			shadow.set({width: b_w, height: b_h, left: b_side, top: b_top});
+			canvas_inside.setWidth(canvas_inside_w);
 			friz.set({width: b_w - 2*rama_side});
-			petlya_right_1.set({left: b_w - rama_side - petlya_width});
-			petlya_right_2.set({left: b_w - rama_side - petlya_width});
-			petlya_right_3.set({left: b_w - rama_side - petlya_width});
+			petlya_right_1.set({left: petlya_left});
+			petlya_right_2.set({left: petlya_left});
+			petlya_right_3.set({left: petlya_left});
+			petlya_left_1.set({top: petlya_top_1 + f_h});
+			petlya_left_2.set({top: petlya_top_2 + f_h});
+			petlya_left_3.set({top: petlya_top_3 + f_h});
+			petlya_right_1.set({top: petlya_top_1 + f_h});
+			petlya_right_2.set({top: petlya_top_2 + f_h});
+			petlya_right_3.set({top: petlya_top_3 + f_h});
 			// line_right_1.set({left: b_w - rama_side - petlya_width});
 			// line_right_2.set({left: b_w - rama_side - petlya_width});
 			// line_right_3.set({left: b_w - rama_side - petlya_width});
@@ -226,12 +308,29 @@ $(document).ready(function() {
 				case 'left':
 					stvorka.set({left: rama_side});
 					door.set({left: s_w + rama_side});
+					// if (order.main_lock == 'Ручка на планке'){
+					// 	main_lock.set({left: s_w + rama_side});
+					// 	main_lock_back.set({left: s_w + rama_side});
+					// }else{
+					// 	main_lock.set({left: s_w + rama_side + 5/pp});
+					// 	main_lock_back.set({left: s_w + rama_side + 5/pp});
+					// }
 					break;
 				case 'right':
 					door.set({left: rama_side});
 					stvorka.set({left: w_d + rama_side});
+					// if (order.main_lock == 'Ручка на планке'){
+					// 	main_lock.set({left: w_d - main_lock.getWidth() + rama_side});
+					// 	main_lock_back.set({left: w_d - main_lock.getWidth() + rama_side});
+					// }else{
+					// 	main_lock.set({left: w_d - main_lock.getWidth() + rama_side - 5/pp});
+					// 	main_lock_back.set({left: w_d - main_lock.getWidth() + rama_side - 5/pp});
+					// }
 					break;
 			}
+		}
+		if (order.stvorka == 'none' && order.friz == 'false' && order.outside_nalichnik == 220){
+			background.set({width: w_d + 2*rama_bottom, height: h_d + 2*rama_bottom, left: rama_side - rama_bottom, top: rama_top - rama_bottom});
 		}
 		canvas.renderAll();
 		canvas_inside.renderAll();
@@ -246,7 +345,7 @@ $(document).ready(function() {
 			canvas_inside.renderAll();
 		}else{
 			var pattern_image =  new fabric.Image.fromURL(color.main_color_color, function(pattern_image){
-				pattern_image.scaleToWidth(90);
+				pattern_image.scaleToWidth(320);
 
 				var patternSourceCanvas = new fabric.StaticCanvas();
 				patternSourceCanvas.add(pattern_image);
@@ -275,7 +374,7 @@ $(document).ready(function() {
 		var pattern_image =  new fabric.Image.fromURL('/images/metalcount/petlya.png', function(pattern_image){
 			pattern_image.set({width: petlya_width, height: petlya_height});
 
-			petlya.set({width: petlya_width, height: petlya_height});
+			petlya.set({width: petlya_width/pp, height: petlya_height/pp});
 			if (flag == 'right'){
 				pattern_image.set({flipX: true});
 			}
@@ -302,7 +401,7 @@ $(document).ready(function() {
 		var pattern_image =  new fabric.Image.fromURL('/images/stvorki/shadow.png', function(pattern_image){
 			pattern_image.set({width: b_w, height: b_h});
 
-			shadow.set({width: b_w, height: b_h});
+			shadow.set({width: b_w, height: b_h, left: b_side, top: b_top});
 
 			var patternSourceCanvas = new fabric.StaticCanvas();
 			patternSourceCanvas.add(pattern_image);
@@ -315,7 +414,7 @@ $(document).ready(function() {
 					});
 					return patternSourceCanvas.getElement();
 				},
-				repeat: 'repeat'
+				repeat: 'no-repeat'
 			});
 			shadow.set({fill: pattern, globalCompositeOperation: 'soft-light'});
 			canvas.renderAll();
@@ -327,9 +426,9 @@ $(document).ready(function() {
 	function change_main_lock(){
 		var pattern_image =  new fabric.Image.fromURL(color.main_lock, function(pattern_image){
 			if (color.main_lock_ruchka != "Ручка на планке"){
-				pattern_image.scaleToWidth(13);
+				pattern_image.scaleToWidth(13/pp);
 			}else{
-				pattern_image.scaleToWidth(45);
+				pattern_image.scaleToWidth(45/pp);
 			}
 			var main_lock_left;
 			var main_lock_top;
@@ -338,23 +437,23 @@ $(document).ready(function() {
 				case 'left':
 					main_lock_left = s_w + rama_side;
 					if (color.main_lock_ruchka != 'Ручка на планке'){
-						main_lock_left = main_lock_left + 5;
+						main_lock_left = main_lock_left + 5/pp;
 					}
 					pattern_image.set({flipX: true});
 					break;
 				case 'right':
 					main_lock_left = w_d - pattern_image.getWidth()  + rama_side;
 					if (color.main_lock_ruchka != 'Ручка на планке'){
-						main_lock_left = main_lock_left - 5;
+						main_lock_left = main_lock_left - 5/pp;
 					}
 					break;
 			}
 			switch (order.friz){
 				case 'true':
-					main_lock_top = 200 - pattern_image.getHeight()/2 + f_h;
+					main_lock_top = 200/pp - pattern_image.getHeight()/2 + f_h;
 					break;
 				case 'false':
-					main_lock_top = 200 - pattern_image.getHeight()/2;
+					main_lock_top = 200/pp - pattern_image.getHeight()/2;
 					break;
 			}
 			main_lock.set({
@@ -382,6 +481,69 @@ $(document).ready(function() {
 			// canvas.renderAll();
 		});
 	}
+	function change_main_lock_back(){
+		var main_lock_src;
+		if (color.main_lock_ruchka != "Ручка на планке" && color.main_lock_inside_bottom != ''){
+			main_lock_src = color.main_lock_inside_bottom;
+		}else if (color.main_lock_inside_bottom == '' || color.main_lock_ruchka == "Ручка на планке"){
+			main_lock_src = color.main_lock;
+		}
+		var pattern_image =  new fabric.Image.fromURL(main_lock_src, function(pattern_image){
+			if (color.main_lock_ruchka != "Ручка на планке"){
+				pattern_image.scaleToWidth(13/pp);
+			}else{
+				pattern_image.scaleToWidth(45/pp);
+			}
+			var main_lock_left;
+			var main_lock_top;
+			switch (order.stvorka){
+				case 'left':
+					main_lock_left = s_w + rama_side;
+					if (color.main_lock_ruchka != 'Ручка на планке'){
+						main_lock_left = main_lock_left + 5/pp;
+					}
+					pattern_image.set({flipX: true});
+					break;
+				case 'right':
+					main_lock_left = w_d - pattern_image.getWidth()  + rama_side;
+					if (color.main_lock_ruchka != 'Ручка на планке'){
+						main_lock_left = main_lock_left - 5/pp;
+					}
+					break;
+			}
+			switch (order.friz){
+				case 'true':
+					main_lock_top = 200/pp - pattern_image.getHeight()/2 + f_h;
+					break;
+				case 'false':
+					main_lock_top = 200/pp - pattern_image.getHeight()/2;
+					break;
+			}
+			main_lock_back.set({
+				width: pattern_image.getWidth(), 
+				height: pattern_image.getHeight(),
+				left: main_lock_left,
+				top: main_lock_top
+			});
+
+			var patternSourceCanvas = new fabric.StaticCanvas();
+			patternSourceCanvas.add(pattern_image);
+
+			var pattern = new fabric.Pattern({
+				source: function(){
+					patternSourceCanvas.setDimensions({
+						width: pattern_image.getWidth(),
+						height: pattern_image.getHeight()
+					});
+					return patternSourceCanvas.getElement();
+				},
+				repeat: 'repeat'
+			});
+			main_lock_back.set({fill: pattern});
+			canvas_inside.renderAll();
+			// canvas.renderAll();
+		});
+	}
 	function change_handle(){
 		if (color.main_lock_ruchka_image == '' && (color.main_lock_ruchka == 'Без ручки' || color.main_lock_ruchka == '')){
 			color.main_lock_ruchka_image = '/images/metalcount/ruchka_round.png';
@@ -395,25 +557,25 @@ $(document).ready(function() {
 			var handle_left;
 			var handle_top;
 			if (color.main_lock_ruchka == 'Без ручки' || color.main_lock_ruchka == ''){
-				pattern_image.scaleToWidth(25);
+				pattern_image.scaleToWidth(25/pp);
 			}else if(color.main_lock_ruchka == 'С ручкой'){
-				pattern_image.scaleToWidth(36);
+				pattern_image.scaleToWidth(36/pp);
 			}
 			switch (order.stvorka){
 				case 'left':
-					handle_left = s_w + rama_side + 5;
+					handle_left = s_w + rama_side + 5/pp;
 					pattern_image.set({flipX: true});
 					break;
 				case 'right':
-					handle_left = w_d - pattern_image.getWidth()  + rama_side + 5;
+					handle_left = w_d - pattern_image.getWidth()  + rama_side + 5/pp;
 					break;
 			}
 			switch (order.friz){
 				case 'true':
-					handle_top = 175 - pattern_image.getHeight()/2 + f_h;
+					handle_top = 175/pp - pattern_image.getHeight()/2 + f_h;
 					break;
 				case 'false':
-					handle_top = 175 - pattern_image.getHeight()/2;
+					handle_top = 175/pp - pattern_image.getHeight()/2;
 					break;
 			}
 			ruchka.set({
@@ -443,71 +605,125 @@ $(document).ready(function() {
 			}
 		});
 	}
-	function change_add_lock(){
-		var pattern_image =  new fabric.Image.fromURL(color.add_lock, function(pattern_image){
-			pattern_image.scaleToWidth(45);
-			var add_lock_left;
-			var add_lock_top;
-			switch (order.stvorka){
-				case 'left':
-					add_lock_left = s_w + rama_side;
-					break;
-				case 'right':
-					add_lock_left = w_d - pattern_image.getWidth()  + rama_side;
-					break;
-			}
-			switch (order.friz){
-				case 'true':
-					add_lock_top = 134 - pattern_image.getHeight()/2 + f_h;
-					break;
-				case 'false':
-					add_lock_top = 134 - pattern_image.getHeight()/2;
-					break;
-			}
-			add_lock.set({
-				width: pattern_image.getWidth(), 
-				height: pattern_image.getHeight(),
-				left: add_lock_left,
-				top: add_lock_top
-			});
+	// function change_add_lock(){
+	// 	var pattern_image =  new fabric.Image.fromURL(color.add_lock, function(pattern_image){
+	// 		pattern_image.scaleToWidth(45);
+	// 		var add_lock_left;
+	// 		var add_lock_top;
+	// 		switch (order.stvorka){
+	// 			case 'left':
+	// 				add_lock_left = s_w + rama_side;
+	// 				break;
+	// 			case 'right':
+	// 				add_lock_left = w_d - pattern_image.getWidth()  + rama_side;
+	// 				break;
+	// 		}
+	// 		switch (order.friz){
+	// 			case 'true':
+	// 				add_lock_top = 134 - pattern_image.getHeight()/2 + f_h;
+	// 				break;
+	// 			case 'false':
+	// 				add_lock_top = 134 - pattern_image.getHeight()/2;
+	// 				break;
+	// 		}
+	// 		add_lock.set({
+	// 			width: pattern_image.getWidth(), 
+	// 			height: pattern_image.getHeight(),
+	// 			left: add_lock_left,
+	// 			top: add_lock_top
+	// 		});
 
-			var patternSourceCanvas = new fabric.StaticCanvas();
-			patternSourceCanvas.add(pattern_image);
+	// 		var patternSourceCanvas = new fabric.StaticCanvas();
+	// 		patternSourceCanvas.add(pattern_image);
 
-			var pattern = new fabric.Pattern({
-				source: function(){
-					patternSourceCanvas.setDimensions({
-						width: pattern_image.getWidth(),
-						height: pattern_image.getHeight()
-					});
-					return patternSourceCanvas.getElement();
-				},
-				repeat: 'no-repeat'
-			});
-			add_lock.set({fill: pattern});
-			canvas.renderAll();
-			canvas_inside.renderAll();
-		});
-	}
+	// 		var pattern = new fabric.Pattern({
+	// 			source: function(){
+	// 				patternSourceCanvas.setDimensions({
+	// 					width: pattern_image.getWidth(),
+	// 					height: pattern_image.getHeight()
+	// 				});
+	// 				return patternSourceCanvas.getElement();
+	// 			},
+	// 			repeat: 'no-repeat'
+	// 		});
+	// 		add_lock.set({fill: pattern});
+	// 		canvas.renderAll();
+	// 	});
+	// }
+	// function change_add_lock_back(){
+	// 	var add_lock_src;
+	// 	if (color.add_lock_type == "цилиндр" && (color.main_lock_type == "сувальд." || (color.main_lock == "" && order.zadvijka == ""))){
+	// 		add_lock_src = color.add_image_zamok_inside;
+	// 	}else{
+	// 		if (color.add_lock_type == 'сувальд.'){
+	// 			add_lock_src = color.add_image_zamok_inside;
+	// 		}else{
+	// 			add_lock_src = color.add_image_zamok_syst_inside;
+	// 		}
+	// 	}
+	// 	var pattern_image =  new fabric.Image.fromURL(add_lock_src, function(pattern_image){
+	// 		pattern_image.scaleToWidth(45);
+	// 		var add_lock_left;
+	// 		var add_lock_top;
+	// 		switch (order.stvorka){
+	// 			case 'left':
+	// 				add_lock_left = s_w + rama_side;
+	// 				break;
+	// 			case 'right':
+	// 				add_lock_left = w_d - pattern_image.getWidth()  + rama_side;
+	// 				break;
+	// 		}
+	// 		switch (order.friz){
+	// 			case 'true':
+	// 				add_lock_top = 134 - pattern_image.getHeight()/2 + f_h;
+	// 				break;
+	// 			case 'false':
+	// 				add_lock_top = 134 - pattern_image.getHeight()/2;
+	// 				break;
+	// 		}
+	// 		add_lock_back.set({
+	// 			width: pattern_image.getWidth(), 
+	// 			height: pattern_image.getHeight(),
+	// 			left: add_lock_left,
+	// 			top: add_lock_top
+	// 		});
+
+	// 		var patternSourceCanvas = new fabric.StaticCanvas();
+	// 		patternSourceCanvas.add(pattern_image);
+
+	// 		var pattern = new fabric.Pattern({
+	// 			source: function(){
+	// 				patternSourceCanvas.setDimensions({
+	// 					width: pattern_image.getWidth(),
+	// 					height: pattern_image.getHeight()
+	// 				});
+	// 				return patternSourceCanvas.getElement();
+	// 			},
+	// 			repeat: 'no-repeat'
+	// 		});
+	// 		add_lock_back.set({fill: pattern});
+	// 		canvas_inside.renderAll();
+	// 	});
+	// }
 	function draw_antipanika(){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/antipanika.png', function(pattern_image){
 			var handle_left;
 			var handle_top;
-			pattern_image.scaleToWidth(w_d - 10);
+			pattern_image.scaleToWidth(w_d - 10/pp);
 			switch (order.stvorka){
 				case 'left':
-					handle_left = s_w + rama_side + 5;
+					handle_left = s_w + rama_side + 5/pp;
 					break;
 				case 'right':
-					handle_left = rama_side + 5;
+					handle_left = rama_side + 5/pp;
 					break;
 			}
 			switch (order.friz){
 				case 'true':
-					handle_top = 200 - pattern_image.getHeight()/2 + f_h;
+					handle_top = 200/pp - pattern_image.getHeight()/2 + f_h;
 					break;
 				case 'false':
-					handle_top = 200 - pattern_image.getHeight()/2;
+					handle_top = 200/pp - pattern_image.getHeight()/2;
 					break;
 			}
 			antipanika.set({
@@ -531,7 +747,7 @@ $(document).ready(function() {
 				repeat: 'repeat'
 			});
 			ruchka.set({width: 0});
-			main_lock.set({width: 0});
+			main_lock_back.set({width: 0});
 			antipanika.set({fill: pattern});
 			canvas_inside.renderAll();
 		});
@@ -540,21 +756,21 @@ $(document).ready(function() {
 		var pattern_image =  new fabric.Image.fromURL(color.zadvijka_image, function(pattern_image){
 			var handle_left;
 			var handle_top;
-			pattern_image.scaleToWidth(13);
+			pattern_image.scaleToWidth(13/pp);
 			switch (order.stvorka){
 				case 'left':
-					handle_left = s_w + rama_side;
+					handle_left = s_w + rama_side + 5/pp;
 					break;
 				case 'right':
-					handle_left = w_d - pattern_image.getWidth()  + rama_side;
+					handle_left = w_d - pattern_image.getWidth()  + rama_side -5/pp;
 					break;
 			}
 			switch (order.friz){
 				case 'true':
-					handle_top = 134 - pattern_image.getHeight()/2 + f_h;
+					handle_top = 134/pp - pattern_image.getHeight()/2 + f_h;
 					break;
 				case 'false':
-					handle_top = 134 - pattern_image.getHeight()/2;
+					handle_top = 134/pp - pattern_image.getHeight()/2;
 					break;
 			}
 			zadvijka.set({
@@ -1196,6 +1412,18 @@ $(document).ready(function() {
 	$('#input-width').val(order.width_door);
 	$('.width-value').html(order.width_door);
 	$('.height-value').html(order.height_door);
+	if (order.stvorka != 'none'){
+		$('#stvorka-width').val(order.stvorka_width);
+		$('.stvorka_size').show();
+	}else{
+		$('.stvorka_size').hide();
+	}
+	if(order.friz != 'false'){
+		$('#friz-height').val(order.friz_height);
+		$('.friz_size').show();
+	}else{
+		$('.friz_size').hide();
+	}
 
 	//функция для получения картинок/цветов для значений в order
 	function check_color(order){
@@ -1273,57 +1501,63 @@ $(document).ready(function() {
 
 	// получаем картинки для order
 	check_color(order);
-	change_main_color();
-	renderCount = renderCount + 1;
-	if (order.stvorka != 'none'){
-		draw_petlya(petlya_left_1, 'left');
-		draw_petlya(petlya_left_2, 'left');
-		draw_petlya(petlya_left_3, 'left');
-		draw_petlya(petlya_right_1, 'right');
-		draw_petlya(petlya_right_2, 'right');
-		draw_petlya(petlya_right_3, 'right');
-		renderCount = renderCount + 6;
-	}else{
-		switch (order.door_side){
-			case 'left':
-				draw_petlya(petlya_left_1, 'left');
-				draw_petlya(petlya_left_2, 'left');
-				draw_petlya(petlya_left_3, 'left');
-				renderCount = renderCount + 3;
-				break;
-			case 'right':
-				draw_petlya(petlya_right_1, 'right');
-				draw_petlya(petlya_right_2, 'right');
-				draw_petlya(petlya_right_3, 'right');
-				renderCount = renderCount + 3;
-				break;
+	function start(){
+		change_main_color();
+		renderCount = renderCount + 1;
+		if (order.stvorka != 'none'){
+			draw_petlya(petlya_left_1, 'left');
+			draw_petlya(petlya_left_2, 'left');
+			draw_petlya(petlya_left_3, 'left');
+			draw_petlya(petlya_right_1, 'right');
+			draw_petlya(petlya_right_2, 'right');
+			draw_petlya(petlya_right_3, 'right');
+			renderCount = renderCount + 6;
+		}else{
+			switch (order.door_side){
+				case 'left':
+					draw_petlya(petlya_left_1, 'left');
+					draw_petlya(petlya_left_2, 'left');
+					draw_petlya(petlya_left_3, 'left');
+					renderCount = renderCount + 3;
+					break;
+				case 'right':
+					draw_petlya(petlya_right_1, 'right');
+					draw_petlya(petlya_right_2, 'right');
+					draw_petlya(petlya_right_3, 'right');
+					renderCount = renderCount + 3;
+					break;
+			}
 		}
+		if ((order.main_lock != '' && order.main_lock != null) && order.ruchka != 'true'){
+			change_main_lock();
+			change_main_lock_back();
+			renderCount = renderCount + 2;
+		}else if ((order.main_lock != '' && order.main_lock != null) && order.ruchka == 'true'){
+			change_main_lock();
+			draw_antipanika();
+			renderCount = renderCount + 1;
+		}else{
+			change_handle();
+			renderCount = renderCount + 1;
+		}
+		// if (order.add_lock != '' && order.add_lock != null){
+		// 	change_add_lock();
+		// 	change_add_lock_back();
+		// 	renderCount = renderCount + 1;
+		// }
+		if (order.zadvijka != '' && order.zadvijka != null){
+			change_zadvijka();
+			renderCount = renderCount + 1;
+		}
+		if (order.steklopak != '' && order.steklopak != null){
+			draw_steklopak();
+			renderCount = renderCount + 1;
+		}
+		change_shadow();
+		renderCount = renderCount + 1;
 	}
-	if ((order.main_lock != '' && order.main_lock != null) && order.ruchka != 'true'){
-		change_main_lock();
-		renderCount = renderCount + 1;
-	}else if ((order.main_lock != '' && order.main_lock != null) && order.ruchka == 'true'){
-		draw_antipanika();
-		renderCount = renderCount + 1;
-	}else{
-		change_handle();
-		renderCount = renderCount + 1;
-	}
-	if (order.add_lock != '' && order.add_lock != null){
-		change_add_lock();
-		renderCount = renderCount + 1;
-	}
-	if (order.zadvijka != '' && order.zadvijka != null){
-		change_zadvijka();
-		renderCount = renderCount + 1;
-	}
-	if (order.steklopak != '' && order.steklopak != null){
-		draw_steklopak();
-		renderCount = renderCount + 1;
-	}
-	change_shadow();
-	renderCount = renderCount + 1;
 	var kk = 1;
+	start();
 	canvas_inside.on('after:render', function(e){
 		if (reverseFlag == false){
 			console.log('renderCount = '+renderCount+'   kk =' +kk + '   reverseFlag = '+reverseFlag);
@@ -1365,6 +1599,12 @@ $(document).ready(function() {
 					fillPole(type);
 				}else{
 					order.ruchka = 'false';
+					antipanika.set({width: 0});
+					reverseFlag = false;
+					kk = 1;
+					renderCount = 2;
+					change_main_lock_back();
+					change_handle();
 				}
 				if(type == 'main_lock'){
 					order.ruchka = 'false';
@@ -1378,19 +1618,22 @@ $(document).ready(function() {
 				// }
 				switch (type){
 					case 'main_lock':
-						change_main_lock();
-						break;
-					case 'add_lock':
-						change_add_lock();
+						main_lock.set({width: 0});
+						main_lock_back.set({width: 0});
+						antipanika.set({width: 0});
+						reverseFlag = false;
+						kk = 1;
+						renderCount = 1;
+						change_handle();
 						break;
 					case 'zadvijka':
-						change_zadvijka();
+						zadvijka.set({width: 0});
+						reverse();
 						break;
 					default:
 						break;
 				}
 			}else{
-				alert(type);
 				if (type != 'ruchka'){
 					$('.checkbox_main_lock, .checkbox_add_lock, .checkbox_glazok, .checkbox_dovodchik, .checkbox_zadvijka, .checkbox_steklopak').removeClass('active');
 					$(this).addClass('active');
@@ -1490,6 +1733,16 @@ $(document).ready(function() {
 					// $('input[name = zamok-color]').prop('checked', false).removeClass('current_choice');
 					// $('input[value = '+filter_2+']').prop('checked', true).addClass('current_choice');
 					check_furniture(filter_1, filter_2, type, type_id, sort_value);
+					reverseFlag = false;
+					kk = 1;
+					if (order.ruchka == 'false'){
+						renderCount = 2;
+						change_main_lock();
+						change_main_lock_back();
+					}else{
+						renderCount = 1;
+						change_main_lock();
+					}
 					// draw(color);
 				}else{
 					if (type == 'glazok'){
@@ -1515,6 +1768,9 @@ $(document).ready(function() {
 							$('#check_ruchka').prop('disabled', false);
 							$('#check_ruchka').prop('checked', true);
 							check_color(order);
+							reverseFlag = false;
+							kk = 1;
+							renderCount = 1;
 							change_main_lock();
 							draw_antipanika();
 							// draw(color);
@@ -1578,6 +1834,18 @@ $(document).ready(function() {
 			order[type] = '';
 			getPrice();
 			fillPole(type);
+			steklopak_glass.set({width: 0});
+			steklopak_horizont_bottom.set({width: 0});
+			steklopak_horizont_top.set({width: 0});
+			steklopak_vertical_left.set({width: 0});
+			steklopak_vertical_right.set({width: 0});
+			steklopak_corner_top_right.set({width: 0});
+			steklopak_corner_top_left.set({width: 0});
+			steklopak_corner_bottom_left.set({width: 0});
+			steklopak_corner_bottom_right.set({width: 0});
+			canvas.renderAll();
+			canvas_inside.renderAll();
+			reverse();
 			// if(type == 'main_lock' || type == 'add_lock' || type == 'glazok' || type == 'zadvijka'){
 			// 	check_color(order);
 			// 	draw(color);
@@ -1599,6 +1867,10 @@ $(document).ready(function() {
 			$('.current_menu').before('<div class = "close_div"><img class = "close" src = "/images/metalcount/close.gif" /></div>');
 			//$("#middle_hor, #middle_ver").prop("checked", true);
 			get_windows(type_id, order["width_door"], order["height_door"]);
+			reverseFlag = false;
+			kk = 1;
+			renderCount = 1;
+			draw_steklopak();
 			// draw_steklopak();
 			// console.log(order);
 
@@ -1665,6 +1937,9 @@ $(document).ready(function() {
 		$(".window_align .align_row span").removeClass("active-child");
 		order["window_align"] = $(this).attr("class");
 		$(this).addClass("active-child");
+		reverseFlag = false;
+		kk = 1;
+		renderCount = 1;
 		draw_steklopak();
 	});
 	//клик по кнопке "Нестандартные размеры" для стеклопакета
@@ -1983,7 +2258,17 @@ $(document).ready(function() {
 			}else{
 				$("#check_ruchka").prop('disabled', false);
 			}
-			// check_color(order);
+			check_color(order);
+			reverseFlag = false;
+			kk = 1;
+			if (order.ruchka == 'false'){
+				renderCount = 2;
+				change_main_lock_back();
+				change_main_lock();
+			}else{
+				renderCount = 1;
+				change_main_lock();
+			}
 			// draw(color);
 			draw_under_doors();
 			getPrice();
@@ -2013,6 +2298,9 @@ $(document).ready(function() {
 			getPrice();
 
 			fillPole(type);
+			reverseFlag = false;
+			kk = 1;
+			renderCount = 1;
 			draw_steklopak();
 			// draw(color);
 		}
@@ -2127,6 +2415,9 @@ $(document).ready(function() {
 				}
 
 				check_color(order);
+				reverseFlag = false;
+				kk = 1;
+				renderCount = 1;
 				change_main_color();
 				// draw(color);
 
@@ -2146,9 +2437,34 @@ $(document).ready(function() {
 				order.inside_color = order.main_color;
 				fillPole('inside_color');
 			}
-			if (type == 'outside_view' || type == 'outside_color' || type == 'outside_frezer' || type == 'inside_view' || type == 'inside_color' || type == 'inside_frezer' || type == 'main_color' || type == 'outside_nalichnik' || type == 'glazok'|| type == 'zadvijka' || type == 'metallokonstr'){
-				check_color(order);
-				// draw(color);
+			// if (type == 'outside_view' || type == 'outside_color' || type == 'outside_frezer' || type == 'inside_view' || type == 'inside_color' || type == 'inside_frezer' || type == 'main_color' || type == 'outside_nalichnik' || type == 'glazok'|| type == 'zadvijka' || type == 'metallokonstr'){
+			// 	check_color(order);
+			// 	// draw(color);
+			// }
+			switch (type){
+				case 'outside_nalichnik':
+					check_color(order);
+					reverseFlag = false;
+					kk = 1;
+					renderCount = 2;
+					check_canvas_sizes();
+					change_shadow();
+					break;
+				case 'zadvijka':
+					check_color(order);
+					reverseFlag = false;
+					kk = 1;
+					renderCount = 1;
+					change_zadvijka();
+					break;
+				case 'main_color':
+					check_color(order);
+					reverseFlag = false;
+					kk = 1;
+					renderCount = 1;
+					change_main_color();
+				default:
+					break;
 			}
 			fillPole(type);
 			getPrice();
@@ -2254,16 +2570,32 @@ $(document).ready(function() {
 	function check_sizes(){
 		var height_door = $('#input-height').val();
 		var width_door = $('#input-width').val();
-		if (height_door < 1900 || height_door > 2200 || width_door < 800 || width_door > 1100){
+		var stvorka_width = 0;
+		var friz_height = 0;
+		if (order.stvorka != 'none'){
+			stvorka_width = $('#stvorka-width').val();
+		}
+		if (order.friz != 'false'){
+			friz_height = $('#friz-height').val();
+		}
+		if (height_door < 1900 || height_door > 2200 || width_door < 800 || width_door > 1100 || (order.stvorka != 'none' && (stvorka_width < 300 || stvorka_width > 900)) || (order.friz != 'false' && (friz_height < 200 || friz_height > 600))){
 			$('.warning_message').css('display', 'block');
 		}
 		else{
 			order.height_door = height_door;
 			order.width_door = width_door;
+			order.stvorka_width = stvorka_width;
+			order.friz_height = friz_height;
 			getPrice();
 			$('.height-value').html(order.height_door);
 			$('.width-value').html(order.width_door);
 			$('.wrapper').css('display', 'none');
+			reverseFlag = false;
+			kk = 1;
+			renderCount = 0;
+			check_canvas_sizes();
+			start();
+			
 		}
 		// width_1 = (order.width * height_1)/order.height_door;
 	}
