@@ -49,8 +49,12 @@ $(document).ready(function() {
 
 	//Пока нарисуем фронт
 
-	var canvas = new fabric.Canvas('canvas_1');
-	var canvas_inside = new fabric.Canvas('canvas_2');
+	var canvas = new fabric.Canvas('canvas_1',{
+		imageSmoothingEnabled: false
+	});
+	var canvas_inside = new fabric.Canvas('canvas_2', {
+		imageSmoothingEnabled: false
+	});
 	canvas.selection = false;
 	canvas_inside.selection = false;
 	var background = new fabric.Rect({
@@ -230,9 +234,25 @@ $(document).ready(function() {
 		if (order.friz != 'false'){
 			var p_h = order.height_door/order.friz_height;
 			f_h = h_d/p_h;
-
-			friz.set({height: f_h});
+			tmp_h = h_d + f_h;
+			while (tmp_h + rama_bottom + rama_top > 380){
+				pp = pp + 0.05;
+				tmp_h = tmp_h/pp;
+				console.log('tmp_h ' + tmp_h);
+			}
+			s_w = s_w/pp;
+			w_d = w_d/pp;
+			f_h = f_h/pp;
+			b_w = b_w/pp;
+			h_d = h_d/pp;
 			b_h = h_d + f_h + rama_top + rama_bottom;
+			console.log('height');
+			console.log(h_d + f_h + rama_bottom + rama_top);
+			console.log('pp ' + pp);
+			petlya_top_1 = petlya_top_1/pp;
+			petlya_top_2 = petlya_top_2/pp;
+			petlya_top_3 = petlya_top_3/pp;
+			friz.set({height: f_h});
 			b_top = 0;
 			b_side = 0;
 			if (order.outside_nalichnik == 220){
@@ -261,7 +281,16 @@ $(document).ready(function() {
 		if (order.stvorka != 'none'){
 			var p_w = order.width_door/order.stvorka_width;
 			s_w = w_d/p_w;
-			while (s_w + w_d + 2*rama_side > 325){
+			var tmp_w = s_w + w_d + 2*rama_side;
+			var makeSmaller = false;
+			while (tmp_w > 325){
+				// console.log('width');
+				// console.log(s_w + w_d + 2*rama_side);
+				pp = pp + 0.05;
+				tmp_w = tmp_w/pp;
+				makeSmaller = true;
+			}
+			if (makeSmaller){
 				s_w = s_w/pp;
 				w_d = w_d/pp;
 				f_h = f_h/pp;
@@ -270,7 +299,6 @@ $(document).ready(function() {
 				petlya_top_1 = petlya_top_1/pp;
 				petlya_top_2 = petlya_top_2/pp;
 				petlya_top_3 = petlya_top_3/pp;
-				pp = pp + 0.05;
 			}
 			door.set({width: w_d, height: h_d});
 			stvorka.set({width: s_w, height: h_d});
@@ -291,7 +319,7 @@ $(document).ready(function() {
 			background.set({width: b_w, left: b_side, height: b_h, top: b_top});
 			shadow.set({width: b_w, height: b_h, left: b_side, top: b_top});
 			canvas_inside.setWidth(canvas_inside_w);
-			friz.set({width: b_w - 2*rama_side});
+			friz.set({width: b_w - 2*rama_side, height: f_h});
 			petlya_right_1.set({left: petlya_left});
 			petlya_right_2.set({left: petlya_left});
 			petlya_right_3.set({left: petlya_left});
@@ -799,14 +827,14 @@ $(document).ready(function() {
 	}
 	var corner_height;
 	function draw_steklopak(){
-		var w = order['steklopak_width']/70*rama_side;
-		var h = order['steklopak_height']/70*rama_side;
+		var w = order['steklopak_width']/70*rama_side/pp;
+		var h = order['steklopak_height']/70*rama_side/pp;
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/steklo.png', function(pattern_image){
 			var pad_left;
 			var pad_top;
-			var min_left = 270/70*rama_side;
-			var min_top = 370/70*rama_side;
-			var min_bottom = 320/70*rama_side;
+			var min_left = 270/70*rama_side/pp;
+			var min_top = 370/70*rama_side/pp;
+			var min_bottom = 320/70*rama_side/pp;
 			switch(order['window_align']){
 				case 'top_left':
 					pad_left = min_left;
@@ -848,7 +876,7 @@ $(document).ready(function() {
 					console.log('все сломалось');
 			}
 			if (order.friz != 'false'){
-				pad_top = pad_top + order.friz_height;
+				pad_top = pad_top + f_h;
 			}
 			if (order.stvorka == 'left'){
 				pad_left = pad_left + stvorka.getWidth();
@@ -882,13 +910,13 @@ $(document).ready(function() {
 	}
 	function draw_corner_top_left(pad_left, pad_top){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/corner_top_left.png', function(pattern_image){
-			pattern_image.width = 8;
-			pattern_image.height = 8;
+			pattern_image.width = 8/pp;
+			pattern_image.height = 8/pp;
 			steklopak_corner_top_left.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
-				left: pad_left -8,
-				top: pad_top - 8
+				left: pad_left -8/pp,
+				top: pad_top - 8/pp
 			});
 
 			var patternSourceCanvas = new fabric.StaticCanvas();
@@ -911,13 +939,13 @@ $(document).ready(function() {
 	}
 	function draw_corner_top_right(pad_top, pad_left){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/corner_top_right.png', function(pattern_image){
-			pattern_image.width = 8;
-			pattern_image.height = 8;
+			pattern_image.width = 8/pp;
+			pattern_image.height = 8/pp;
 			steklopak_corner_top_right.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
 				left: pad_left + steklopak_glass.getWidth(),
-				top: pad_top - 8
+				top: pad_top - 8/pp
 			});
 
 			var patternSourceCanvas = new fabric.StaticCanvas();
@@ -940,8 +968,8 @@ $(document).ready(function() {
 	}
 	function draw_corner_bottom_right(pad_top, pad_left){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/corner_bottom_right.png', function(pattern_image){
-			pattern_image.width = 8;
-			pattern_image.height = 8;
+			pattern_image.width = 8/pp;
+			pattern_image.height = 8/pp;
 			steklopak_corner_bottom_right.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
@@ -969,12 +997,12 @@ $(document).ready(function() {
 	}
 	function draw_corner_bottom_left(pad_top, pad_left){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/corner_bottom_left.png', function(pattern_image){
-			pattern_image.width = 8;
-			pattern_image.height = 8;
+			pattern_image.width = 8/pp;
+			pattern_image.height = 8/pp;
 			steklopak_corner_bottom_left.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
-				left: pad_left -8,
+				left: pad_left -8/pp,
 				top: pad_top + steklopak_glass.getHeight()
 			});
 
@@ -998,12 +1026,12 @@ $(document).ready(function() {
 	}
 	function draw_vertical_left(pad_top, pad_left){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/vertical_element2.png', function(pattern_image){
-			pattern_image.width = 8;
+			pattern_image.width = 8/pp;
 			pattern_image.height = steklopak_glass.getHeight();
 			steklopak_vertical_left.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
-				left: pad_left -8,
+				left: pad_left -8/pp,
 				top: pad_top
 			});
 
@@ -1027,7 +1055,7 @@ $(document).ready(function() {
 	}
 	function draw_vertical_right(pad_top, pad_left){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/vertical_element.png', function(pattern_image){
-			pattern_image.width = 8;
+			pattern_image.width = 8/pp;
 			pattern_image.height = steklopak_glass.getHeight();
 			steklopak_vertical_right.set({
 				width: pattern_image.getWidth(), 
@@ -1057,12 +1085,12 @@ $(document).ready(function() {
 	function draw_horizont_top(pad_top, pad_left){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/horizont_element.png', function(pattern_image){
 			pattern_image.width = steklopak_glass.getWidth();
-			pattern_image.height = 8;
+			pattern_image.height = 8/pp;
 			steklopak_horizont_top.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
 				left: pad_left,
-				top: pad_top - 8
+				top: pad_top - 8/pp
 			});
 
 			var patternSourceCanvas = new fabric.StaticCanvas();
@@ -1085,10 +1113,10 @@ $(document).ready(function() {
 	function draw_horizont_bottom(pad_top, pad_left){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/horizont_element2.png', function(pattern_image){
 			pattern_image.width = steklopak_glass.getWidth();
-			pattern_image.height = 8;
+			pattern_image.height = 8/pp;
 			steklopak_horizont_bottom.set({
 				width: pattern_image.getWidth(), 
-				height: 8,
+				height: 8/pp,
 				left: pad_left,
 				top: pad_top + steklopak_glass.getHeight()
 			});
