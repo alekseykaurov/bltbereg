@@ -250,8 +250,8 @@ if($product_offer["parent"]==506 || $product_offer["parent"]==9){
 		}
 	}
 
-	$result['stvorka']['value'] = $stvorka[0]["value"];
-	$result['stvorka']['changable'] = true;
+	$result['stvorka_position']['value'] = $stvorka[0]["value"];
+	$result['stvorka_position']['changable'] = true;
 	$result['stvorka_width']['value'] = $stvorka_width[0]["value"];
 	$result['stvorka_width']['changable'] = true;
 

@@ -281,7 +281,7 @@ $(document).ready(function() {
 			// line_right_2.set({top: petlya_top_2 + f_h});
 			// line_right_3.set({top: petlya_top_3 + f_h});
 		}
-		if (order.stvorka != 'none'){
+		if (order.stvorka_positiob != 'none'){
 			var p_w = order.width_door/order.stvorka_width;
 			s_w = w_d/p_w;
 			var tmp_w = s_w + w_d + 2*rama_side;
@@ -335,7 +335,7 @@ $(document).ready(function() {
 			// line_right_1.set({left: b_w - rama_side - petlya_width});
 			// line_right_2.set({left: b_w - rama_side - petlya_width});
 			// line_right_3.set({left: b_w - rama_side - petlya_width});
-			switch (order.stvorka){
+			switch (order.stvorka_position){
 				case 'left':
 					stvorka.set({left: rama_side});
 					door.set({left: s_w + rama_side});
@@ -360,7 +360,7 @@ $(document).ready(function() {
 					break;
 			}
 		}
-		if (order.stvorka == 'none' && order.friz == 'false' && order.outside_nalichnik == 220){
+		if (order.stvorka_position == 'none' && order.friz == 'false' && order.outside_nalichnik == 220){
 			background.set({width: w_d + 2*rama_bottom, height: h_d + 2*rama_bottom, left: rama_side - rama_bottom, top: rama_top - rama_bottom});
 		}
 		canvas.renderAll();
@@ -472,8 +472,8 @@ $(document).ready(function() {
 			}
 			var main_lock_left;
 			var main_lock_top;
-			console.log('stvorka:'+order.stvorka);
-			switch (order.stvorka){
+			console.log('stvorka:'+order.stvorka_position);
+			switch (order.stvorka_position){
 				case 'left':
 					main_lock_left = s_w + rama_side;
 					if (color.main_lock_ruchka != 'Ручка на планке'){
@@ -536,7 +536,7 @@ $(document).ready(function() {
 			}
 			var main_lock_left;
 			var main_lock_top;
-			switch (order.stvorka){
+			switch (order.stvorka_position){
 				case 'left':
 					main_lock_left = s_w + rama_side;
 					if (color.main_lock_ruchka != 'Ручка на планке'){
@@ -601,7 +601,7 @@ $(document).ready(function() {
 			}else if(color.main_lock_ruchka == 'С ручкой'){
 				pattern_image.scaleToWidth(36/pp);
 			}
-			switch (order.stvorka){
+			switch (order.stvorka_position){
 				case 'left':
 					handle_left = s_w + rama_side + 5/pp;
 					pattern_image.set({flipX: true});
@@ -650,7 +650,7 @@ $(document).ready(function() {
 	// 		pattern_image.scaleToWidth(45);
 	// 		var add_lock_left;
 	// 		var add_lock_top;
-	// 		switch (order.stvorka){
+	// 		switch (order.stvorka_position){
 	// 			case 'left':
 	// 				add_lock_left = s_w + rama_side;
 	// 				break;
@@ -705,7 +705,7 @@ $(document).ready(function() {
 	// 		pattern_image.scaleToWidth(45);
 	// 		var add_lock_left;
 	// 		var add_lock_top;
-	// 		switch (order.stvorka){
+	// 		switch (order.stvorka_position){
 	// 			case 'left':
 	// 				add_lock_left = s_w + rama_side;
 	// 				break;
@@ -750,7 +750,7 @@ $(document).ready(function() {
 			var handle_left;
 			var handle_top;
 			pattern_image.scaleToWidth(w_d - 10/pp);
-			switch (order.stvorka){
+			switch (order.stvorka_position){
 				case 'left':
 					handle_left = s_w + rama_side + 5/pp;
 					pattern_image.set({flipX: true});
@@ -798,7 +798,7 @@ $(document).ready(function() {
 			var handle_left;
 			var handle_top;
 			pattern_image.scaleToWidth(13/pp);
-			switch (order.stvorka){
+			switch (order.stvorka_position){
 				case 'left':
 					handle_left = s_w + rama_side + 5/pp;
 					break;
@@ -891,7 +891,7 @@ $(document).ready(function() {
 			if (order.friz != 'false'){
 				pad_top = pad_top + f_h;
 			}
-			if (order.stvorka == 'left'){
+			if (order.stvorka_position == 'left'){
 				pad_left = pad_left + stvorka.getWidth();
 			}
 			pad_left = pad_left + rama_side;
@@ -1360,7 +1360,7 @@ $(document).ready(function() {
 					steklopak_height: data['steklopaket_height']['value'],
 					window_align: data['steklopaket_position']['value'],
 					ruchka: data['ruchka']['value'],
-					stvorka: data['stvorka']['value'],
+					stvorka_position: data['stvorka_position']['value'],
 					stvorka_width: data['stvorka_width']['value'],
 					friz: data['friz']['value'],
 					friz_height: data['friz_height']['value']
@@ -1390,7 +1390,7 @@ $(document).ready(function() {
 					steklopak_height: data['steklopaket_height']['value'],
 					window_align: data['steklopaket_position']['value'],
 					ruchka: data['ruchka']['value'],
-					stvorka: data['stvorka']['value'],
+					stvorka_position: data['stvorka_position']['value'],
 					stvorka_width: data['stvorka_width']['value'],
 					friz: data['friz']['value'],
 					friz_height: data['friz_height']['value']
@@ -1417,7 +1417,7 @@ $(document).ready(function() {
 					zadvijka: data['zadvijka_id']['changable'],
 					steklopak: data['steklopaket_id']['changable'],
 					ruchka: data['ruchka']['changable'],
-					stvorka: data['stvorka']['changable'],
+					stvorka_position: data['stvorka_position']['changable'],
 					stvorka_width: data['stvorka_width']['changable'],
 					friz: data['friz']['changable'],
 					friz_height: data['friz_height']['changable']
@@ -1541,7 +1541,7 @@ $(document).ready(function() {
 	function start(){
 		change_main_color();
 		renderCount = renderCount + 1;
-		if (order.stvorka != 'none'){
+		if (order.stvorka_position != 'none'){
 			draw_petlya(petlya_left_1, 'left');
 			draw_petlya(petlya_left_2, 'left');
 			draw_petlya(petlya_left_3, 'left');
@@ -2614,7 +2614,7 @@ $(document).ready(function() {
 		var stvorka_width = total_width - width_door;
 		var friz_height = total_height - height_door;
 		
-		if (height_door < 1800 || height_door > 2200 || width_door < 800 || width_door > 1100 || (order.stvorka != 'none' && (stvorka_width < 300 || stvorka_width > 900)) || (order.friz != 'false' && (friz_height < 200 || friz_height > 600))){
+		if (height_door < 1800 || height_door > 2200 || width_door < 800 || width_door > 1100 || (order.stvorka_position != 'none' && (stvorka_width < 300 || stvorka_width > 900)) || (order.friz != 'false' && (friz_height < 200 || friz_height > 600))){
 			$('.warning_message').css('display', 'block');
 		}
 		else{
@@ -2779,7 +2779,7 @@ $(document).ready(function() {
 		});		
 	}
 	//хехе
-	// order.stvorka = 'Двустворчатая';
+	order.stvorka = 'Двустворчатая';
 
 	$('.order-button').click(function(){
 		// $(".order_wrap").show(200);
@@ -2870,7 +2870,11 @@ $(document).ready(function() {
 							steklopak_height: data['order']['steklopak_height'],
 							steklopak_width: data['order']['steklopak_width'],
 							window_align: data['order']['window_align'],
-							ruchka: data['order']['ruchka']
+							ruchka: data['order']['ruchka'],
+							stvorka_position: data['order']['stvorka_position'],
+							stvorka_width: data['order']['stvorka_width'],
+							friz: data['order']['friz'],
+							friz_height: data['order']['friz_height']
 						}
 						//форматирование даты
 						var date = new Date(data['order']['date']);

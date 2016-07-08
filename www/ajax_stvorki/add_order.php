@@ -227,6 +227,15 @@ if($insert["door_side"]=="left"){
 // Створка
 $stvorka_name = $insert["stvorka"];
 
+if($insert["stvorka_position"]=="left"){
+	$stvorka_position = "Слева";
+} else if($insert["stvorka_position"]=="right"){
+	$stvorka_position = "Справа";
+}
+$stvorka_width = $insert["stvorka_width"];
+$friz = $insert["friz"];
+$friz_height = $insert["friz_height"];
+
 // Петли - количество
 // if($order["metallokonstr"]==191){
 // 	//если Основа
@@ -338,6 +347,7 @@ $glazok_name = iconv("utf-8", "windows-1251", $glazok_name);
 $dovodchik_name = iconv("utf-8", "windows-1251", $dovodchik_name);
 $zadvijka_name = iconv("utf-8", "windows-1251", $zadvijka_name);
 $stvorka_name = iconv("utf-8", "windows-1251", $stvorka_name);
+$stvorka_position = iconv("utf-8", "windows-1251", $stvorka_position);
 // $steklopak_position = iconv("utf-8", "windows-1251", $steklopak_position);
 
 if ($main_lock_color == 'Золото'){
@@ -424,8 +434,11 @@ $text .= xlsWriteLabel(36,0,"Цвет фурнитуры замка 1 (1-золото/2-хром,никель/0 - 
 $text .= xlsWriteLabel(37,0,"Цвет фурнитуры замка 2 (1-золото/2-хром,никель/0 - другое)");
 $text .= xlsWriteLabel(38,0,"Противопожарность (0-стандартная/1-противопожарная)");
 $text .= xlsWriteLabel(39,0,"Напр.входа (для типов 2-5)");
-$text .= xlsWriteLabel(40,0,"Высота фриза");
+
 $text .= xlsWriteLabel(41,0,"Ширина бок. части");
+$text .= xlsWriteLabel(42,0,"Положение створки");
+$text .= xlsWriteLabel(43,0,"Фриз");
+$text .= xlsWriteLabel(44,0,"Высота фриза");
 
 // $text .= xlsWriteLabel(42,0,"Адрес установки (доставки)");
 // $text .= xlsWriteLabel(43,0,"Заказчик (Ф.И.О.)");
@@ -492,8 +505,12 @@ $text .= xlsWriteLabel(36,1,$main_lock_color); //цвет фурнитуры замка 1
 $text .= xlsWriteLabel(37,1,$add_lock_color); //цвер фурнитуры замка 2
 $text .= xlsWriteLabel(38,1,"1"); //противопожарность
 $text .= xlsWriteLabel(39,1,"0"); //противопожарность
-$text .= xlsWriteLabel(40,1,"0"); //противопожарность
-$text .= xlsWriteLabel(41,1,"0"); //противопожарность
+
+
+$text .= xlsWriteLabel(41,1,$stvorka_width); //Ширина бок. части
+$text .= xlsWriteLabel(42,1,$stvorka_position); //Положение створки
+$text .= xlsWriteLabel(43,1,$friz); //Фриз
+$text .= xlsWriteLabel(44,1,$friz_height); //высота фриза
 
 // $text .= xlsWriteLabel(42,1,$adress);
 // $text .= xlsWriteLabel(43,1,$name);
