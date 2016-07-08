@@ -97,6 +97,13 @@ if ($result['steklopaket_id']['value'] != '' && $result['steklopaket_id']['value
 }
 $result['ruchka']['value'] = $TVs[19]['value'];
 $result['ruchka']['changable'] = true;
+$total_width_tv = $modx->getTemplateVars(Array("total_width"), '*', 979);
+$result['total_width']['value'] = $total_width_tv[0]['value'];
+$result['total_width']['changable'] = true;
+
+$total_height_tv = $modx->getTemplateVars(Array("total_height"), '*', 979);
+$result['total_height']['value'] = $total_height_tv[0]['value'];
+$result['total_height']['changable'] = true;
 $product_offer = $modx->getDocument($product);
 if($product_offer["parent"]==506 || $product_offer["parent"]==9){
 
