@@ -339,6 +339,15 @@ if($product_offer["parent"]==506 || $product_offer["parent"]==9){
 	if($productTVs[18]["value"]!=""){
 		$result['ruchka']['value'] = $productTVs[18]['value'];
 	}
+
+	$total_width_tv = $modx->getTemplateVars(Array("total_width"), '*', $product);
+	$result['total_width']['value'] = $total_width_tv[0]['value'];
+	$result['total_width']['changable'] = true;
+
+	$total_height_tv = $modx->getTemplateVars(Array("total_height"), '*', $product);
+	$result['total_height']['value'] = $total_height_tv[0]['value'];
+	$result['total_height']['changable'] = true;
+	
 	$result["SPECIAL"] = $productTVs;
 
 	//техническая дверь

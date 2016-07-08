@@ -22,6 +22,9 @@ if($projectId==null){
 		if($row["door_type"]=="protivopojar"){
 			$result["link"]="http://ce77747.tmweb.ru/konstruktor-protivopozharnyix-dverej/?project=".$projectId;
 			$result["type"]="pp";
+		}else if($row["door_type"]=="stvorki"){
+			$result["link"]="http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi).html?project=".$projectId;
+			$result["type"]="st";
 		}else{
 			$result["link"]="http://ce77747.tmweb.ru/konstruktor-dverej/?project=".$projectId;
 			$result["type"]="mk";

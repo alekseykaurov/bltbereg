@@ -143,7 +143,7 @@ $from = "admin@blt-bereg.ru";
 $boundary = md5(date('r', time()));
 $headers .= "From: Blt-Bereg.ru <" . $from . ">\r\n";
 $headers .= "Reply-To: " . $from . "\r\n";
-$headers = "MIME-Version: 1.0\r\n";
+$headers .= "MIME-Version: 1.0\r\n";
 $headers .= "Content-Type: multipart/mixed; boundary=\"$boundary\"\r\n";
 
 $subject = 'Новый заказ №'.$order_num.' на сайте "Балтийский берег"';
@@ -187,6 +187,49 @@ Content-Transfer-Encoding: 7bit
 $message";
 
 mail($to, $subject, $message, $headers);
+
+if($email!=""){
+
+	$to = $email;
+
+	$message = '
+	<html>
+	<head>
+	  <title>Новый заказ из корзины на сайте "Балтийский берег"</title>
+	</head>
+	<body>
+	  <p style="text-align: center; font-size: 22px; font-weight: bold; padding: 5px 0px">Новый заказ из корзины на сайте "Балтийский берег"</p>
+	  <p style="">ФИО: '.$name.'</p>
+	  <p style="">Email: '.$email.'</p>
+	  <p style="">Телефон: '.$phone.'</p>
+	  <p style="">Адрес: '.$address.'</p>
+	  <p style="">Доставка: '.$delivery.', Монтаж: '.$montag.', Демонтаж: '.$demontag.'</p>
+	  <p style="">Этаж: '.$etaj.', Грузовой лифт: '.$lift.'</p>
+	  <p style="">Комментарий: '.$comment.'</p>
+	  <table border="0" cellpadding="0" cellspacing="0" style="margin:0 auto;">';
+	    
+	$message .= $txt;
+
+	$message .= '</table>
+	<p style="font-weight: bold; font-size: 19px; text-align: right; padding-right: 30px;">Итого: '.$total_price.' руб.</p>
+	</body>
+	</html>
+	';
+
+	$message .= "
+				--$boundary--";
+
+	 $message="
+	Content-Type: multipart/mixed; boundary=\"$boundary\"
+
+	--$boundary
+	Content-Type: text/html; charset=\"utf-8\"
+	Content-Transfer-Encoding: 7bit
+
+	$message";
+
+	mail($to, $subject, $message, $headers);
+}
 
 	//удаляем Cookie
 	setcookie("products","");
