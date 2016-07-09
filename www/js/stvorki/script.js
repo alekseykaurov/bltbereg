@@ -1382,6 +1382,9 @@ $(document).ready(function() {
 					$("#check_ruchka").prop('checked', false);
 				}
 			}
+			if(project!=undefined){
+				$("#check_ruchka").prop('disabled', true);
+			}
 		} 
 	}
 

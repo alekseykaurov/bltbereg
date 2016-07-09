@@ -59,6 +59,8 @@ if($cookie!=false){
 				$order_id = $row["id"];
 			    if($row["door_type"]=="protivopojar"){
 			    	$door_name = "<a href='http://ce77747.tmweb.ru/konstruktor-protivopozharnyix-dverej/?project=".$value[0]."'>Мет.дверь, 1-ств, противопожарная пр.№".$value[0]."</a>";
+				} else if($row["door_type"]=="stvorki") {
+					$door_name = "<a href='http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi).html?project=".$value[0]."'>Мет.дверь, 2-ств, противопожарная пр.№".$value[0]."</a>";
 				} else {
 					$door_name = "<a href='http://ce77747.tmweb.ru/konstruktor-dverej/?project=".$value[0]."'>Мет.дверь, 1-ств, квартирная пр.№".$value[0]."</a>";
 				}
