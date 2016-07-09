@@ -59,7 +59,8 @@ $(document).ready(function() {
 	canvas_inside.selection = false;
 	var background = new fabric.Rect({
 		strokeWidth: 1,
-		stroke: 'rgb(0, 0, 0)'
+		stroke: 'rgb(0, 0, 0)',
+		evented: false
 	});
 	var b_w = w_d + 2*rama_side;
 	var b_h = h_d + rama_top + rama_bottom;
@@ -70,7 +71,8 @@ $(document).ready(function() {
 		left: rama_side,
 		top: rama_top,
 		strokeWidth: 1,
-		stroke: 'rgb(0, 0, 0)'
+		stroke: 'rgb(0, 0, 0)',
+		evented: false
 	});
 	var f_h = 0;
 	var door = new fabric.Rect({
@@ -78,38 +80,68 @@ $(document).ready(function() {
 		height: h_d,
 		top: rama_top,
 		strokeWidth: 1,
-		stroke: 'rgb(0, 0, 0)'
+		stroke: 'rgb(0, 0, 0)',
+		evented: false
 	});
 	var stvorka = new fabric.Rect({
 		height: h_d,
 		strokeWidth: 1,
 		top: rama_top,
-		stroke: 'rgb(0, 0, 0)'
+		stroke: 'rgb(0, 0, 0)',
+		evented: false
 	});
 	var s_w;
-	var ruchka = new fabric.Rect();
-	var main_lock = new fabric.Rect();
-	var main_lock_back = new fabric.Rect();
+	var ruchka = new fabric.Rect({
+		evented: false
+	});
+	var main_lock = new fabric.Rect({
+		evented: false
+	});
+	var main_lock_back = new fabric.Rect({
+		evented: false
+	});
 	// var add_lock = new fabric.Rect();
 	// var add_lock_back = new fabric.Rect();
-	var zadvijka = new fabric.Rect();
+	var zadvijka = new fabric.Rect({
+		evented: false
+	});
 
 	var shadow = new fabric.Rect({
 		width: b_w,
-		height: b_h
+		height: b_h,
+		evented: false
 	});
 	var antipanika = new fabric.Rect({
 		width: w_d - 10,
+		evented: false
 	});
-	var steklopak_vertical_left = new fabric.Rect();
-	var steklopak_vertical_right = new fabric.Rect();
-	var steklopak_horizont_top = new fabric.Rect();
-	var steklopak_horizont_bottom = new fabric.Rect();
-	var steklopak_corner_top_left = new fabric.Rect();
-	var steklopak_corner_top_right = new fabric.Rect();
-	var steklopak_corner_bottom_right = new fabric.Rect();
-	var steklopak_corner_bottom_left = new fabric.Rect();
-	var steklopak_glass = new fabric.Rect();
+	var steklopak_vertical_left = new fabric.Rect({
+		evented: false
+	});
+	var steklopak_vertical_right = new fabric.Rect({
+		evented: false
+	});
+	var steklopak_horizont_top = new fabric.Rect({
+		evented: false
+	});
+	var steklopak_horizont_bottom = new fabric.Rect({
+		evented: false
+	});
+	var steklopak_corner_top_left = new fabric.Rect({
+		evented: false
+	});
+	var steklopak_corner_top_right = new fabric.Rect({
+		evented: false
+	});
+	var steklopak_corner_bottom_right = new fabric.Rect({
+		evented: false
+	});
+	var steklopak_corner_bottom_left = new fabric.Rect({
+		evented: false
+	});
+	var steklopak_glass = new fabric.Rect({
+		evented: false
+	});
 
 	var petlya_width = 5;
 	var petlya_height = 20;
@@ -120,27 +152,33 @@ $(document).ready(function() {
 
 	var petlya_left_1 = new fabric.Rect({
 		left: rama_side,
-		top: petlya_top_1
+		top: petlya_top_1,
+		evented: false
 	});
 	var petlya_left_2 = new fabric.Rect({
 		left: rama_side,
-		top: petlya_top_2
+		top: petlya_top_2,
+		evented: false
 	});
 	var petlya_left_3 = new fabric.Rect({
 		left: rama_side,
-		top: petlya_top_3
+		top: petlya_top_3,
+		evented: false
 	});
 	var petlya_right_1 = new fabric.Rect({
 		left: w_d - petlya_width,
-		top: petlya_top_1
+		top: petlya_top_1,
+		evented: false
 	});
 	var petlya_right_2 = new fabric.Rect({
 		left: w_d - petlya_width,
-		top: petlya_top_2
+		top: petlya_top_2,
+		evented: false
 	});
 	var petlya_right_3 = new fabric.Rect({
 		left: w_d - petlya_width,
-		top: petlya_top_3
+		top: petlya_top_3,
+		evented: false
 	});
 
 	// var line_left_1 = new fabric.Line({
@@ -171,10 +209,12 @@ $(document).ready(function() {
 	// 	top: petlya_top_3 + petlya_height/2
 	// });
 
-	var back_door = new fabric.Rect();
+	var back_door = new fabric.Rect({
+		evented: false
+	});
 
-	canvas.add(background, friz, door, stvorka, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, shadow, ruchka, main_lock, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass);
-	canvas_inside.add(background, friz, door, stvorka, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, shadow, ruchka, main_lock_back, zadvijka, antipanika, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, back_door);
+	canvas.add(background, friz, door, stvorka, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, shadow, ruchka, main_lock);
+	canvas_inside.add(background, friz, door, stvorka, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, shadow, ruchka, main_lock_back, zadvijka, antipanika, back_door);
 
 	var renderCount = 0;
 	//функции для изменений всего вот этого
@@ -234,6 +274,7 @@ $(document).ready(function() {
 		// $('.canvas_types_2 .canvas-container').hide();
 	}
 	function check_canvas_sizes(need_start){
+		$('.preloader').show();
 		if (order.friz != 'false'){
 			var p_h = order.height_door/order.friz_height;
 			f_h = h_d/p_h;
@@ -281,7 +322,7 @@ $(document).ready(function() {
 			// line_right_2.set({top: petlya_top_2 + f_h});
 			// line_right_3.set({top: petlya_top_3 + f_h});
 		}
-		if (order.stvorka_positiob != 'none'){
+		if (order.stvorka_position != 'none'){
 			var p_w = order.width_door/order.stvorka_width;
 			s_w = w_d/p_w;
 			var tmp_w = s_w + w_d + 2*rama_side;
@@ -367,6 +408,7 @@ $(document).ready(function() {
 		canvas_inside.renderAll();
 	}
 	function change_main_color(){
+		$('.preloader').show();
 		if (color.main_color_type == "tablicza-czvetov-ral1"){
 			background.set({fill: color.main_color_color});
 			door.set({fill: color.main_color_color});
@@ -402,6 +444,7 @@ $(document).ready(function() {
 		}
 	}
 	function draw_petlya(petlya, flag){
+		$('.preloader').show();
 		var pattern_image =  new fabric.Image.fromURL('/images/metalcount/petlya.png', function(pattern_image){
 			pattern_image.set({width: petlya_width, height: petlya_height});
 
@@ -429,6 +472,7 @@ $(document).ready(function() {
 		});
 	}
 	function change_shadow(){
+		$('.preloader').show();
 		var shadow_src;
 		if (color.main_color_shade == 'Dark'){
 			// shadow_src = "/images/stvorki/shadow.png";
@@ -464,6 +508,7 @@ $(document).ready(function() {
 	}
 
 	function change_main_lock(){
+		$('.preloader').show();
 		var pattern_image =  new fabric.Image.fromURL(color.main_lock, function(pattern_image){
 			if (color.main_lock_ruchka != "Ручка на планке"){
 				pattern_image.scaleToWidth(13/pp);
@@ -522,6 +567,7 @@ $(document).ready(function() {
 		});
 	}
 	function change_main_lock_back(){
+		$('.preloader').show();
 		var main_lock_src;
 		if (color.main_lock_ruchka != "Ручка на планке" && color.main_lock_inside_bottom != ''){
 			main_lock_src = color.main_lock_inside_bottom;
@@ -585,7 +631,9 @@ $(document).ready(function() {
 		});
 	}
 	function change_handle(){
+		console.log(color);
 		if (color.main_lock_ruchka_image == '' && (color.main_lock_ruchka == 'Без ручки' || color.main_lock_ruchka == '')){
+			color.main_lock_ruchka = 'Ручка-кнопка';
 			color.main_lock_ruchka_image = '/images/metalcount/ruchka_round.png';
 		}else if (color.main_lock_ruchka == ''){
 			ruchka.set({width: 0});
@@ -596,7 +644,7 @@ $(document).ready(function() {
 		var pattern_image =  new fabric.Image.fromURL(color.main_lock_ruchka_image, function(pattern_image){
 			var handle_left;
 			var handle_top;
-			if (color.main_lock_ruchka == 'Без ручки' || color.main_lock_ruchka == ''){
+			if (color.main_lock_ruchka == 'Без ручки' || color.main_lock_ruchka == '' || color.main_lock_ruchka == 'Ручка-кнопка'){
 				pattern_image.scaleToWidth(25/pp);
 			}else if(color.main_lock_ruchka == 'С ручкой'){
 				pattern_image.scaleToWidth(36/pp);
@@ -607,7 +655,7 @@ $(document).ready(function() {
 					pattern_image.set({flipX: true});
 					break;
 				case 'right':
-					handle_left = w_d - pattern_image.getWidth()  + rama_side + 5/pp;
+					handle_left = w_d - pattern_image.getWidth()  + rama_side - 5/pp;
 					break;
 			}
 			switch (order.friz){
@@ -746,6 +794,7 @@ $(document).ready(function() {
 	// 	});
 	// }
 	function draw_antipanika(){
+		$('.preloader').show();
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/antipanika.png', function(pattern_image){
 			var handle_left;
 			var handle_top;
@@ -794,6 +843,7 @@ $(document).ready(function() {
 		});
 	}
 	function change_zadvijka(){
+		$('.preloader').show();
 		var pattern_image =  new fabric.Image.fromURL(color.zadvijka_image, function(pattern_image){
 			var handle_left;
 			var handle_top;
@@ -840,6 +890,7 @@ $(document).ready(function() {
 	}
 	var corner_height;
 	function draw_steklopak(){
+		$('.preloader').show();
 		var w = order['steklopak_width']/70*rama_side/pp;
 		var h = order['steklopak_height']/70*rama_side/pp;
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/steklo.png', function(pattern_image){
@@ -896,13 +947,15 @@ $(document).ready(function() {
 			}
 			pad_left = pad_left + rama_side;
 			console.log('pad_left:' + pad_left + ' pad_top: '+pad_top );
-			pattern_image.width = w;
-			pattern_image.height = h;
+			pad_left = Math.round(parseInt(pad_left));
+			pad_top = Math.round(parseInt(pad_top));
+			pattern_image.width = Math.round(w);
+			pattern_image.height = Math.round(h);
 			steklopak_glass.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
-				left: parseInt(pad_left),
-				top: parseInt(pad_top)
+				left: pad_left,
+				top: pad_top
 			});
 			var patternSourceCanvas = new fabric.StaticCanvas();
 			patternSourceCanvas.add(pattern_image);
@@ -917,21 +970,22 @@ $(document).ready(function() {
 				},
 				repeat: 'repeat'
 			});
+			w = Math.round(w);
+			h = Math.round(h);
 			steklopak_glass.set({fill: pattern});
-			draw_corner_top_left(pad_left, pad_top);
+			draw_corner_top_left(pad_left, pad_top, w, h);
 		});
 	}
-	function draw_corner_top_left(pad_left, pad_top){
+	function draw_corner_top_left(pad_left, pad_top, w, h){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/corner_top_left.png', function(pattern_image){
-			pattern_image.width = 8/pp;
-			pattern_image.height = 8/pp;
+			pattern_image.width = Math.round(8/pp);
+			pattern_image.height = Math.round(8/pp);
 			steklopak_corner_top_left.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
-				left: pad_left -8/pp,
-				top: pad_top - 8/pp
+				left: pad_left - pattern_image.getWidth(),
+				top: pad_top - pattern_image.getHeight()
 			});
-
 			var patternSourceCanvas = new fabric.StaticCanvas();
 			patternSourceCanvas.add(pattern_image);
 
@@ -947,18 +1001,19 @@ $(document).ready(function() {
 			});
 			steklopak_corner_top_left.set({fill: pattern});
 			// canvas.renderAll();
-			draw_corner_top_right(pad_top, pad_left);
+			// draw_corner_top_right(pad_top, pad_left, w, h);
+			draw_horizont_top(pad_top, pad_left, w, h);
 		});
 	}
-	function draw_corner_top_right(pad_top, pad_left){
+	function draw_corner_top_right(pad_top, pad_left, w, h){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/corner_top_right.png', function(pattern_image){
-			pattern_image.width = 8/pp;
-			pattern_image.height = 8/pp;
+			pattern_image.width = Math.round(8/pp);
+			pattern_image.height = Math.round(8/pp);
 			steklopak_corner_top_right.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
-				left: pad_left + steklopak_glass.getWidth(),
-				top: pad_top - 8/pp
+				left: pad_left + w,
+				top: pad_top - pattern_image.getHeight()
 			});
 
 			var patternSourceCanvas = new fabric.StaticCanvas();
@@ -976,18 +1031,19 @@ $(document).ready(function() {
 			});
 			steklopak_corner_top_right.set({fill: pattern});
 			// canvas.renderAll();
-			draw_corner_bottom_right(pad_top, pad_left);
+			draw_vertical_right(pad_top, pad_left, w, h);
+			// draw_corner_bottom_right(pad_top, pad_left, w, h);
 		});
 	}
-	function draw_corner_bottom_right(pad_top, pad_left){
+	function draw_corner_bottom_right(pad_top, pad_left, w, h){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/corner_bottom_right.png', function(pattern_image){
-			pattern_image.width = 8/pp;
-			pattern_image.height = 8/pp;
+			pattern_image.width = Math.round(8/pp);
+			pattern_image.height = Math.round(8/pp);
 			steklopak_corner_bottom_right.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
-				left: pad_left + steklopak_glass.getWidth(),
-				top: pad_top + steklopak_glass.getHeight()
+				left: pad_left + w,
+				top: pad_top + h
 			});
 
 			var patternSourceCanvas = new fabric.StaticCanvas();
@@ -1005,20 +1061,20 @@ $(document).ready(function() {
 			});
 			steklopak_corner_bottom_right.set({fill: pattern});
 			// canvas.renderAll();
-			draw_corner_bottom_left(pad_top, pad_left);
+			draw_corner_top_right(pad_top, pad_left, w, h);
+			// draw_corner_bottom_left(pad_top, pad_left, w, h);
 		});
 	}
-	function draw_corner_bottom_left(pad_top, pad_left){
+	function draw_corner_bottom_left(pad_top, pad_left, w, h){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/corner_bottom_left.png', function(pattern_image){
-			pattern_image.width = 8/pp;
-			pattern_image.height = 8/pp;
+			pattern_image.width = Math.round(8/pp);
+			pattern_image.height = Math.round(8/pp);
 			steklopak_corner_bottom_left.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
-				left: pad_left -8/pp,
-				top: pad_top + steklopak_glass.getHeight()
+				left: pad_left - pattern_image.getWidth(),
+				top: pad_top + h
 			});
-
 			var patternSourceCanvas = new fabric.StaticCanvas();
 			patternSourceCanvas.add(pattern_image);
 
@@ -1034,17 +1090,18 @@ $(document).ready(function() {
 			});
 			steklopak_corner_bottom_left.set({fill: pattern});
 			// canvas.renderAll();
-			draw_vertical_left(pad_top, pad_left);
+			draw_horizont_bottom(pad_top, pad_left, w, h);
+			// draw_vertical_left(pad_top, pad_left, w, h);
 		});
 	}
-	function draw_vertical_left(pad_top, pad_left){
+	function draw_vertical_left(pad_top, pad_left, w, h){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/vertical_element2.png', function(pattern_image){
-			pattern_image.width = 8/pp;
-			pattern_image.height = steklopak_glass.getHeight();
+			pattern_image.width = Math.round(8/pp);
+			pattern_image.height = h;
 			steklopak_vertical_left.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
-				left: pad_left -8/pp,
+				left: pad_left - pattern_image.getWidth(),
 				top: pad_top
 			});
 
@@ -1063,17 +1120,18 @@ $(document).ready(function() {
 			});
 			steklopak_vertical_left.set({fill: pattern});
 			// canvas.renderAll();
-			draw_vertical_right(pad_top, pad_left);
+			draw_corner_bottom_left(pad_top, pad_left, w, h);
+			// draw_vertical_right(pad_top, pad_left, w, h);
 		});
 	}
-	function draw_vertical_right(pad_top, pad_left){
+	function draw_vertical_right(pad_top, pad_left, w, h){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/vertical_element.png', function(pattern_image){
-			pattern_image.width = 8/pp;
-			pattern_image.height = steklopak_glass.getHeight();
+			pattern_image.width = Math.round(8/pp);
+			pattern_image.height = h;
 			steklopak_vertical_right.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
-				left: pad_left + steklopak_glass.getWidth(),
+				left: pad_left + w,
 				top: pad_top
 			});
 
@@ -1091,19 +1149,20 @@ $(document).ready(function() {
 				repeat: 'no-repeat'
 			});
 			steklopak_vertical_right.set({fill: pattern});
-			// canvas.renderAll()
-			draw_horizont_top(pad_top, pad_left);
+			canvas.renderAll();
+			canvas_inside.renderAll();
+			// draw_horizont_top(pad_top, pad_left, w, h);
 		});
 	}
-	function draw_horizont_top(pad_top, pad_left){
+	function draw_horizont_top(pad_top, pad_left, w, h){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/horizont_element.png', function(pattern_image){
-			pattern_image.width = steklopak_glass.getWidth();
-			pattern_image.height = 8/pp;
+			pattern_image.width = w;
+			pattern_image.height = Math.round(8/pp);
 			steklopak_horizont_top.set({
 				width: pattern_image.getWidth(), 
 				height: pattern_image.getHeight(),
 				left: pad_left,
-				top: pad_top - 8/pp
+				top: pad_top - pattern_image.getHeight()
 			});
 
 			var patternSourceCanvas = new fabric.StaticCanvas();
@@ -1120,18 +1179,19 @@ $(document).ready(function() {
 				repeat: 'no-repeat'
 			});
 			steklopak_horizont_top.set({fill: pattern});
-			draw_horizont_bottom(pad_top, pad_left);
+			// draw_horizont_bottom(pad_top, pad_left, w, h);
+			draw_vertical_left(pad_top, pad_left, w, h);
 		});
 	}
-	function draw_horizont_bottom(pad_top, pad_left){
+	function draw_horizont_bottom(pad_top, pad_left, w, h){
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/horizont_element2.png', function(pattern_image){
-			pattern_image.width = steklopak_glass.getWidth();
-			pattern_image.height = 8/pp;
+			pattern_image.width = w;
+			pattern_image.height = Math.round(8/pp);
 			steklopak_horizont_bottom.set({
 				width: pattern_image.getWidth(), 
-				height: 8/pp,
+				height: pattern_image.getHeight(),
 				left: pad_left,
-				top: pad_top + steklopak_glass.getHeight()
+				top: pad_top + h
 			});
 
 			var patternSourceCanvas = new fabric.StaticCanvas();
@@ -1148,8 +1208,9 @@ $(document).ready(function() {
 				repeat: 'no-repeat'
 			});
 			steklopak_horizont_bottom.set({fill: pattern});
-			canvas.renderAll();
-			canvas_inside.renderAll();
+			draw_corner_bottom_right(pad_top, pad_left, w, h);
+			// canvas.renderAll();
+			// canvas_inside.renderAll();
 		});
 	}
 	//функция для включения\отключения активности у кнопок меню
@@ -1337,8 +1398,8 @@ $(document).ready(function() {
 				console.log(data);
 				order = {
 					metallokonstr: data['metallokonstrikcii_id']['value'],
-					width_total: data['width_total']['value'],
-					height_total: data['height_total']['value'],
+					width_total: data['total_width']['value'],
+					height_total: data['total_height']['value'],
 					width_door: data['width']['value'],
 					height_door: data['height']['value'],
 					door_side: data['door_side']['value'],
@@ -1367,8 +1428,8 @@ $(document).ready(function() {
 				};
 				default_order ={
 					metallokonstr: data['metallokonstrikcii_id']['value'],
-					width_total: data['width_total']['value'],
-					height_total: data['height_total']['value'],
+					width_total: data['total_width']['value'],
+					height_total: data['total_height']['value'],
 					width_door: data['width']['value'],
 					height_door: data['height']['value'],
 					door_side: data['door_side']['value'],
@@ -1397,8 +1458,8 @@ $(document).ready(function() {
 				};
 				isChange = {
 					metallokonstr: data['metallokonstrikcii_id']['changable'],
-					width_total: data['width_total']['changable'],
-					height_total: data['height_total']['changable'],
+					width_total: data['total_width']['changable'],
+					height_total: data['total_height']['changable'],
 					width_door: data['width']['changable'],
 					height_door: data['height']['changable'],
 					door_side: data['door_side']['changable'],
@@ -1447,11 +1508,17 @@ $(document).ready(function() {
 	}
 
 	//загружаем значения в order
-	defaultLoad(product);
+	if(project==undefined ){ 
+		defaultLoad(product); 
+	} else { 
+		//defaultLoad(special, product);
+		getOrder(project); 
+	}
 
 	//заполняем меню
 	for( var key in order){
 		if (order[key] !== null || order[key] !== undefined || key != 'width_door' || key != 'height_door'){
+			// console.log(key);
 			fillPole(key);
 		}
 	}
@@ -1596,6 +1663,7 @@ $(document).ready(function() {
 	var kk = 1;
 	start();
 	canvas_inside.on('after:render', function(e){
+		$('.preloader').hide();
 		if (reverseFlag == false){
 			console.log('renderCount = '+renderCount+'   kk =' +kk + '   reverseFlag = '+reverseFlag);
 			if (kk == renderCount){
@@ -1904,10 +1972,6 @@ $(document).ready(function() {
 			$('.current_menu').before('<div class = "close_div"><img class = "close" src = "/images/metalcount/close.gif" /></div>');
 			//$("#middle_hor, #middle_ver").prop("checked", true);
 			get_windows(type_id, order["width_door"], order["height_door"]);
-			reverseFlag = false;
-			kk = 1;
-			renderCount = 1;
-			draw_steklopak();
 			// draw_steklopak();
 			// console.log(order);
 
@@ -1962,7 +2026,10 @@ $(document).ready(function() {
 					$(this).children('.window_wrapper').children().css({"width": wid/40, "height": hei/40});
 					
 				});
-
+				reverseFlag = false;
+				kk = 1;
+				renderCount = 1;
+				draw_steklopak();
 				fillPole(type);
 				getPrice();
 			}
@@ -2623,8 +2690,8 @@ $(document).ready(function() {
 			order.stvorka_width = stvorka_width;
 			order.friz_height = friz_height;
 			getPrice();
-			$('.height-value').html(order.height_door);
-			$('.width-value').html(order.width_door);
+			$('.height-value').html(order.height_total);
+			$('.width-value').html(order.width_total);
 			$('.wrapper').css('display', 'none');
 			reverseFlag = false;
 			kk = 1;
@@ -2711,14 +2778,42 @@ $(document).ready(function() {
 			$('.door_side').css('display', 'block');
 			$(this).css('display', 'none');
 			if (tmp == 'right'){
-				order.door_side = 'left';
-				$('#door-front').css('margin-left', '0px');
+				// order.door_side = 'left';
+				// $('#door-front').css('margin-left', '0px');
+				order.stvorka_position = 'left';
+				reverseFlag = false;
+				kk = 1;
+				renderCount = 0;
+				check_canvas_sizes();
+				start();
 			}else if(tmp == 'left'){
-				order.door_side = 'right';
-				$('#door-front').css('margin-left', '-1px');
+				// order.door_side = 'right';
+				// $('#door-front').css('margin-left', '-1px');
+				order.stvorka_position = 'right';
+				reverseFlag = false;
+				kk = 1;
+				renderCount = 0;
+				check_canvas_sizes();
+				start();
 			}
+
 			// reverse();
 			// reverse2();
+		}
+	});
+
+	$('.outside, .inside').click(function(){
+		alert('haha');
+		if ($(this).hasClass('active_door') == false){
+			$('.outside, .inside').removeClass('active_door');
+			$(this).addClass('active_door');
+			if ($(this).hasClass('inside')){
+				$('.canvas_types').hide();
+				$('.canvas_types_2').show();
+			}else{
+				$('.canvas_types_2').hide();
+				$('.canvas_types').show();
+			}
 		}
 	});
 
@@ -2785,7 +2880,7 @@ $(document).ready(function() {
 		// $(".order_wrap").show(200);
 		console.log(order);
 		$.ajax({
-			url: '/ajax_stvorka/add_order.php',
+			url: '/ajax_stvorki/add_order.php',
 			type: 'POST',
 			dataType: 'json',
 			async: false,
@@ -2836,7 +2931,7 @@ $(document).ready(function() {
 	function getOrder(num_of_order){
 		if($.isNumeric(num_of_order)){
 			$.ajax({
-				url: '/ajax_stvorka/get_order.php',
+				url: '/ajax_stvorki/get_order.php',
 				type: 'POST',
 				dataType: 'json',
 				async: false,
@@ -2850,8 +2945,13 @@ $(document).ready(function() {
 						alert('Внимание! Внесение изменений в проект №'+data['order']['order_id']+' невозможно.');
 						order = {
 							metallokonstr: data['order']['metallokonstr'],
-							main_color: data['order']['main_color'],
+							width_total: data['order']['width_total'],
+							height_total: data['order']['height_total'],
+							width_door: data['order']['width_door'],
+							height_door: data['order']['height_door'],
+							door_side: data['order']['door_side'],
 							main_color_type: data['order']['main_color_type'],
+							main_color: data['order']['main_color'],
 							outside_view: data['order']['outside_view'],
 							outside_color: data['order']['outside_color'],
 							outside_frezer: data['order']['outside_frezer'],
@@ -2863,19 +2963,76 @@ $(document).ready(function() {
 							add_lock: data['order']['add_lock'],
 							dovodchik: data['order']['dovodchik'],
 							zadvijka: data['order']['zadvijka'],
-							door_side: data['order']['door_side'],
-							height_door: data['order']['height_door'],
-							width_door: data['order']['width_door'],
 							steklopak: data['order']['steklopak'],
-							steklopak_height: data['order']['steklopak_height'],
 							steklopak_width: data['order']['steklopak_width'],
+							steklopak_height: data['order']['steklopak_height'],
 							window_align: data['order']['window_align'],
 							ruchka: data['order']['ruchka'],
 							stvorka_position: data['order']['stvorka_position'],
 							stvorka_width: data['order']['stvorka_width'],
 							friz: data['order']['friz'],
 							friz_height: data['order']['friz_height']
-						}
+						};
+						default_order ={
+							metallokonstr: data['order']['metallokonstr'],
+							width_total: data['order']['width_total'],
+							height_total: data['order']['height_total'],
+							width_door: data['order']['width_door'],
+							height_door: data['order']['height_door'],
+							door_side: data['order']['door_side'],
+							main_color_type: data['order']['main_color_type'],
+							main_color: data['order']['main_color'],
+							outside_view: data['order']['outside_view'],
+							outside_color: data['order']['outside_color'],
+							outside_frezer: data['order']['outside_frezer'],
+							outside_nalichnik: data['order']['outside_nalichnik'],
+							inside_view: data['order']['inside_view'],
+							inside_color: data['order']['inside_color'],
+							inside_frezer: data['order']['inside_frezer'],
+							main_lock: data['order']['main_lock'],
+							add_lock: data['order']['add_lock'],
+							dovodchik: data['order']['dovodchik'],
+							zadvijka: data['order']['zadvijka'],
+							steklopak: data['order']['steklopak'],
+							steklopak_width: data['order']['steklopak_width'],
+							steklopak_height: data['order']['steklopak_height'],
+							window_align: data['order']['window_align'],
+							ruchka: data['order']['ruchka'],
+							stvorka_position: data['order']['stvorka_position'],
+							stvorka_width: data['order']['stvorka_width'],
+							friz: data['order']['friz'],
+							friz_height: data['order']['friz_height']
+						};
+						isChange = {
+							metallokonstr: false,
+							width_total: false,
+							height_total: false,
+							width_door: false,
+							height_door: false,
+							door_side: false,
+							main_color_type: false,
+							main_color: false,
+							outside_view: false,
+							outside_color: false,
+							outside_frezer: false,
+							outside_nalichnik: false,
+							inside_view: false,
+							inside_color: false,
+							inside_frezer: false,
+							main_lock: false,
+							add_lock: false,
+							dovodchik: false,
+							zadvijka: false,
+							steklopak: false,
+							steklopak_width: false,
+							steklopak_height: false,
+							window_align: false,
+							ruchka: false,
+							stvorka_position: false,
+							stvorka_width: false,
+							friz: false,
+							friz_height: false
+						};
 						//форматирование даты
 						var date = new Date(data['order']['date']);
 
@@ -2908,7 +3065,15 @@ $(document).ready(function() {
 						canChange = false;
 						isDisabled(canChange);
 						// $('.order-button').hide();
-						$('h1').before('<div class = "new_project">Новый проект</div>')
+						$('h1').before('<div class = "new_project">Новый проект</div>');
+
+						child_color = data['order']['child_color'];
+						child_standart_color = data['order']['child_standart_color'];
+						child_antik_color = data['order']['child_antik_color'];
+						child_spec_color = data['order']['child_spec_color'];
+						$(".setting_value.main_color").data("pageid",order.main_color_type);
+						$(".content h1").show();
+						check_canvas_sizes();
 
 					}
 				}

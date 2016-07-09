@@ -9,33 +9,33 @@ $modx->getSettings();
 
 include('db.php');
 
-//функция для вставки заказа в таблицу
+//С„СѓРЅРєС†РёСЏ РґР»СЏ РІСЃС‚Р°РІРєРё Р·Р°РєР°Р·Р° РІ С‚Р°Р±Р»РёС†Сѓ
 function mysql_insert($table, $inserts, $db) {
-	//получаем значения массива
+	//РїРѕР»СѓС‡Р°РµРј Р·РЅР°С‡РµРЅРёСЏ РјР°СЃСЃРёРІР°
     $values = array_map('mysql_real_escape_string', array_values($inserts));
-    //получаем ключи массива
+    //РїРѕР»СѓС‡Р°РµРј РєР»СЋС‡Рё РјР°СЃСЃРёРІР°
     $keys = array_keys($inserts);
 
-    //вставляем
-    return mysql_query('INSERT INTO `'.$table.'` (`'.implode('`,`', $keys).'`) VALUES (\''.implode('\',\'', $values).'\')', $db) or die('Ошибка соединения: ' . mysql_error());
+    //РІСЃС‚Р°РІР»СЏРµРј
+    return mysql_query('INSERT INTO `'.$table.'` (`'.implode('`,`', $keys).'`) VALUES (\''.implode('\',\'', $values).'\')', $db) or die('РћС€РёР±РєР° СЃРѕРµРґРёРЅРµРЅРёСЏ: ' . mysql_error());
 
     //return $values;
 }
 
-//получаем данные для вставки
+//РїРѕР»СѓС‡Р°РµРј РґР°РЅРЅС‹Рµ РґР»СЏ РІСЃС‚Р°РІРєРё
 $insert = $_POST['order'];
-//генерируем id заказа
+//РіРµРЅРµСЂРёСЂСѓРµРј id Р·Р°РєР°Р·Р°
 $insert["order_id"] = rand(100000, 999999);
 
 
-//проверка на уникальность
+//РїСЂРѕРІРµСЂРєР° РЅР° СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚СЊ
 $result = mysql_query("SELECT * FROM orders WHERE `order_id`='".$insert["order_id"]."' LIMIT 1", $db);
-//выполняется только один раз, потом можно будет изменить чтобы выполнялось пока номер не будет уникальным
+//РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РѕРґРёРЅ СЂР°Р·, РїРѕС‚РѕРј РјРѕР¶РЅРѕ Р±СѓРґРµС‚ РёР·РјРµРЅРёС‚СЊ С‡С‚РѕР±С‹ РІС‹РїРѕР»РЅСЏР»РѕСЃСЊ РїРѕРєР° РЅРѕРјРµСЂ РЅРµ Р±СѓРґРµС‚ СѓРЅРёРєР°Р»СЊРЅС‹Рј
 if ($row = mysql_fetch_assoc($result)) {
     $insert["order_id"] = rand(100000, 999999);
 }
 
-//удаляем неиспользуемые поля для вставки в базу (без этого будет ошибочка ошибка)
+//СѓРґР°Р»СЏРµРј РЅРµРёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РїРѕР»СЏ РґР»СЏ РІСЃС‚Р°РІРєРё РІ Р±Р°Р·Сѓ (Р±РµР· СЌС‚РѕРіРѕ Р±СѓРґРµС‚ РѕС€РёР±РѕС‡РєР° РѕС€РёР±РєР°)
 $insert2 = $insert;
 unset($insert2['fio']);
 unset($insert2['email']);
@@ -53,34 +53,34 @@ if(!isset($insert2["steklopak"]) || $insert2["steklopak"]==""){
 }
 $insert2["door_type"] = "stvorki";
 
-//выполняем функцию для вставки
+//РІС‹РїРѕР»РЅСЏРµРј С„СѓРЅРєС†РёСЋ РґР»СЏ РІСЃС‚Р°РІРєРё
 $res = mysql_insert('orders', $insert2, $db);
 
-//заправшиваем последний вставленный заказ
+//Р·Р°РїСЂР°РІС€РёРІР°РµРј РїРѕСЃР»РµРґРЅРёР№ РІСЃС‚Р°РІР»РµРЅРЅС‹Р№ Р·Р°РєР°Р·
 $result = mysql_query("SELECT * FROM orders ORDER BY id DESC LIMIT 1", $db);
 
 if ($row = mysql_fetch_assoc($result)) {
-	//возвращаем заказ
+	//РІРѕР·РІСЂР°С‰Р°РµРј Р·Р°РєР°Р·
     $order = $row;
 }
 
-//выводим заказ
+//РІС‹РІРѕРґРёРј Р·Р°РєР°Р·
 print json_encode($order);
 
-/*Сохранение в excel*/
+/*РЎРѕС…СЂР°РЅРµРЅРёРµ РІ excel*/
 
-// Получаем информацию
+// РџРѕР»СѓС‡Р°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ
 
-// Стоимость товаров
+// РЎС‚РѕРёРјРѕСЃС‚СЊ С‚РѕРІР°СЂРѕРІ
 $price = $_POST["price"];
 
-// Номер заказа
+// РќРѕРјРµСЂ Р·Р°РєР°Р·Р°
 $order_num = $insert["order_id"];
 
-// Дата
+// Р”Р°С‚Р°
 $date = date("d.m.Y H:m:i");
 
-// Информация о заказчике
+// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ Р·Р°РєР°Р·С‡РёРєРµ
 // $name = $insert["fio"];
 // $email = $insert["email"];
 // $phone = $insert["phone"];
@@ -89,7 +89,7 @@ $date = date("d.m.Y H:m:i");
 // $personal_price = $insert["personal_price"];
 // $comment = $insert["comment"];
 
-// Опции
+// РћРїС†РёРё
 // $lift = $insert["lift"];
 // $dostavka = $insert["dostavka"];
 // $montaj = $insert["montaj"];
@@ -99,79 +99,79 @@ $width = $insert["width_door"];
 $height = $insert["height_door"];
 
 $metallokonstr = $modx->getDocument($insert["metallokonstr"]); 
-$metallokonstr_name = $metallokonstr["pagetitle"]; // Название металлоконструкции
-$metallokonstr_price = $price["metallkonstr_price"]; // Стоимость металлоконструкции
+$metallokonstr_name = $metallokonstr["pagetitle"]; // РќР°Р·РІР°РЅРёРµ РјРµС‚Р°Р»Р»РѕРєРѕРЅСЃС‚СЂСѓРєС†РёРё
+$metallokonstr_price = $price["metallkonstr_price"]; // РЎС‚РѕРёРјРѕСЃС‚СЊ РјРµС‚Р°Р»Р»РѕРєРѕРЅСЃС‚СЂСѓРєС†РёРё
 
 $main_color = $modx->getDocument($insert["main_color"]);
-$main_color_name = $main_color["pagetitle"]; // Название основного цвета
+$main_color_name = $main_color["pagetitle"]; // РќР°Р·РІР°РЅРёРµ РѕСЃРЅРѕРІРЅРѕРіРѕ С†РІРµС‚Р°
 $main_color_type = $modx->getDocument($main_color["parent"]);
-$main_color_type_name = $main_color_type["pagetitle"]; // Название типа основного цвета
+$main_color_type_name = $main_color_type["pagetitle"]; // РќР°Р·РІР°РЅРёРµ С‚РёРїР° РѕСЃРЅРѕРІРЅРѕРіРѕ С†РІРµС‚Р°
 $main_color_price = $price['main_color_price'];
 
 $outside_view = $modx->getDocument($insert["outside_view"]);
-$outside_view_name = $outside_view["pagetitle"]; // Название типа внешней отделки
+$outside_view_name = $outside_view["pagetitle"]; // РќР°Р·РІР°РЅРёРµ С‚РёРїР° РІРЅРµС€РЅРµР№ РѕС‚РґРµР»РєРё
 if ($insert['outside_view'] != 195){
 	$outside_color = $modx->getDocument($insert["outside_color"]);
-	$outside_color_name = $outside_color["pagetitle"]; // Название цвета внешней отделки
-	$outside_color_price = $price["outside_color_price"]; // Стоимость цыета внешней отделки	
+	$outside_color_name = $outside_color["pagetitle"]; // РќР°Р·РІР°РЅРёРµ С†РІРµС‚Р° РІРЅРµС€РЅРµР№ РѕС‚РґРµР»РєРё
+	$outside_color_price = $price["outside_color_price"]; // РЎС‚РѕРёРјРѕСЃС‚СЊ С†С‹РµС‚Р° РІРЅРµС€РЅРµР№ РѕС‚РґРµР»РєРё	
 }else{
-	$outside_color_name = ''; // Название цвета внешней отделки
-	$outside_color_price = ''; // Стоимость цыета внешней отделки
+	$outside_color_name = ''; // РќР°Р·РІР°РЅРёРµ С†РІРµС‚Р° РІРЅРµС€РЅРµР№ РѕС‚РґРµР»РєРё
+	$outside_color_price = ''; // РЎС‚РѕРёРјРѕСЃС‚СЊ С†С‹РµС‚Р° РІРЅРµС€РЅРµР№ РѕС‚РґРµР»РєРё
 	$main_color_price = $main_color_price + $price["outside_color_price"];
 }
 
 if($insert["outside_frezer"]!=null && $insert["outside_frezer"]!=""){
 	$outside_frezer = $modx->getDocument($insert["outside_frezer"]);
-	$outside_frezer_name = $outside_frezer["pagetitle"];// Название внешней фрезеровки
+	$outside_frezer_name = $outside_frezer["pagetitle"];// РќР°Р·РІР°РЅРёРµ РІРЅРµС€РЅРµР№ С„СЂРµР·РµСЂРѕРІРєРё
 } else {
 	$outside_frezer_name = "";
 }
 
 $outside_nalichnik = $modx->getDocument($insert["outside_nalichnik"]);
-$outside_nalichnik_name = $outside_nalichnik["pagetitle"]; // Название наличника
-$outside_nalichnik_price = $price["nalichnik_price"]; // Стоимость наличника
+$outside_nalichnik_name = $outside_nalichnik["pagetitle"]; // РќР°Р·РІР°РЅРёРµ РЅР°Р»РёС‡РЅРёРєР°
+$outside_nalichnik_price = $price["nalichnik_price"]; // РЎС‚РѕРёРјРѕСЃС‚СЊ РЅР°Р»РёС‡РЅРёРєР°
 
 $inside_view = $modx->getDocument($insert["inside_view"]);
-$inside_view_name = $inside_view["pagetitle"]; // Название типа внтренней отделки
-if($insert["inside_view"]==215){ // Вычисляем доп. зеркало
+$inside_view_name = $inside_view["pagetitle"]; // РќР°Р·РІР°РЅРёРµ С‚РёРїР° РІРЅС‚СЂРµРЅРЅРµР№ РѕС‚РґРµР»РєРё
+if($insert["inside_view"]==215){ // Р’С‹С‡РёСЃР»СЏРµРј РґРѕРї. Р·РµСЂРєР°Р»Рѕ
 	$dop_zerkalo = 1;
 } else {
 	$dop_zerkalo = 0;
 }
 if ($insert['inside_view'] != 195){
 	$inside_color = $modx->getDocument($insert["inside_color"]);
-	$inside_color_name = $inside_color["pagetitle"]; // Название цвета внутренней отделки
-	$inside_color_price = $price["inside_color_price"]; // Стоимость цвета внутренней отделки
+	$inside_color_name = $inside_color["pagetitle"]; // РќР°Р·РІР°РЅРёРµ С†РІРµС‚Р° РІРЅСѓС‚СЂРµРЅРЅРµР№ РѕС‚РґРµР»РєРё
+	$inside_color_price = $price["inside_color_price"]; // РЎС‚РѕРёРјРѕСЃС‚СЊ С†РІРµС‚Р° РІРЅСѓС‚СЂРµРЅРЅРµР№ РѕС‚РґРµР»РєРё
 }else{
-	$inside_color_name = ''; // Название цвета внутренней отделки
-	$inside_color_price = ''; // Стоимость цвета внутренней отделки
+	$inside_color_name = ''; // РќР°Р·РІР°РЅРёРµ С†РІРµС‚Р° РІРЅСѓС‚СЂРµРЅРЅРµР№ РѕС‚РґРµР»РєРё
+	$inside_color_price = ''; // РЎС‚РѕРёРјРѕСЃС‚СЊ С†РІРµС‚Р° РІРЅСѓС‚СЂРµРЅРЅРµР№ РѕС‚РґРµР»РєРё
 	$main_color_price = $main_color_price + $price["inside_color_price"];
 }
 
 if($insert["inside_frezer"]!=null && $insert["inside_frezer"]!=""){
 	$inside_frezer = $modx->getDocument($insert["inside_frezer"]);
-	$inside_frezer_name = $inside_frezer["pagetitle"]; // Название фрезеровки внутренней отделки
+	$inside_frezer_name = $inside_frezer["pagetitle"]; // РќР°Р·РІР°РЅРёРµ С„СЂРµР·РµСЂРѕРІРєРё РІРЅСѓС‚СЂРµРЅРЅРµР№ РѕС‚РґРµР»РєРё
 } else {
-	$inside_frezer_name = ""; // Название фрезеровки внутренней отделки
+	$inside_frezer_name = ""; // РќР°Р·РІР°РЅРёРµ С„СЂРµР·РµСЂРѕРІРєРё РІРЅСѓС‚СЂРµРЅРЅРµР№ РѕС‚РґРµР»РєРё
 }
 
 if($insert["main_lock"]!=null && $insert["main_lock"]!="" && $insert["main_lock"]!=0){
 	$main_lock = $modx->getDocument($insert["main_lock"]);
-	$main_lock_name = $main_lock["pagetitle"]; // Название основного замка
-	$main_lock_price = $price["main_lock_price"]; // Стоимость основного замка
-	$ruchka_tv = $modx->getTemplateVars(Array("ruchka"), '*', $insert["main_lock"]); // Узнаем тип ручки
-	if($ruchka_tv[0]["value"]=="Без ручки"){
-		$ruchka_type = "Кнопка";
+	$main_lock_name = $main_lock["pagetitle"]; // РќР°Р·РІР°РЅРёРµ РѕСЃРЅРѕРІРЅРѕРіРѕ Р·Р°РјРєР°
+	$main_lock_price = $price["main_lock_price"]; // РЎС‚РѕРёРјРѕСЃС‚СЊ РѕСЃРЅРѕРІРЅРѕРіРѕ Р·Р°РјРєР°
+	$ruchka_tv = $modx->getTemplateVars(Array("ruchka"), '*', $insert["main_lock"]); // РЈР·РЅР°РµРј С‚РёРї СЂСѓС‡РєРё
+	if($ruchka_tv[0]["value"]=="Р‘РµР· СЂСѓС‡РєРё"){
+		$ruchka_type = "РљРЅРѕРїРєР°";
 	} else {
 		$ruchka_type = "";
 	}
-	$main_lock_color_tv = $modx->getTemplateVars(Array("zamok_color"), '*', $insert["main_lock"]); // Узнаем цвет основного замка
+	$main_lock_color_tv = $modx->getTemplateVars(Array("zamok_color"), '*', $insert["main_lock"]); // РЈР·РЅР°РµРј С†РІРµС‚ РѕСЃРЅРѕРІРЅРѕРіРѕ Р·Р°РјРєР°
 	$main_lock_color = $main_lock_color_tv[0]["value"];
 	
 } else {
 	$main_lock_name = "";
 	$main_lock_price = 0;
-	$ruchka_type = "Кнопка";
+	$ruchka_type = "РљРЅРѕРїРєР°";
 	$main_lock_color = "";
 }
 
@@ -179,21 +179,21 @@ $ruchka_price = $price['ruchka_price'];
 
 if($insert["add_lock"]!=null && $insert["add_lock"]!="" && $insert["add_lock"]!=0){
 	$add_lock = $modx->getDocument($insert["add_lock"]);
-	$add_lock_name = $add_lock["pagetitle"]; // Название дополнительного замка
-	$add_lock_price = $price["add_lock_price"]; // Стоимость дополнительного замка
-	$add_lock_color_tv = $modx->getTemplateVars(Array("zamok_color"), '*', $insert["add_lock"]); // Узнаем цвет дополнительного замка
+	$add_lock_name = $add_lock["pagetitle"]; // РќР°Р·РІР°РЅРёРµ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРіРѕ Р·Р°РјРєР°
+	$add_lock_price = $price["add_lock_price"]; // РЎС‚РѕРёРјРѕСЃС‚СЊ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРіРѕ Р·Р°РјРєР°
+	$add_lock_color_tv = $modx->getTemplateVars(Array("zamok_color"), '*', $insert["add_lock"]); // РЈР·РЅР°РµРј С†РІРµС‚ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРіРѕ Р·Р°РјРєР°
 	$add_lock_color = $add_lock_color_tv[0]["value"];
 	
 } else {
-	$add_lock_name = ""; // Название дополнительного замка
-	$add_lock_price = 0; // Стоимость дополнительного замка
+	$add_lock_name = ""; // РќР°Р·РІР°РЅРёРµ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРіРѕ Р·Р°РјРєР°
+	$add_lock_price = 0; // РЎС‚РѕРёРјРѕСЃС‚СЊ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРіРѕ Р·Р°РјРєР°
 	$add_lock_color = "";
 }
 
 if($insert["glazok"]!=null && $insert["glazok"]!="" && $insert["glazok"]!=0){
 	$glazok = $modx->getDocument($insert["glazok"]);
-	$glazok_name = $glazok["pagetitle"]; // Название глазка
-	$glazok_price = $price["glazok_price"]; // Стоимость глазка
+	$glazok_name = $glazok["pagetitle"]; // РќР°Р·РІР°РЅРёРµ РіР»Р°Р·РєР°
+	$glazok_price = $price["glazok_price"]; // РЎС‚РѕРёРјРѕСЃС‚СЊ РіР»Р°Р·РєР°
 } else {
 	$glazok_name = "";
 	$glazok_price = 0;
@@ -201,8 +201,8 @@ if($insert["glazok"]!=null && $insert["glazok"]!="" && $insert["glazok"]!=0){
 
 if($insert["dovodchik"]!=null && $insert["dovodchik"]!="" && $insert["dovodchik"]!=0){
 	$dovodchik = $modx->getDocument($insert["dovodchik"]);
-	$dovodchik_name = $dovodchik["pagetitle"]; // Название доводчика
-	$dovodchik_price = $price["dovodchik_price"]; // Стоимость доводчика
+	$dovodchik_name = $dovodchik["pagetitle"]; // РќР°Р·РІР°РЅРёРµ РґРѕРІРѕРґС‡РёРєР°
+	$dovodchik_price = $price["dovodchik_price"]; // РЎС‚РѕРёРјРѕСЃС‚СЊ РґРѕРІРѕРґС‡РёРєР°
 } else {
 	$dovodchik_name = "";
 	$dovodchik_price = 0;
@@ -210,49 +210,49 @@ if($insert["dovodchik"]!=null && $insert["dovodchik"]!="" && $insert["dovodchik"
 
 if($insert["zadvijka"]!=null && $insert["zadvijka"]!="" && $insert["zadvijka"]!=0){
 	$zadvijka = $modx->getDocument($insert["zadvijka"]);
-	$zadvijka_name = $zadvijka["pagetitle"]; // Название задвижки
-	$zadvijka_price = $price["zadvijka_price"]; // Стоимость задвижки
+	$zadvijka_name = $zadvijka["pagetitle"]; // РќР°Р·РІР°РЅРёРµ Р·Р°РґРІРёР¶РєРё
+	$zadvijka_price = $price["zadvijka_price"]; // РЎС‚РѕРёРјРѕСЃС‚СЊ Р·Р°РґРІРёР¶РєРё
 } else {
 	$zadvijka_name = "";
 	$zadvijka_price = 0;
 }
 
-// Тип открывания
+// РўРёРї РѕС‚РєСЂС‹РІР°РЅРёСЏ
 if($insert["door_side"]=="left"){
-	$door_side_name = 'Налево';
+	$door_side_name = 'РќР°Р»РµРІРѕ';
 } else if($insert["door_side"]=="right"){
-	$door_side_name = 'Направо';
+	$door_side_name = 'РќР°РїСЂР°РІРѕ';
 }
 
-// Створка
+// РЎС‚РІРѕСЂРєР°
 $stvorka_name = $insert["stvorka"];
 
 if($insert["stvorka_position"]=="left"){
-	$stvorka_position = "Слева";
+	$stvorka_position = "РЎР»РµРІР°";
 } else if($insert["stvorka_position"]=="right"){
-	$stvorka_position = "Справа";
+	$stvorka_position = "РЎРїСЂР°РІР°";
 }
 $stvorka_width = $insert["stvorka_width"];
 $friz = $insert["friz"];
 $friz_height = $insert["friz_height"];
 
-// Петли - количество
+// РџРµС‚Р»Рё - РєРѕР»РёС‡РµСЃС‚РІРѕ
 // if($order["metallokonstr"]==191){
-// 	//если Основа
+// 	//РµСЃР»Рё РћСЃРЅРѕРІР°
 // 	$petli_count = 2;
 // 	$uplotnitel_count = 1;
 // } else {
-// 	//если не Основа
+// 	//РµСЃР»Рё РЅРµ РћСЃРЅРѕРІР°
 // 	$petli_count = 3;
 // 	$uplotnitel_count = 2;
 // }
-// Петли - цена
+// РџРµС‚Р»Рё - С†РµРЅР°
 $uplotnitel_count = 1;
 $petli_count = 3;
 $petli_price = $price["petli_price"];
 $uplotnitel_price = $price["uplotnitel_price"];
 
-//Стеклопакет
+//РЎС‚РµРєР»РѕРїР°РєРµС‚
 if ($insert['steklopak'] != 'other'){
 	$steklopak_name_tv = $modx->getDocument($insert["steklopak"]);
 	$steklopak_name = $steklopak_name_tv['pagetitle'];
@@ -262,55 +262,55 @@ if ($insert['steklopak'] != 'other'){
 $steklopak_price = $price['steklopak_price'];
 
 if ($insert['window_align'] == 'top_left'){
-	$steklopak_position = 'Слева сверху';
+	$steklopak_position = 'РЎР»РµРІР° СЃРІРµСЂС…Сѓ';
 }else if($insert['window_align'] == 'top_center'){
-	$steklopak_position = 'Сверху центр';
+	$steklopak_position = 'РЎРІРµСЂС…Сѓ С†РµРЅС‚СЂ';
 }else if($insert['window_align'] == 'top_right'){
-	$steklopak_position = 'Сверху справа';
+	$steklopak_position = 'РЎРІРµСЂС…Сѓ СЃРїСЂР°РІР°';
 }else if($insert['window_align'] == 'middle_left'){
-	$steklopak_position = 'Посередине слева';
+	$steklopak_position = 'РџРѕСЃРµСЂРµРґРёРЅРµ СЃР»РµРІР°';
 }else if($insert['window_align'] == 'middle_center'){
-	$steklopak_position = 'Посередине центр';
+	$steklopak_position = 'РџРѕСЃРµСЂРµРґРёРЅРµ С†РµРЅС‚СЂ';
 }else if($insert['window_align'] == 'middle_right'){
-	$steklopak_position = 'Посередине справа';
+	$steklopak_position = 'РџРѕСЃРµСЂРµРґРёРЅРµ СЃРїСЂР°РІР°';
 }else if($insert['window_align'] == 'bottom_left'){
-	$steklopak_position = 'Снизу слева';
+	$steklopak_position = 'РЎРЅРёР·Сѓ СЃР»РµРІР°';
 }else if($insert['window_align'] == 'bottom_center'){
-	$steklopak_position = 'Снизу центр';
+	$steklopak_position = 'РЎРЅРёР·Сѓ С†РµРЅС‚СЂ';
 }else if($insert['window_align'] == 'bottom_right'){
-	$steklopak_position = 'Снизу справа';
+	$steklopak_position = 'РЎРЅРёР·Сѓ СЃРїСЂР°РІР°';
 }
 
-//антипаника
+//Р°РЅС‚РёРїР°РЅРёРєР°
 if($insert['ruchka']=='true'){
-	$ruchka_type = "Антипаника";
+	$ruchka_type = "РђРЅС‚РёРїР°РЅРёРєР°";
 }
-// Противосъемы - количество
+// РџСЂРѕС‚РёРІРѕСЃСЉРµРјС‹ - РєРѕР»РёС‡РµСЃС‚РІРѕ
 // if($insert["metallokonstr"]==191){
-// 	//если Основа
+// 	//РµСЃР»Рё РћСЃРЅРѕРІР°
 // 	$protivosem_count = 2;
 // } else if($insert["metallokonstr"]==192){
-// 	//если Элит
+// 	//РµСЃР»Рё Р­Р»РёС‚
 // 	$protivosem_count = 3;
 // } else if($insert["metallokonstr"]==193){
-// 	//если Профи
+// 	//РµСЃР»Рё РџСЂРѕС„Рё
 // 	$protivosem_count = 4;
 // }
 $protivosem_count = 0;
-// Противосъемы - цена
+// РџСЂРѕС‚РёРІРѕСЃСЉРµРјС‹ - С†РµРЅР°
 $protivosem_price = $price["protivosem_price"];
 
-// Общая стоимость
+// РћР±С‰Р°СЏ СЃС‚РѕРёРјРѕСЃС‚СЊ
 if($personal_price!=null && $personal_price!=""){
 	$total_price = $insert["total_price"]-$personal_price;
 } else {
 	$total_price = $insert["total_price"];
 }
 
-//Стоимость без скидки
+//РЎС‚РѕРёРјРѕСЃС‚СЊ Р±РµР· СЃРєРёРґРєРё
 $clear_price = $price["clear"];
 
-//Скидка
+//РЎРєРёРґРєР°
 if($price["skidka_percent"]!=""){
 	$skidka_percent = $price["skidka_percent"];
 	$skidka_ruble = ($clear_price/100)*$skidka_percent;
@@ -322,7 +322,7 @@ if($price["skidka_percent"]!=""){
 	$skidka_ruble = 0;
 }
 
-//изменение кодировки против кракозябр
+//РёР·РјРµРЅРµРЅРёРµ РєРѕРґРёСЂРѕРІРєРё РїСЂРѕС‚РёРІ РєСЂР°РєРѕР·СЏР±СЂ
 // $name = iconv("utf-8", "windows-1251", $name);
 // $email = iconv("utf-8", "windows-1251", $email);
 // $phone = iconv("utf-8", "windows-1251", $phone);
@@ -350,23 +350,23 @@ $stvorka_name = iconv("utf-8", "windows-1251", $stvorka_name);
 $stvorka_position = iconv("utf-8", "windows-1251", $stvorka_position);
 // $steklopak_position = iconv("utf-8", "windows-1251", $steklopak_position);
 
-if ($main_lock_color == 'Золото'){
+if ($main_lock_color == 'Р—РѕР»РѕС‚Рѕ'){
 	$main_lock_color = 1;
-}else if($main_lock_color == 'Хром'){
+}else if($main_lock_color == 'РҐСЂРѕРј'){
 	$main_lock_color = 2;
-}else if($main_lock_color == 'Другое'){
+}else if($main_lock_color == 'Р”СЂСѓРіРѕРµ'){
 	$main_lock_color = 0;
 }
 
-if ($add_lock_color == 'Золото'){
+if ($add_lock_color == 'Р—РѕР»РѕС‚Рѕ'){
 	$add_lock_color = 1;
-}else if($add_lock_color == 'Хром'){
+}else if($add_lock_color == 'РҐСЂРѕРј'){
 	$add_lock_color = 2;
-}else if($add_lock_color == 'Другое'){
+}else if($add_lock_color == 'Р”СЂСѓРіРѕРµ'){
 	$add_lock_color = 0;
 }
 
-// Функции для сохранения в excel
+// Р¤СѓРЅРєС†РёРё РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ РІ excel
 
 function xlsBOF() {
 return pack("ssssss", 0x809, 0x8, 0x0, 0x10, 0x0, 0x0); 
@@ -390,71 +390,71 @@ return $temp;
 }
 
 $text = "";
-$text .= xlsBOF(); //начинаем собирать файл
-// Названия строк
+$text .= xlsBOF(); //РЅР°С‡РёРЅР°РµРј СЃРѕР±РёСЂР°С‚СЊ С„Р°Р№Р»
+// РќР°Р·РІР°РЅРёСЏ СЃС‚СЂРѕРє
 
-$text .= xlsWriteLabel(1,0,"Номер проекта");
-$text .= xlsWriteLabel(2,0,"Дата");
+$text .= xlsWriteLabel(1,0,"РќРѕРјРµСЂ РїСЂРѕРµРєС‚Р°");
+$text .= xlsWriteLabel(2,0,"Р”Р°С‚Р°");
 
-$text .= xlsWriteLabel(4,1,"Название");
-$text .= xlsWriteLabel(4,2,"Стоимость");
+$text .= xlsWriteLabel(4,1,"РќР°Р·РІР°РЅРёРµ");
+$text .= xlsWriteLabel(4,2,"РЎС‚РѕРёРјРѕСЃС‚СЊ");
 
-$text .= xlsWriteLabel(5,0,"Тип двери");
-$text .= xlsWriteLabel(6,0,"Левая/правая");
-$text .= xlsWriteLabel(7,0,"Модель (Основа, Элит, Профи)");
-$text .= xlsWriteLabel(8,0,"Высота");
-$text .= xlsWriteLabel(9,0,"Ширина");
-$text .= xlsWriteLabel(10,0,"Задвижка (тип)");
-$text .= xlsWriteLabel(11,0,"Замок 1 (тип)");
-$text .= xlsWriteLabel(12,0,"Замок 2 (тип)");
-$text .= xlsWriteLabel(13,0,"Доводчик (тип)");
-$text .= xlsWriteLabel(14,0,"Окраска (тип: Серия, Антик, Спец.эф.)");
-$text .= xlsWriteLabel(15,0,"Окраска (цвет, название)");
-$text .= xlsWriteLabel(16,0,"Наруж отделка (МДФ  6мм, МДФ 10мм, окраска)");
-$text .= xlsWriteLabel(17,0,"Цвет наруж МДФ (если есть)");
-$text .= xlsWriteLabel(18,0,"Тип наруж. фрезеровки");
-$text .= xlsWriteLabel(19,0,"Внутр. Отделка (МДФ 6мм, МДФ 10мм, окраска)");
-$text .= xlsWriteLabel(20,0,"Цвет внутр МДФ (если есть)");
-$text .= xlsWriteLabel(21,0,"Тип внутр. Фрезер.");
-$text .= xlsWriteLabel(22,0,"Наличники (без налич., металл, МДФ 10мм, МДФ 16мм)");
-$text .= xlsWriteLabel(23,0,"Глазок");
-// $text .= xlsWriteLabel(24,0,"Кол-во этажей");
-// $text .= xlsWriteLabel(25,0,"Грузовой лифт (1-да/0-нет)");
-// $text .= xlsWriteLabel(26,0,"Монтаж (1-да/0-нет)");
-// $text .= xlsWriteLabel(27,0,"Демонтаж (1-да/0-нет)");
-// $text .= xlsWriteLabel(28,0,"Доставка (1-да/0-нет)");
-$text .= xlsWriteLabel(29,0,"Скидка (%)");
-$text .= xlsWriteLabel(30,0,"Скидка, сумма");
-$text .= xlsWriteLabel(31,0,"Стоимость изделия");
-$text .= xlsWriteLabel(32,0,"Итого к оплате");
-$text .= xlsWriteLabel(33,0,"Цена торга");
-$text .= xlsWriteLabel(34,0,"Тип ручки");
-$text .= xlsWriteLabel(35,0,"Доп. зеркало (1-да/0-нет)");
-$text .= xlsWriteLabel(36,0,"Цвет фурнитуры замка 1 (1-золото/2-хром,никель/0 - другое)");
-$text .= xlsWriteLabel(37,0,"Цвет фурнитуры замка 2 (1-золото/2-хром,никель/0 - другое)");
-$text .= xlsWriteLabel(38,0,"Противопожарность (0-стандартная/1-противопожарная)");
-$text .= xlsWriteLabel(39,0,"Напр.входа (для типов 2-5)");
+$text .= xlsWriteLabel(5,0,"РўРёРї РґРІРµСЂРё");
+$text .= xlsWriteLabel(6,0,"Р›РµРІР°СЏ/РїСЂР°РІР°СЏ");
+$text .= xlsWriteLabel(7,0,"РњРѕРґРµР»СЊ (РћСЃРЅРѕРІР°, Р­Р»РёС‚, РџСЂРѕС„Рё)");
+$text .= xlsWriteLabel(8,0,"Р’С‹СЃРѕС‚Р°");
+$text .= xlsWriteLabel(9,0,"РЁРёСЂРёРЅР°");
+$text .= xlsWriteLabel(10,0,"Р—Р°РґРІРёР¶РєР° (С‚РёРї)");
+$text .= xlsWriteLabel(11,0,"Р—Р°РјРѕРє 1 (С‚РёРї)");
+$text .= xlsWriteLabel(12,0,"Р—Р°РјРѕРє 2 (С‚РёРї)");
+$text .= xlsWriteLabel(13,0,"Р”РѕРІРѕРґС‡РёРє (С‚РёРї)");
+$text .= xlsWriteLabel(14,0,"РћРєСЂР°СЃРєР° (С‚РёРї: РЎРµСЂРёСЏ, РђРЅС‚РёРє, РЎРїРµС†.СЌС„.)");
+$text .= xlsWriteLabel(15,0,"РћРєСЂР°СЃРєР° (С†РІРµС‚, РЅР°Р·РІР°РЅРёРµ)");
+$text .= xlsWriteLabel(16,0,"РќР°СЂСѓР¶ РѕС‚РґРµР»РєР° (РњР”Р¤  6РјРј, РњР”Р¤ 10РјРј, РѕРєСЂР°СЃРєР°)");
+$text .= xlsWriteLabel(17,0,"Р¦РІРµС‚ РЅР°СЂСѓР¶ РњР”Р¤ (РµСЃР»Рё РµСЃС‚СЊ)");
+$text .= xlsWriteLabel(18,0,"РўРёРї РЅР°СЂСѓР¶. С„СЂРµР·РµСЂРѕРІРєРё");
+$text .= xlsWriteLabel(19,0,"Р’РЅСѓС‚СЂ. РћС‚РґРµР»РєР° (РњР”Р¤ 6РјРј, РњР”Р¤ 10РјРј, РѕРєСЂР°СЃРєР°)");
+$text .= xlsWriteLabel(20,0,"Р¦РІРµС‚ РІРЅСѓС‚СЂ РњР”Р¤ (РµСЃР»Рё РµСЃС‚СЊ)");
+$text .= xlsWriteLabel(21,0,"РўРёРї РІРЅСѓС‚СЂ. Р¤СЂРµР·РµСЂ.");
+$text .= xlsWriteLabel(22,0,"РќР°Р»РёС‡РЅРёРєРё (Р±РµР· РЅР°Р»РёС‡., РјРµС‚Р°Р»Р», РњР”Р¤ 10РјРј, РњР”Р¤ 16РјРј)");
+$text .= xlsWriteLabel(23,0,"Р“Р»Р°Р·РѕРє");
+// $text .= xlsWriteLabel(24,0,"РљРѕР»-РІРѕ СЌС‚Р°Р¶РµР№");
+// $text .= xlsWriteLabel(25,0,"Р“СЂСѓР·РѕРІРѕР№ Р»РёС„С‚ (1-РґР°/0-РЅРµС‚)");
+// $text .= xlsWriteLabel(26,0,"РњРѕРЅС‚Р°Р¶ (1-РґР°/0-РЅРµС‚)");
+// $text .= xlsWriteLabel(27,0,"Р”РµРјРѕРЅС‚Р°Р¶ (1-РґР°/0-РЅРµС‚)");
+// $text .= xlsWriteLabel(28,0,"Р”РѕСЃС‚Р°РІРєР° (1-РґР°/0-РЅРµС‚)");
+$text .= xlsWriteLabel(29,0,"РЎРєРёРґРєР° (%)");
+$text .= xlsWriteLabel(30,0,"РЎРєРёРґРєР°, СЃСѓРјРјР°");
+$text .= xlsWriteLabel(31,0,"РЎС‚РѕРёРјРѕСЃС‚СЊ РёР·РґРµР»РёСЏ");
+$text .= xlsWriteLabel(32,0,"РС‚РѕРіРѕ Рє РѕРїР»Р°С‚Рµ");
+$text .= xlsWriteLabel(33,0,"Р¦РµРЅР° С‚РѕСЂРіР°");
+$text .= xlsWriteLabel(34,0,"РўРёРї СЂСѓС‡РєРё");
+$text .= xlsWriteLabel(35,0,"Р”РѕРї. Р·РµСЂРєР°Р»Рѕ (1-РґР°/0-РЅРµС‚)");
+$text .= xlsWriteLabel(36,0,"Р¦РІРµС‚ С„СѓСЂРЅРёС‚СѓСЂС‹ Р·Р°РјРєР° 1 (1-Р·РѕР»РѕС‚Рѕ/2-С…СЂРѕРј,РЅРёРєРµР»СЊ/0 - РґСЂСѓРіРѕРµ)");
+$text .= xlsWriteLabel(37,0,"Р¦РІРµС‚ С„СѓСЂРЅРёС‚СѓСЂС‹ Р·Р°РјРєР° 2 (1-Р·РѕР»РѕС‚Рѕ/2-С…СЂРѕРј,РЅРёРєРµР»СЊ/0 - РґСЂСѓРіРѕРµ)");
+$text .= xlsWriteLabel(38,0,"РџСЂРѕС‚РёРІРѕРїРѕР¶Р°СЂРЅРѕСЃС‚СЊ (0-СЃС‚Р°РЅРґР°СЂС‚РЅР°СЏ/1-РїСЂРѕС‚РёРІРѕРїРѕР¶Р°СЂРЅР°СЏ)");
+$text .= xlsWriteLabel(39,0,"РќР°РїСЂ.РІС…РѕРґР° (РґР»СЏ С‚РёРїРѕРІ 2-5)");
 
-$text .= xlsWriteLabel(41,0,"Ширина бок. части");
-$text .= xlsWriteLabel(42,0,"Положение створки");
-$text .= xlsWriteLabel(43,0,"Фриз");
-$text .= xlsWriteLabel(44,0,"Высота фриза");
+$text .= xlsWriteLabel(41,0,"РЁРёСЂРёРЅР° Р±РѕРє. С‡Р°СЃС‚Рё");
+$text .= xlsWriteLabel(42,0,"РџРѕР»РѕР¶РµРЅРёРµ СЃС‚РІРѕСЂРєРё");
+$text .= xlsWriteLabel(43,0,"Р¤СЂРёР·");
+$text .= xlsWriteLabel(44,0,"Р’С‹СЃРѕС‚Р° С„СЂРёР·Р°");
 
-// $text .= xlsWriteLabel(42,0,"Адрес установки (доставки)");
-// $text .= xlsWriteLabel(43,0,"Заказчик (Ф.И.О.)");
-// $text .= xlsWriteLabel(44,0,"Телефон заказчика");
+// $text .= xlsWriteLabel(42,0,"РђРґСЂРµСЃ СѓСЃС‚Р°РЅРѕРІРєРё (РґРѕСЃС‚Р°РІРєРё)");
+// $text .= xlsWriteLabel(43,0,"Р—Р°РєР°Р·С‡РёРє (Р¤.Р.Рћ.)");
+// $text .= xlsWriteLabel(44,0,"РўРµР»РµС„РѕРЅ Р·Р°РєР°Р·С‡РёРєР°");
 // $text .= xlsWriteLabel(45,0,"E-mail");
-// $text .= xlsWriteLabel(46,0,"Пожелания");
-$text .= xlsWriteLabel(47,0,"Противосъемы");
-$text .= xlsWriteLabel(48,0,"Петли");
-$text .= xlsWriteLabel(49,0,"Уплотнитель");
-$text .= xlsWriteLabel(50,0,"Стеклопакет");
-$text .= xlsWriteLabel(51,0,"Положение стеклопакета");
-// $text .= xlsWriteLabel(52,0,"Антипаника (1-да/0-нет)");
+// $text .= xlsWriteLabel(46,0,"РџРѕР¶РµР»Р°РЅРёСЏ");
+$text .= xlsWriteLabel(47,0,"РџСЂРѕС‚РёРІРѕСЃСЉРµРјС‹");
+$text .= xlsWriteLabel(48,0,"РџРµС‚Р»Рё");
+$text .= xlsWriteLabel(49,0,"РЈРїР»РѕС‚РЅРёС‚РµР»СЊ");
+$text .= xlsWriteLabel(50,0,"РЎС‚РµРєР»РѕРїР°РєРµС‚");
+$text .= xlsWriteLabel(51,0,"РџРѕР»РѕР¶РµРЅРёРµ СЃС‚РµРєР»РѕРїР°РєРµС‚Р°");
+// $text .= xlsWriteLabel(52,0,"РђРЅС‚РёРїР°РЅРёРєР° (1-РґР°/0-РЅРµС‚)");
 
 
 
-// Значения строк
+// Р—РЅР°С‡РµРЅРёСЏ СЃС‚СЂРѕРє
 $text .= xlsWriteLabel(1,1,$order_num);
 $text .= xlsWriteLabel(2,1,$date);
 
@@ -493,24 +493,24 @@ $text .= xlsWriteLabel(23,2,$glazok_price);
 // $text .= xlsWriteLabel(26,1,$montaj);
 // $text .= xlsWriteLabel(27,1,$demontaj);
 // $text .= xlsWriteLabel(28,1,$dostavka);
-$text .= xlsWriteLabel(29,1,$skidka_percent); //скидка %
-$text .= xlsWriteLabel(30,2,$skidka_ruble); //скидка, сумма
+$text .= xlsWriteLabel(29,1,$skidka_percent); //СЃРєРёРґРєР° %
+$text .= xlsWriteLabel(30,2,$skidka_ruble); //СЃРєРёРґРєР°, СЃСѓРјРјР°
 $text .= xlsWriteLabel(31,2,$clear_price);
 $text .= xlsWriteLabel(32,2,$clear_price);
 $text .= xlsWriteLabel(33,2,$total_price);
-$text .= xlsWriteLabel(34,1,$ruchka_type); //тип ручки
-$text .= xlsWriteLabel(34,2,$ruchka_price); //Стоимость ручки
-$text .= xlsWriteLabel(35,1,$dop_zerkalo); //доп. зеркало
-$text .= xlsWriteLabel(36,1,$main_lock_color); //цвет фурнитуры замка 1
-$text .= xlsWriteLabel(37,1,$add_lock_color); //цвер фурнитуры замка 2
-$text .= xlsWriteLabel(38,1,"1"); //противопожарность
-$text .= xlsWriteLabel(39,1,"0"); //противопожарность
+$text .= xlsWriteLabel(34,1,$ruchka_type); //С‚РёРї СЂСѓС‡РєРё
+$text .= xlsWriteLabel(34,2,$ruchka_price); //РЎС‚РѕРёРјРѕСЃС‚СЊ СЂСѓС‡РєРё
+$text .= xlsWriteLabel(35,1,$dop_zerkalo); //РґРѕРї. Р·РµСЂРєР°Р»Рѕ
+$text .= xlsWriteLabel(36,1,$main_lock_color); //С†РІРµС‚ С„СѓСЂРЅРёС‚СѓСЂС‹ Р·Р°РјРєР° 1
+$text .= xlsWriteLabel(37,1,$add_lock_color); //С†РІРµСЂ С„СѓСЂРЅРёС‚СѓСЂС‹ Р·Р°РјРєР° 2
+$text .= xlsWriteLabel(38,1,"1"); //РїСЂРѕС‚РёРІРѕРїРѕР¶Р°СЂРЅРѕСЃС‚СЊ
+$text .= xlsWriteLabel(39,1,"0"); //РїСЂРѕС‚РёРІРѕРїРѕР¶Р°СЂРЅРѕСЃС‚СЊ
 
 
-$text .= xlsWriteLabel(41,1,$stvorka_width); //Ширина бок. части
-$text .= xlsWriteLabel(42,1,$stvorka_position); //Положение створки
-$text .= xlsWriteLabel(43,1,$friz); //Фриз
-$text .= xlsWriteLabel(44,1,$friz_height); //высота фриза
+$text .= xlsWriteLabel(41,1,$stvorka_width); //РЁРёСЂРёРЅР° Р±РѕРє. С‡Р°СЃС‚Рё
+$text .= xlsWriteLabel(42,1,$stvorka_position); //РџРѕР»РѕР¶РµРЅРёРµ СЃС‚РІРѕСЂРєРё
+$text .= xlsWriteLabel(43,1,$friz); //Р¤СЂРёР·
+$text .= xlsWriteLabel(44,1,$friz_height); //РІС‹СЃРѕС‚Р° С„СЂРёР·Р°
 
 // $text .= xlsWriteLabel(42,1,$adress);
 // $text .= xlsWriteLabel(43,1,$name);
@@ -518,26 +518,26 @@ $text .= xlsWriteLabel(44,1,$friz_height); //высота фриза
 // $text .= xlsWriteLabel(45,1,$email);
 // $text .= xlsWriteLabel(46,1,$comment);
 
-$text .= xlsWriteLabel(47,1,$protivosem_count); //Количество противосъемов
-$text .= xlsWriteLabel(47,2,$protivosem_price); //Цена противосъемов
-$text .= xlsWriteLabel(48,1,$petli_count); //Количество петель
-$text .= xlsWriteLabel(48,2,$petli_price); //Цена петель
-$text .= xlsWriteLabel(49,1,$uplotnitel_count); //Количество уплотнителя
-$text .= xlsWriteLabel(49,2,$uplotnitel_price); //Цена уплотнителя
+$text .= xlsWriteLabel(47,1,$protivosem_count); //РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕС‚РёРІРѕСЃСЉРµРјРѕРІ
+$text .= xlsWriteLabel(47,2,$protivosem_price); //Р¦РµРЅР° РїСЂРѕС‚РёРІРѕСЃСЉРµРјРѕРІ
+$text .= xlsWriteLabel(48,1,$petli_count); //РљРѕР»РёС‡РµСЃС‚РІРѕ РїРµС‚РµР»СЊ
+$text .= xlsWriteLabel(48,2,$petli_price); //Р¦РµРЅР° РїРµС‚РµР»СЊ
+$text .= xlsWriteLabel(49,1,$uplotnitel_count); //РљРѕР»РёС‡РµСЃС‚РІРѕ СѓРїР»РѕС‚РЅРёС‚РµР»СЏ
+$text .= xlsWriteLabel(49,2,$uplotnitel_price); //Р¦РµРЅР° СѓРїР»РѕС‚РЅРёС‚РµР»СЏ
 $text .= xlsWriteLabel(50,1,$steklopak_name);
 $text .= xlsWriteLabel(50,2,$steklopak_price);
 $text .= xlsWriteLabel(51,1,$steklopak_position);
-// $text .= xlsWriteLabel(52,1,$antipanika); //антипаника
-// $text .= xlsWriteLabel(52,2,$antipanika_price); //цена антипаники
+// $text .= xlsWriteLabel(52,1,$antipanika); //Р°РЅС‚РёРїР°РЅРёРєР°
+// $text .= xlsWriteLabel(52,2,$antipanika_price); //С†РµРЅР° Р°РЅС‚РёРїР°РЅРёРєРё
 
-$text .= xlsEOF(); //заканчиваем собирать
+$text .= xlsEOF(); //Р·Р°РєР°РЅС‡РёРІР°РµРј СЃРѕР±РёСЂР°С‚СЊ
 
-file_put_contents('../files/orders/'.$order["id"].'_order_'.$order_num.'.xls', $text); // Сохраняем файл
+file_put_contents('../files/orders/'.$order["id"].'_order_'.$order_num.'.xls', $text); // РЎРѕС…СЂР°РЅСЏРµРј С„Р°Р№Р»
 
-//закрытие соединение (рекомендуется)
+//Р·Р°РєСЂС‹С‚РёРµ СЃРѕРµРґРёРЅРµРЅРёРµ (СЂРµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ)
 mysql_close($db);
 
-/*Отправка на почту*/
+/*РћС‚РїСЂР°РІРєР° РЅР° РїРѕС‡С‚Сѓ*/
 
 // $to = "ekaterina.bidyanova@yandex.ru";
 // $to = "bmihh@yandex.ru";
@@ -548,10 +548,10 @@ mysql_close($db);
 // $headers = "MIME-Version: 1.0\r\n";
 // $headers .= "Content-Type: multipart/mixed; boundary=\"$boundary\"\r\n";
 
-// $subject = 'Новая заявка №'.$order["id"].' проект №'.$order_num.' на сайте "Балтийский берег"';
+// $subject = 'РќРѕРІР°СЏ Р·Р°СЏРІРєР° в„–'.$order["id"].' РїСЂРѕРµРєС‚ в„–'.$order_num.' РЅР° СЃР°Р№С‚Рµ "Р‘Р°Р»С‚РёР№СЃРєРёР№ Р±РµСЂРµРі"';
 
 
-// $message = 'На сайте "Балтийский берег" была оставлена новая заявка №'.$order["id"].' проект №'.$order_num."\n";
+// $message = 'РќР° СЃР°Р№С‚Рµ "Р‘Р°Р»С‚РёР№СЃРєРёР№ Р±РµСЂРµРі" Р±С‹Р»Р° РѕСЃС‚Р°РІР»РµРЅР° РЅРѕРІР°СЏ Р·Р°СЏРІРєР° в„–'.$order["id"].' РїСЂРѕРµРєС‚ в„–'.$order_num."\n";
 
 // $filetype="xls";
 // $filename=$order["id"].'_order_'.$order_num.'.xls';
@@ -581,33 +581,33 @@ mysql_close($db);
 //$to = "bmihh@yandex.ru";
 	$from = "admin@blt-bereg.ru";
 
-	// тема письма
-	$subject = 'Новая дверь была добавлена в корзину на сайте "Балтийский берег"';
+	// С‚РµРјР° РїРёСЃСЊРјР°
+	$subject = 'РќРѕРІР°СЏ РґРІРµСЂСЊ Р±С‹Р»Р° РґРѕР±Р°РІР»РµРЅР° РІ РєРѕСЂР·РёРЅСѓ РЅР° СЃР°Р№С‚Рµ "Р‘Р°Р»С‚РёР№СЃРєРёР№ Р±РµСЂРµРі"';
 
-	// текст письма
+	// С‚РµРєСЃС‚ РїРёСЃСЊРјР°
 	$message = '
 	<html>
 	<head>
-	  <title>Новая дверь была добавлена в корзину на сайте "Балтийский берег"</title>
+	  <title>РќРѕРІР°СЏ РґРІРµСЂСЊ Р±С‹Р»Р° РґРѕР±Р°РІР»РµРЅР° РІ РєРѕСЂР·РёРЅСѓ РЅР° СЃР°Р№С‚Рµ "Р‘Р°Р»С‚РёР№СЃРєРёР№ Р±РµСЂРµРі"</title>
 	</head>
 	<body>
-	  <p style="text-align: center; font-size: 22px; font-weight: bold; padding: 5px 0px">Новая дверь была добавлена в корзину на сайте "Балтийский берег"</p>
-	  <p style="">Номер проекта: '.$order["order_id"].'</p>
-	  <p style="">Ссылка на проект: <a href="http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi).html?project='.$order["order_id"].'">http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi).html?project='.$order["order_id"].'</a></p>
+	  <p style="text-align: center; font-size: 22px; font-weight: bold; padding: 5px 0px">РќРѕРІР°СЏ РґРІРµСЂСЊ Р±С‹Р»Р° РґРѕР±Р°РІР»РµРЅР° РІ РєРѕСЂР·РёРЅСѓ РЅР° СЃР°Р№С‚Рµ "Р‘Р°Р»С‚РёР№СЃРєРёР№ Р±РµСЂРµРі"</p>
+	  <p style="">РќРѕРјРµСЂ РїСЂРѕРµРєС‚Р°: '.$order["order_id"].'</p>
+	  <p style="">РЎСЃС‹Р»РєР° РЅР° РїСЂРѕРµРєС‚: <a href="http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi).html?project='.$order["order_id"].'">http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi).html?project='.$order["order_id"].'</a></p>
 	</body>
 	</html>
 	';
 
-	// Для отправки HTML-письма должен быть установлен заголовок Content-type
+	// Р”Р»СЏ РѕС‚РїСЂР°РІРєРё HTML-РїРёСЃСЊРјР° РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ СѓСЃС‚Р°РЅРѕРІР»РµРЅ Р·Р°РіРѕР»РѕРІРѕРє Content-type
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
-	$headers .= 'Content-type: text/html; charset=windows-1251' . "\r\n";
+	$headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
 
-	// Дополнительные заголовки
+	// Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ Р·Р°РіРѕР»РѕРІРєРё
 	$headers .= 'From: Blt-Bereg.ru <'.$from.'>' . "\r\n";
 	$headers .= 'Cc: '. $from . "\r\n";
 	$headers .= 'Bcc: '. $from . "\r\n";
 
-	// Отправляем
+	// РћС‚РїСЂР°РІР»СЏРµРј
 
 	mail($to, $subject, $message, $headers);
 
