@@ -1667,6 +1667,7 @@ $(document).ready(function() {
 	start();
 	canvas_inside.on('after:render', function(e){
 		$('.preloader').hide();
+		$('.project_preloader').hide();
 		if (reverseFlag == false){
 			console.log('renderCount = '+renderCount+'   kk =' +kk + '   reverseFlag = '+reverseFlag);
 			if (kk == renderCount){
@@ -2943,9 +2944,14 @@ $(document).ready(function() {
 					console.log("Get Order");
 					console.log(data);
 					if (data['status'] == 'error'){
-						alert('Заказа с таким номером не существует!');
+						$(".warning_text").html('Заказа с таким номером не существует!');
+						$(".wrapper_4").show();
+						setTimeout('window.location.href = "http://ce77747.tmweb.ru/"', 2000);
+
 					}else if(data['status'] == 'ok'){
-						alert('Внимание! Внесение изменений в проект №'+data['order']['order_id']+' невозможно.');
+						$(".warning_text").html('<b>Внимание!</b> <br> Внесение изменений в проект №'+data['order']['order_id']+' невозможно.');
+						$(".wrapper_4").show();
+						// $(".project_preloader").hide();
 						order = {
 							metallokonstr: data['order']['metallokonstr'],
 							width_total: data['order']['width_total'],
@@ -3082,10 +3088,16 @@ $(document).ready(function() {
 				}
 			});
 		} else {
-			alert('Неправильно введен номер заказа!');
+			$(".warning_text").html('Неправильно введен номер заказа!');
+			$(".wrapper_4").show();
+			setTimeout('window.location.href = "http://ce77747.tmweb.ru/"', 2000);
 		}
 		
 	}
+	$(".agree_button").click(function(){
+		$(".wrapper_4").hide();
+		$(".project_preloader").hide();
+	});
 	$('body').on('click', '.add_images img', function(){
 		$('body').prepend('<div class = "wrapper_lock"></div>');
 		var imgSrc = $(this).attr('src');
