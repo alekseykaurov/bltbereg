@@ -2944,7 +2944,8 @@ $(document).ready(function() {
 					console.log("Get Order");
 					console.log(data);
 					if (data['status'] == 'error'){
-						$(".warning_text").html('Заказа с таким номером не существует!');
+						$(".warning_text").html('Заказа с таким номером не существует! <br> Вы будете перенаправлены на главную страницу.');
+						$(".agree_button").hide();
 						$(".wrapper_4").show();
 						setTimeout('window.location.href = "http://ce77747.tmweb.ru/"', 2000);
 
@@ -3088,7 +3089,8 @@ $(document).ready(function() {
 				}
 			});
 		} else {
-			$(".warning_text").html('Неправильно введен номер заказа!');
+			$(".warning_text").html('Неправильно введен номер заказа! <br> Вы будете перенаправлены на главную страницу.');
+			$(".agree_button").hide();
 			$(".wrapper_4").show();
 			setTimeout('window.location.href = "http://ce77747.tmweb.ru/"', 2000);
 		}
