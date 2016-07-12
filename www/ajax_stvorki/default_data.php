@@ -105,7 +105,7 @@ $total_height_tv = $modx->getTemplateVars(Array("total_height"), '*', 979);
 $result['total_height']['value'] = $total_height_tv[0]['value'];
 $result['total_height']['changable'] = true;
 $product_offer = $modx->getDocument($product);
-if($product_offer["parent"]==506 || $product_offer["parent"]==9){
+if($product_offer["parent"]==506 || $product_offer["parent"]==9 || $product_offer["parent"]==993){
 
 	$result["special_name"] = $product_offer["pagetitle"];
 

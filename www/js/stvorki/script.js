@@ -22,6 +22,8 @@ $(document).ready(function() {
 	var isProduct = false;
 	if(product==undefined && project==undefined){
 		// window.location.pathname = "/";
+		product = 994;
+		isProduct = true;
 	} else {
 		if(product!=undefined){
 			isProduct = true;
@@ -297,7 +299,7 @@ $(document).ready(function() {
 			petlya_top_1 = petlya_top_1/pp;
 			petlya_top_2 = petlya_top_2/pp;
 			petlya_top_3 = petlya_top_3/pp;
-			friz.set({height: f_h});
+			friz.set({height: f_h, width: w_d});
 			b_top = 0;
 			b_side = 0;
 			if (order.outside_nalichnik == 220){
@@ -307,7 +309,7 @@ $(document).ready(function() {
 				b_side = b_top;
 			}
 			background.set({height: b_h, top: b_top, width: b_w, left: b_side});
-			door.set({top: f_h + rama_top});
+			door.set({top: f_h + rama_top, width: w_d, height: h_d});
 			stvorka.set({top: f_h + rama_top});
 			shadow.set({width: b_w, height: b_h, left: b_side, top: b_top});
 			petlya_left_1.set({top: petlya_top_1 + f_h});
@@ -322,6 +324,45 @@ $(document).ready(function() {
 			// line_right_1.set({top: petlya_top_1 + f_h});
 			// line_right_2.set({top: petlya_top_2 + f_h});
 			// line_right_3.set({top: petlya_top_3 + f_h});
+		}else{
+			f_h = 0;
+			tmp_h = h_d + f_h;
+			while (tmp_h + rama_bottom + rama_top > 380){
+				pp = pp + 0.05;
+				tmp_h = tmp_h/pp;
+				console.log('tmp_h ' + tmp_h);
+			}
+			s_w = s_w/pp;
+			w_d = w_d/pp;
+			f_h = f_h/pp;
+			b_w = b_w/pp;
+			h_d = h_d/pp;
+			b_h = h_d + f_h + rama_top + rama_bottom;
+			console.log('height');
+			console.log(h_d + f_h + rama_bottom + rama_top);
+			console.log('pp ' + pp);
+			petlya_top_1 = petlya_top_1/pp;
+			petlya_top_2 = petlya_top_2/pp;
+			petlya_top_3 = petlya_top_3/pp;
+			friz.set({height: f_h, width: w_d});
+			b_top = 0;
+			b_side = 0;
+			if (order.outside_nalichnik == 220){
+				b_h = b_h - (rama_top - rama_bottom);
+				b_w = w_d + 2*rama_bottom;
+				b_top = rama_top - rama_bottom;
+				b_side = b_top;
+			}
+			background.set({height: b_h, top: b_top, width: b_w, left: b_side});
+			door.set({top: f_h + rama_top, width: w_d, height: h_d});
+			stvorka.set({top: f_h + rama_top});
+			shadow.set({width: b_w, height: b_h, left: b_side, top: b_top});
+			petlya_left_1.set({top: petlya_top_1 + f_h});
+			petlya_left_2.set({top: petlya_top_2 + f_h});
+			petlya_left_3.set({top: petlya_top_3 + f_h});
+			petlya_right_1.set({top: petlya_top_1 + f_h});
+			petlya_right_2.set({top: petlya_top_2 + f_h});
+			petlya_right_3.set({top: petlya_top_3 + f_h});
 		}
 		if (order.stvorka_position != 'none'){
 			var p_w = order.width_door/order.stvorka_width;
@@ -401,6 +442,56 @@ $(document).ready(function() {
 					// }
 					break;
 			}
+		}else{
+			s_w = 0;
+			var tmp_w = s_w + w_d + 2*rama_side;
+			var makeSmaller = false;
+			while (tmp_w > 325){
+				// console.log('width');
+				// console.log(s_w + w_d + 2*rama_side);
+				pp = pp + 0.05;
+				tmp_w = tmp_w/pp;
+				makeSmaller = true;
+			}
+			if (makeSmaller){
+				s_w = s_w/pp;
+				w_d = w_d/pp;
+				f_h = f_h/pp;
+				b_h = b_h/pp;
+				h_d = b_h - rama_top - rama_bottom;
+				petlya_top_1 = petlya_top_1/pp;
+				petlya_top_2 = petlya_top_2/pp;
+				petlya_top_3 = petlya_top_3/pp;
+			}
+			door.set({width: w_d, height: h_d, left: rama_side});
+			stvorka.set({width: s_w, height: h_d});
+			b_w = s_w + w_d + 2*rama_side;
+			b_side = 0;
+			b_top = 0;
+			var petlya_left = b_w - rama_side - petlya_width;
+			var canvas_inside_w = b_w + 2;
+			if (order.outside_nalichnik == 220){
+				b_w = s_w + w_d + 2*rama_bottom;
+				b_h = h_d + 2*rama_bottom;
+				b_side = rama_side - rama_bottom;
+				b_top = b_side;
+				petlya_left = b_w;
+				canvas_inside_w = s_w + w_d + 5*rama_bottom;
+			}
+			console.log('b_w = '+ b_w + ' s_w = ' + s_w + ' w_d = ' + w_d + ' rama_side = ' + rama_side + ' canvas_inside_w' + canvas_inside_w);
+			background.set({width: b_w, left: b_side, height: b_h, top: b_top});
+			shadow.set({width: b_w, height: b_h, left: b_side, top: b_top});
+			// canvas_inside.setWidth(canvas_inside_w);
+			friz.set({width: b_w - 2*rama_side, height: f_h});
+			petlya_right_1.set({left: petlya_left});
+			petlya_right_2.set({left: petlya_left});
+			petlya_right_3.set({left: petlya_left});
+			petlya_left_1.set({top: petlya_top_1 + f_h});
+			petlya_left_2.set({top: petlya_top_2 + f_h});
+			petlya_left_3.set({top: petlya_top_3 + f_h});
+			petlya_right_1.set({top: petlya_top_1 + f_h});
+			petlya_right_2.set({top: petlya_top_2 + f_h});
+			petlya_right_3.set({top: petlya_top_3 + f_h});
 		}
 		if (order.stvorka_position == 'none' && order.friz == 'false' && order.outside_nalichnik == 220){
 			background.set({width: w_d + 2*rama_bottom, height: h_d + 2*rama_bottom, left: rama_side - rama_bottom, top: rama_top - rama_bottom});
@@ -1565,12 +1656,15 @@ $(document).ready(function() {
 	}
 
 	//заполняем меню
-	for( var key in order){
-		if (order[key] !== null || order[key] !== undefined || key != 'width_door' || key != 'height_door'){
-			// console.log(key);
-			fillPole(key);
+	function fillAll(){
+		for( var key in order){
+			if (order[key] !== null || order[key] !== undefined || key != 'width_door' || key != 'height_door'){
+				// console.log(key);
+				fillPole(key);
+			}
 		}
 	}
+	fillAll();
 	$('#input-height').val(order.height_total);
 	$('#input-width').val(order.width_total);
 	$('.width-value').html(order.width_total);
@@ -1685,6 +1779,7 @@ $(document).ready(function() {
 			}
 		}
 		if ((order.main_lock != '' && order.main_lock != null) && order.ruchka != 'true'){
+			antipanika.set({width: 0});
 			change_main_lock();
 			change_main_lock_back();
 			renderCount = renderCount + 2;
@@ -1693,6 +1788,9 @@ $(document).ready(function() {
 			draw_antipanika();
 			renderCount = renderCount + 1;
 		}else{
+			main_lock.set({width: 0});
+			main_lock_back.set({width: 0});
+			antipanika.set({width: 0});
 			change_handle();
 			renderCount = renderCount + 1;
 		}
@@ -1704,10 +1802,22 @@ $(document).ready(function() {
 		if (order.zadvijka != '' && order.zadvijka != null){
 			change_zadvijka();
 			renderCount = renderCount + 1;
+		}else{
+			zadvijka.set({width: 0});
 		}
 		if (order.steklopak != '' && order.steklopak != null){
 			draw_steklopak();
 			renderCount = renderCount + 1;
+		}else{
+			steklopak_glass.set({width: 0});
+			steklopak_corner_top_left.set({width: 0});
+			steklopak_corner_top_right.set({width: 0});
+			steklopak_corner_bottom_right.set({width: 0});
+			steklopak_corner_bottom_left.set({width: 0});
+			steklopak_vertical_left.set({width: 0});
+			steklopak_vertical_right.set({width: 0});
+			steklopak_horizont_top.set({width: 0});
+			steklopak_horizont_bottom.set({width: 0});
 		}
 		change_shadow();
 		renderCount = renderCount + 1;
@@ -3111,7 +3221,7 @@ $(document).ready(function() {
 						var ddmmyy = dd + '.' + mm + '.' + yy;
 
 	      				$(".my_breadcrumb").detach();
-						$(".B_crumbBox").append('<span class="my_breadcrumb">Проект № '+data['order']['order_id']+' от '+ddmmyy+'г. <span class="new_project">Новый проект</span></span>');
+						$(".B_crumbBox").append('<span class="my_breadcrumb">Проект № '+data['order']['order_id']+' от '+ddmmyy+'г.</span>');
 						for( var key in order){
 							if (order[key] != null || order[key] != undefined || order[key] != "0"){
 								fillPole(key);
@@ -3212,5 +3322,17 @@ $(document).ready(function() {
 		}
 		$('.doors').append('<div class = "back_big"><img src = "'+back_url+'" /></div>');
 	});
-
+	$('.door_type').click(function(){
+		var door_type = $(this).data('doortype');
+		$('.door_type').removeClass('active');
+		$(this).addClass('active');
+		pp = 1;
+		defaultLoad(door_type);
+		fillAll();
+		check_color(order);
+		reverseFlag = false;
+		kk = 1;
+		renderCount = 0;
+		start();
+	})
 });

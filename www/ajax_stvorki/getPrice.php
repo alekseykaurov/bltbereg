@@ -14,7 +14,7 @@ $price = Array();
 $special_price = Array();
 
 //Площадь
-$S = ($order["height_door"]*$order["width_door"])/1000000;
+$S = ($order["height_total"]*$order["width_total"])/1000000;
 
 //Округляем до десятых
 function ceil3($number, $precision = 0) {
