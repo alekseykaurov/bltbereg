@@ -3,6 +3,24 @@ h1{
     text-align: center;
     margin-top: 1px !important;
     margin-bottom: 25px !important;
+    text-align: left;
+    float: left;
+}
+.door_types {
+    float: right;
+    display: inline-block;
+}
+.door_type {
+    display: inline-block;
+    height: 35px;
+    padding: 2px;
+    cursor: pointer;
+}
+.door_type.active{
+    border: 2px solid blue;
+}
+img.door_type_img {
+    height: 100%;
 }
 .container-1{
     width: 800px;

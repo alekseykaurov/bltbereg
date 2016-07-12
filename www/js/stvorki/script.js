@@ -79,6 +79,7 @@ $(document).ready(function() {
 		width: w_d,
 		height: h_d,
 		top: rama_top,
+		left: rama_side,
 		strokeWidth: 1,
 		stroke: 'rgb(0, 0, 0)',
 		evented: false
@@ -166,17 +167,17 @@ $(document).ready(function() {
 		evented: false
 	});
 	var petlya_right_1 = new fabric.Rect({
-		left: w_d - petlya_width,
+		left: w_d - petlya_width + rama_side,
 		top: petlya_top_1,
 		evented: false
 	});
 	var petlya_right_2 = new fabric.Rect({
-		left: w_d - petlya_width,
+		left: w_d - petlya_width + rama_side,
 		top: petlya_top_2,
 		evented: false
 	});
 	var petlya_right_3 = new fabric.Rect({
-		left: w_d - petlya_width,
+		left: w_d - petlya_width + rama_side,
 		top: petlya_top_3,
 		evented: false
 	});
@@ -214,7 +215,7 @@ $(document).ready(function() {
 	});
 
 	canvas.add(background, friz, door, stvorka, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, shadow, ruchka, main_lock);
-	canvas_inside.add(background, friz, door, stvorka, petlya_left_1, petlya_left_2, petlya_left_3, petlya_right_1, petlya_right_2, petlya_right_3, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, shadow, ruchka, main_lock_back, zadvijka, antipanika, back_door);
+	canvas_inside.add(background, friz, door, stvorka, steklopak_vertical_left, steklopak_vertical_right, steklopak_horizont_top, steklopak_horizont_bottom, steklopak_corner_top_left, steklopak_corner_top_right, steklopak_corner_bottom_right, steklopak_corner_bottom_left, steklopak_glass, shadow, ruchka, main_lock_back, zadvijka, antipanika, back_door);
 
 	var renderCount = 0;
 	//функции для изменений всего вот этого
@@ -468,7 +469,6 @@ $(document).ready(function() {
 			petlya.set({fill: pattern});
 			// line.set({width: petlya_width, height: 1});
 			canvas.renderAll();
-			canvas_inside.renderAll();
 		});
 	}
 	function change_shadow(){
@@ -530,6 +530,19 @@ $(document).ready(function() {
 					main_lock_left = w_d - pattern_image.getWidth()  + rama_side;
 					if (color.main_lock_ruchka != 'Ручка на планке'){
 						main_lock_left = main_lock_left - 5/pp;
+					}
+					break;
+				case 'none':
+					if (order.door_side == 'left'){
+						main_lock_left = w_d + rama_side - pattern_image.getWidth();
+						if (color.main_lock_ruchka != 'Ручка на планке'){
+							main_lock_left = main_lock_left - 5/pp;
+						}
+					}else{
+						main_lock_left = rama_side;
+						if (color.main_lock_ruchka != 'Ручка на планке'){
+							main_lock_left = main_lock_left + 5/pp;
+						}
 					}
 					break;
 			}
@@ -596,6 +609,19 @@ $(document).ready(function() {
 						main_lock_left = main_lock_left - 5/pp;
 					}
 					break;
+				case 'none':
+					if (order.door_side == 'left'){
+						main_lock_left = w_d + rama_side - pattern_image.getWidth();
+						if (color.main_lock_ruchka != 'Ручка на планке'){
+							main_lock_left = main_lock_left - 5/pp;
+						}
+					}else{
+						main_lock_left = rama_side;
+						if (color.main_lock_ruchka != 'Ручка на планке'){
+							main_lock_left = main_lock_left + 5/pp;
+						}
+					}
+					break;
 			}
 			switch (order.friz){
 				case 'true':
@@ -656,6 +682,14 @@ $(document).ready(function() {
 					break;
 				case 'right':
 					handle_left = w_d - pattern_image.getWidth()  + rama_side - 5/pp;
+					break;
+				case 'none':
+					if (order.door_side == 'left'){
+						handle_left = w_d + rama_side - pattern_image.getWidth() - 5/pp;
+					}else{
+						handle_left = rama_side + 5/pp;
+						pattern_image.set({flipX: true});
+					}
 					break;
 			}
 			switch (order.friz){
@@ -807,6 +841,11 @@ $(document).ready(function() {
 				case 'right':
 					handle_left = rama_side + 5/pp;
 					break;
+				case 'none':
+					handle_left = rama_side + 5/pp;
+					if (order.door_side == 'right'){
+						pattern_image.set({flipX: true});
+					}
 			}
 			switch (order.friz){
 				case 'true':
@@ -854,6 +893,13 @@ $(document).ready(function() {
 					break;
 				case 'right':
 					handle_left = w_d - pattern_image.getWidth()  + rama_side -5/pp;
+					break;
+				case 'none':
+					if (order.door_side == 'left'){
+						handle_left = w_d + rama_side - pattern_image.getWidth() - 5/pp;
+					}else{
+						handle_left = rama_side + 5/pp;
+					}
 					break;
 			}
 			switch (order.friz){
@@ -1618,20 +1664,23 @@ $(document).ready(function() {
 			draw_petlya(petlya_right_1, 'right');
 			draw_petlya(petlya_right_2, 'right');
 			draw_petlya(petlya_right_3, 'right');
-			renderCount = renderCount + 6;
 		}else{
 			switch (order.door_side){
 				case 'left':
+					petlya_right_1.set({width: 0});
+					petlya_right_2.set({width: 0});
+					petlya_right_3.set({width: 0});
 					draw_petlya(petlya_left_1, 'left');
 					draw_petlya(petlya_left_2, 'left');
 					draw_petlya(petlya_left_3, 'left');
-					renderCount = renderCount + 3;
 					break;
 				case 'right':
+					petlya_left_1.set({width: 0});
+					petlya_left_2.set({width: 0});
+					petlya_left_3.set({width: 0});
 					draw_petlya(petlya_right_1, 'right');
 					draw_petlya(petlya_right_2, 'right');
 					draw_petlya(petlya_right_3, 'right');
-					renderCount = renderCount + 3;
 					break;
 			}
 		}
@@ -2782,18 +2831,22 @@ $(document).ready(function() {
 			$('.door_side').css('display', 'block');
 			$(this).css('display', 'none');
 			if (tmp == 'right'){
-				// order.door_side = 'left';
-				// $('#door-front').css('margin-left', '0px');
-				order.stvorka_position = 'left';
+				if (order.stvorka_position == 'none'){
+					order.door_side = 'left';
+				}else{
+					order.stvorka_position = 'left';
+				}
 				reverseFlag = false;
 				kk = 1;
 				renderCount = 0;
 				check_canvas_sizes();
 				start();
 			}else if(tmp == 'left'){
-				// order.door_side = 'right';
-				// $('#door-front').css('margin-left', '-1px');
-				order.stvorka_position = 'right';
+				if (order.stvorka_position == 'none'){
+					order.door_side = 'right';
+				}else{
+					order.stvorka_position = 'right';
+				}
 				reverseFlag = false;
 				kk = 1;
 				renderCount = 0;
@@ -2807,7 +2860,7 @@ $(document).ready(function() {
 	});
 
 	$('.outside, .inside').click(function(){
-		alert('haha');
+		//alert('haha');
 		if ($(this).hasClass('active_door') == false){
 			$('.outside, .inside').removeClass('active_door');
 			$(this).addClass('active_door');
@@ -2944,7 +2997,8 @@ $(document).ready(function() {
 					console.log("Get Order");
 					console.log(data);
 					if (data['status'] == 'error'){
-						$(".warning_text").html('Заказа с таким номером не существует!');
+						$(".warning_text").html('Заказа с таким номером не существует! <br> Вы будете перенаправлены на главную страницу.');
+						$(".agree_button").hide();
 						$(".wrapper_4").show();
 						setTimeout('window.location.href = "http://ce77747.tmweb.ru/"', 2000);
 
@@ -3088,7 +3142,8 @@ $(document).ready(function() {
 				}
 			});
 		} else {
-			$(".warning_text").html('Неправильно введен номер заказа!');
+			$(".warning_text").html('Неправильно введен номер заказа! <br> Вы будете перенаправлены на главную страницу.');
+			$(".agree_button").hide();
 			$(".wrapper_4").show();
 			setTimeout('window.location.href = "http://ce77747.tmweb.ru/"', 2000);
 		}
