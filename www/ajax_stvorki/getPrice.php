@@ -161,10 +161,27 @@ if($order["glazok"]!="" && $order["glazok"]!=null){
 
 //Узнаем цену на уплотнитель
 //$uplotnitel_price = ceil(2*($order["width_total"] + $order["height_total"])*70/10000)*10;
-$uplotnitel_price = ceil(2*($order["width_total"] + $order["height_total"])/1000)*70;
-if($order["metallokonstr"]==191){
-	//если Основа
-	$price["uplotnitel_price"] = 1*$uplotnitel_price;
+//$uplotnitel_price = ceil(2*($order["width_total"] + $order["height_total"])/1000)*70;
+$per_door = ceil(2*($order["width_door"] + $order["height_door"])/1000); //периметр двери
+$per_stvor = ceil(2*(($order["width_total"]-$order["width_door"]) + ($order["height_total"]))/1000); //периметр створки ?? как правильно посчитать
+/*
+//пока закомментил, т.к. не понял как именно сделать
+if($order["door_type"] == 6 || $order["door_type"] == 4){
+	$perimetr = $per_door + $per_stvor;
+} else {
+	$perimetr = $per_door;
+}
+*/
+$perimetr = $per_door + $per_stvor;
+if($order["pp_type"]==1001){
+	//если Техническая
+	$price["uplotnitel_price"] = $perimetr*35;
+} else if($order["pp_type"]==1002){
+	//если EI 60
+	$price["uplotnitel_price"] = $perimetr*105;
+} else if($order["pp_type"]==1003){
+	//если EIS 60
+	$price["uplotnitel_price"] = $perimetr*270;
 }
 // } else if($order["metallokonstr"]==192){
 // 	//если Элит

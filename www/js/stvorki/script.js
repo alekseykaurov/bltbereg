@@ -697,6 +697,7 @@ $(document).ready(function() {
 						if (color.main_lock_ruchka != 'Ручка на планке'){
 							main_lock_left = main_lock_left + 5/pp;
 						}
+						pattern_image.set({flipX: true});
 					}
 					break;
 			}
@@ -774,6 +775,7 @@ $(document).ready(function() {
 						if (color.main_lock_ruchka != 'Ручка на планке'){
 							main_lock_left = main_lock_left + 5/pp;
 						}
+						pattern_image.set({flipX: true});
 					}
 					break;
 			}
@@ -1737,13 +1739,11 @@ $(document).ready(function() {
 				var height_warn;
 				switch (order.door_type){
 					case 1:
-						$('.stvorka_position').hide();
 						$('.door_row').hide();
 						width_warn = '800-1100';
 						height_warn = '1800-2200';
 						break;
 					case 2:
-						$('.stvorka_position').show();
 						$('.door_row').show();
 						$('#door-width').prop('disabled', true);
 						$('#door-height').prop('disabled', false);
@@ -1752,7 +1752,6 @@ $(document).ready(function() {
 						break;
 					case 3:
 					case 4:
-						$('.stvorka_position').show();
 						$('.door_row').show();
 						$('#door-width').prop('disabled', false);
 						$('#door-height').prop('disabled', true);
@@ -1761,7 +1760,6 @@ $(document).ready(function() {
 						break;
 					case 5:
 					case 6:
-						$('.stvorka_position').show();
 						$('.door_row').show();
 						$('#door-width').prop('disabled', false);
 						$('#door-height').prop('disabled', false);
@@ -3522,8 +3520,11 @@ $(document).ready(function() {
 			rama_side = 10;
 			rama_top = 10;
 			rama_bottom = 3;
-			var petlya_width = 6;
-			var petlya_height = 20;
+			petlya_width = 6;
+			petlya_height = 20;
+			petlya_top_1 = 45;
+			petlya_top_2 = 85;
+			petlya_top_3 = 290;
 			pp = 1;
 			var width_warn;
 			var height_warn;
