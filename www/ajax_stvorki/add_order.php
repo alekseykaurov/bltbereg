@@ -51,7 +51,7 @@ unset($insert2['comment']);
 if(!isset($insert2["steklopak"]) || $insert2["steklopak"]==""){
 	unset($insert2['window_align']);
 }
-$insert2["door_type"] = "stvorki";
+//$insert2["door_type"] = "stvorki";
 
 //выполняем функцию для вставки
 $res = mysql_insert('orders', $insert2, $db);
@@ -112,6 +112,8 @@ $main_color_price = $price['main_color_price'];
 
 $outside_view = $modx->getDocument($insert["outside_view"]);
 $outside_view_name = $outside_view["pagetitle"]; // Название типа внешней отделки
+
+$pp_type = $insert['pp_type']; //тип противопожарной двери
 if ($insert['outside_view'] != 195){
 	$outside_color = $modx->getDocument($insert["outside_color"]);
 	$outside_color_name = $outside_color["pagetitle"]; // Название цвета внешней отделки
@@ -356,6 +358,7 @@ $glazok_name = iconv("utf-8", "windows-1251", $glazok_name);
 $dovodchik_name = iconv("utf-8", "windows-1251", $dovodchik_name);
 $zadvijka_name = iconv("utf-8", "windows-1251", $zadvijka_name);
 $stvorka_name = iconv("utf-8", "windows-1251", $stvorka_name);
+$pp_type = iconv("utf-8", "windows-1251", $pp_type);
 //$stvorka_position = iconv("utf-8", "windows-1251", $stvorka_position);
 // $steklopak_position = iconv("utf-8", "windows-1251", $steklopak_position);
 
@@ -427,6 +430,8 @@ $text .= xlsWriteLabel(20,0,"Цвет внутр МДФ (если есть)");
 $text .= xlsWriteLabel(21,0,"Тип внутр. Фрезер.");
 $text .= xlsWriteLabel(22,0,"Наличники (без налич., металл, МДФ 10мм, МДФ 16мм)");
 $text .= xlsWriteLabel(23,0,"Глазок");
+
+$text .= xlsWriteLabel(25,0,"Тип противопожарной двери");
 // $text .= xlsWriteLabel(24,0,"Кол-во этажей");
 // $text .= xlsWriteLabel(25,0,"Грузовой лифт (1-да/0-нет)");
 // $text .= xlsWriteLabel(26,0,"Монтаж (1-да/0-нет)");
@@ -500,6 +505,8 @@ $text .= xlsWriteLabel(22,1,$outside_nalichnik_name);
 $text .= xlsWriteLabel(22,2,$outside_nalichnik_price);
 $text .= xlsWriteLabel(23,1,$glazok_name);
 $text .= xlsWriteLabel(23,2,$glazok_price);
+
+$text .= xlsWriteLabel(25,1,$pp_type);
 // $text .= xlsWriteLabel(24,1,$floors);
 // $text .= xlsWriteLabel(25,1,$lift);
 // $text .= xlsWriteLabel(26,1,$montaj);

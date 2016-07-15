@@ -97,6 +97,7 @@ if ($result['steklopaket_id']['value'] != '' && $result['steklopaket_id']['value
 }
 $result['ruchka']['value'] = $TVs[19]['value'];
 $result['ruchka']['changable'] = true;
+
 $total_width_tv = $modx->getTemplateVars(Array("total_width"), '*', 979);
 $result['total_width']['value'] = $total_width_tv[0]['value'];
 $result['total_width']['changable'] = true;
@@ -104,6 +105,11 @@ $result['total_width']['changable'] = true;
 $total_height_tv = $modx->getTemplateVars(Array("total_height"), '*', 979);
 $result['total_height']['value'] = $total_height_tv[0]['value'];
 $result['total_height']['changable'] = true;
+
+$pp_type = $modx->getTemplateVars(Array('pp_type'), '*', 979);
+$result['pp_type']['value'] = $pp_type[0]['value'];
+$result['pp_type']['changable'] = true;
+
 $product_offer = $modx->getDocument($product);
 if($product_offer["parent"]==506 || $product_offer["parent"]==9 || $product_offer["parent"]==993){
 
@@ -149,7 +155,9 @@ if($product_offer["parent"]==506 || $product_offer["parent"]==9 || $product_offe
 	$cena_zadvijka = $modx->getTemplateVars(Array('cena_zadvijka'), '*', $product);
 	$cena_ruchka = $modx->getTemplateVars(Array('cena_ruchka'), '*', $product);
 	$cena_steklopak = $modx->getTemplateVars(Array('cena_steklopak'), '*', $product);
+	$door_type = $modx->getTemplateVars(Array('door_type'), '*', $product);
 
+	$pp_type = $modx->getTemplateVars(Array('pp_type'), '*', $product);
 
 	foreach ($productTVs as $key => $value){
 
@@ -318,6 +326,14 @@ if($product_offer["parent"]==506 || $product_offer["parent"]==9 || $product_offe
 	$result['outside-frezer_id']['changable'] = true;
 	$result['inside-frezer_id']['changable'] = true;
 
+	if($door_type[0]["value"] != ''){
+		$result['door_type']['value'] = intval($door_type[0]["value"]);
+		$result['door_type']['changable'] = true;
+	} else {
+		$result['door_type']['value'] = '';
+		$result['door_type']['changable'] = true;
+	}
+	
 	if($productTVs[16]["value"]!=""){
 		$result['steklopaket_position']["value"] = $productTVs[16]['value'];
 		$result['steklopaket_position']["changable"] = false;
@@ -338,6 +354,10 @@ if($product_offer["parent"]==506 || $product_offer["parent"]==9 || $product_offe
 	}
 	if($productTVs[18]["value"]!=""){
 		$result['ruchka']['value'] = $productTVs[18]['value'];
+	}
+	if($pp_type[0]['value']!=''){
+		$result['pp_type']['value'] = $pp_type[0]['value'];
+		$result['pp_type']['changable'] = true;
 	}
 
 	$total_width_tv = $modx->getTemplateVars(Array("total_width"), '*', $product);

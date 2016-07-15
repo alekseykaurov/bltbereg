@@ -14,13 +14,13 @@ $price = Array();
 $special_price = Array();
 
 //Площадь
-$S = ($order["height_door"]*$order["width_door"])/1000000;
+$S = ($order["height_total"]*$order["width_total"])/1000000;
 
 //Округляем до десятых
 function ceil3($number, $precision = 0) {
     return ceil($number * pow(10, $precision)) / pow(10, $precision);
 }
-$S = ceil3($S, 1);
+$S = ceil3($S, 2);
 
 //если пришел id спецпредложения, получаем цены
 $special_offer = $modx->getDocument($special);
@@ -52,22 +52,23 @@ if($specialTVs[0]["value"]==""){
 }
 
 //Узнаем цену на противосъем
-if($order["metallokonstr"]==191){
-	//если Основа
-	$price["protivosem_price"] = 2*150;
-} else if($order["metallokonstr"]==192){
-	//если Элит
-	$price["protivosem_price"] = 3*150;
-} else if($order["metallokonstr"]==193){
-	//если Профи
-	$price["protivosem_price"] = 4*150;
-}
+// if($order["metallokonstr"]==191){
+// 	//если Основа
+// 	$price["protivosem_price"] = 2*150;
+// } else if($order["metallokonstr"]==192){
+// 	//если Элит
+// 	$price["protivosem_price"] = 3*150;
+// } else if($order["metallokonstr"]==193){
+// 	//если Профи
+// 	$price["protivosem_price"] = 4*150;
+// }
+$price["protivosem_price"] = 0;
 $special_price["protivosem_price"] = $price["protivosem_price"];
 
 //Узнаем цену на петли
-if($order["metallokonstr"]==191){
+if($order["door_type"]==4 || $order["door_type"]==6){
 	//если Основа
-	$price["petli_price"] = 2*150;
+	$price["petli_price"] = 6*150;
 } else {
 	//если не основа
 	$price["petli_price"] = 3*150;
@@ -130,17 +131,17 @@ if($order["dovodchik"]!="" && $order["dovodchik"]!=null){
 }
 
 //Узнаем цену на ручку
-if($order["main_lock"]!="" && $order["main_lock"]!=null){
+if($order["main_lock"]!="" && $order["main_lock"]!=null && $order["main_lock"]!=0){
 	$is_ruchka_tv = $modx->getTemplateVars(Array("ruchka"), "*", $order["main_lock"]);
 	if($is_ruchka_tv[0]["value"]=="Без ручки"){
-		$price["rucka_price"] = 200;
+		$price["ruchka_price"] = 200;
 		$special_price["ruchka_price"] = 200;
 	} else {
-		$price["rucka_price"] = 0;
+		$price["ruchka_price"] = 0;
 		$special_price["ruchka_price"] = 0;
 	}
 } else {
-	$price["rucka_price"] = 200;
+	$price["ruchka_price"] = 200;
 	$special_price["ruchka_price"] = 200;
 }
 
@@ -159,17 +160,19 @@ if($order["glazok"]!="" && $order["glazok"]!=null){
 }
 
 //Узнаем цену на уплотнитель
-$uplotnitel_price = ceil(2*($order["width_door"] + $order["height_door"])*35/10000)*10;
+//$uplotnitel_price = ceil(2*($order["width_total"] + $order["height_total"])*70/10000)*10;
+$uplotnitel_price = ceil(2*($order["width_total"] + $order["height_total"])/1000)*70;
 if($order["metallokonstr"]==191){
 	//если Основа
 	$price["uplotnitel_price"] = 1*$uplotnitel_price;
-} else if($order["metallokonstr"]==192){
-	//если Элит
-	$price["uplotnitel_price"] = 2*$uplotnitel_price;
-} else if($order["metallokonstr"]==193){
-	//если Профи
-	$price["uplotnitel_price"] = 2*$uplotnitel_price;
 }
+// } else if($order["metallokonstr"]==192){
+// 	//если Элит
+// 	$price["uplotnitel_price"] = 2*$uplotnitel_price;
+// } else if($order["metallokonstr"]==193){
+// 	//если Профи
+// 	$price["uplotnitel_price"] = 2*$uplotnitel_price;
+// }
 $special_price["uplotnitel_price"] = $price["uplotnitel_price"];
 //Узнаем цену для покраски
 if($order["inside_view"]==195){
@@ -296,6 +299,30 @@ if($specialTVs[1]["value"]==""){
 } else {
 	$special_price["main_color_price"] = 1.5*$specialTVs[1]["value"];
 }
+
+//стоимость окна
+if(isset($order["steklopak"]) && $order["steklopak"]!=""){
+	$S_w = ($order["steklopak_height"]*$order["steklopak_width"])/1000000;
+
+	$window_price = (15000*$S_w)+2000;
+	$window_price = ceil(($window_price)/10)*10;
+	$price["steklopak_price"] = $window_price;
+	$special_price["steklopak_price"] = $window_price;
+} else {
+	$price["steklopak_price"] = 0;
+	$special_price["steklopak_price"] = 0;
+}
+
+//стоимость антипаники
+if(isset($order["ruchka"]) && $order["ruchka"]=="true"){
+	//узнаем стоимость ручки
+	$ruchka_price_tv = $modx->getTemplateVars(Array("cena_konstr"), "*", 992);
+	$price["ruchka_price"] = $ruchka_price_tv[0]["value"];
+	$special_price["ruchka_price"] = $ruchka_price_tv[0]["value"];
+}
+
+
+
 $total_price = 0;
 $total_special_price = 0;
 foreach($price as $key => $value){
@@ -304,12 +331,43 @@ foreach($price as $key => $value){
 foreach($special_price as $key => $value){
 	$total_special_price = $total_special_price + $value;
 }
+
+$price["total_old"] = $total_price;
+$price["total_special_old"] = $total_special_price;
+
+if ($order['door_type'] == 1) {
+    $productid = 994;
+} else if ($order['door_type'] == 2) {
+	$total_price = $total_price + (ceil($total_price/100)*10);
+	$total_special_price = $total_special_price + (ceil($total_special_price/100)*10);
+    $productid = 995;
+} else if ($order['door_type'] == 3) {
+	$total_price = $total_price + (ceil($total_price/100)*10);
+	$total_special_price = $total_special_price + (ceil($total_special_price/100)*10);
+    $productid = 996;
+} else if ($order['door_type'] == 4) {
+	$total_price = $total_price + (ceil(($total_price*0.15)/10)*10) + 2*300;
+	$total_special_price = $total_special_price + (ceil(($total_special_price*0.15)/10)*10) + 2*300;
+    $productid = 997;
+} else if ($order['door_type'] == 5) {
+	$total_price = $total_price + (ceil(($total_price*0.15)/10)*10);
+	$total_special_price = $total_special_price + (ceil(($total_special_price*0.15)/10)*10);
+    $productid = 998;
+} else if ($order['door_type'] == 6) {
+	$total_price = $total_price + (ceil(($total_price*0.25)/10)*10) + 2*300;
+	$total_special_price = $total_special_price + (ceil(($total_special_price*0.25)/10)*10) + 2*300;
+    $productid = 999;
+} else {
+    $productid = 979;
+}
+
 $price["spec"] = $special_price;
 $price["clear"] = $total_price;
 $price["skidka_percent"] = "";
 $price["skidka_ruble"] = "";
-$default_special_type = $modx->getTemplateVars(Array("sale_type"), "*", 189);
-$default_special_value = $modx->getTemplateVars(Array("sale_value"), "*", 189);
+
+$default_special_type = $modx->getTemplateVars(Array("sale_type"), "*", $productid);
+$default_special_value = $modx->getTemplateVars(Array("sale_value"), "*", $productid);
 if($specialTVs[11]["value"]==""){
 	$price["total"] = $total_special_price;
 	if ($default_special_value[0]['value'] != '' && $default_special_type[0]['value'] == 'В процентах'){

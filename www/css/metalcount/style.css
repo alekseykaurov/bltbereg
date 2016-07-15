@@ -15,6 +15,7 @@ h1{
     height: 35px;
     padding: 2px;
     cursor: pointer;
+    margin-right: 10px;
 }
 .door_type.active{
     border: 2px solid blue;
@@ -392,7 +393,7 @@ input#cilindr, input#suvald, input#syst, input#gold, input#chrom, input#other{
     border-radius: 0px !important;
     border-right: 0px;
 }
-input#input-height, input#input-width {
+input#input-height, input#input-width, input#door-height, input#door-width {
     width: 45px;
     margin-left: 10px;
     font-size: 15px;
@@ -508,26 +509,30 @@ div#pokraska1:hover, div#mdf-6:hover, div#mdf-10:hover, div.nalichnik:hover, div
     text-decoration: underline;
 }
 .which_door {
-    width: 100%;
+    /*width: 100%;*/
     float: left;
-    margin-top: 10px;
+    /*margin-top: 10px;*/
 }
-.outside {
+.stvorka_position{
     float: left;
-    width: 159px;
+    margin-right: 90px;
+}
+.outside, .stvorka_left {
+    /* float: left; */
+    /* width: 159px; */
     text-align: center;
     font-weight: bold;
     font-size: 17px;
-    cursor: pointer;
+    /*cursor: pointer;*/
 }
-.inside {
-    float: left;
-    margin-left: 18px;
-    width: 148px;
+.inside, .stvorka_right {
+    /* float: left; */
+    margin-left: 30px;
+    /* width: 148px; */
     text-align: center;
     font-size: 17px;
     font-weight: bold;
-    cursor: pointer;
+    /*cursor: pointer;*/
 }
 .add_lock_title {
     float: left;
@@ -785,15 +790,17 @@ div#right {
     width: 55px;
     padding: 0px 3px;
 }
-.door_side {
+.door_side, .stvorka_pos {
     float: left;
     width: 17px;
     cursor: pointer;
     border: 1px solid blue;
     border-radius: 5px;
     padding: 2px;
+    margin-bottom: 24px;
+    margin-top: 5px;
 }
-.door_side img {
+.door_side img, .stvorka_pos img {
     width: 100%;
 }
 .check_sizes {
@@ -818,18 +825,37 @@ div#right {
     border-radius: 10px;
     padding: 15px;
     margin-left: -292px;
-    margin-top: -59px;
+    margin-top: -137px;
 }
-.height_input {
+.sizes_row {
+    padding: 10px;
+}
+.sizes_row_left {
+    float: left;
+    height: 75px;
+    width: 70px;
+    font-size: 19px;
+}
+.height_input, .door_height {
     float: left;
     margin-left: 20px;
 }
-.width_input {
+.width_input, .door_width {
     float: left;
     margin-left: 52px;
 }
-.height_input span, .width_input span{
-    font-size: 20px
+.height_input span, .width_input span, .door_height span, .door_width span {
+    font-size: 20px;
+}
+.sizes_warning {
+    text-align: center;
+    display: inline-block;
+    margin-top: 8px;
+    color: red;
+    border: 1px solid black;
+    padding: 5px;
+    border-radius: 4px;
+    margin-left: 35px;
 }
 
 .button_check {
@@ -1169,6 +1195,16 @@ input[name=floors]{
 .canvas_types, .canvas_types_2{
     margin-left: 15px;
 }
-.active_door{
+.active_door, .active_stvorka{
     text-decoration: underline;
+}
+#texnicheskaya, #ei-60, #eis-60{
+    display: inline-block !important;
+    padding: 0px 10px;
+    border: 1px solid grey;
+    margin-left: 10px;
+}
+.pp_type.active{
+    border-radius: 5px 5px 0 0;
+    border-left: 1px solid #ccc;
 }
