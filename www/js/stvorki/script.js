@@ -1701,7 +1701,7 @@ $(document).ready(function() {
 				child_spec_color = data['child_spec_color']['value'];
 				if(data["special_name"]!=undefined){
 					if (isProduct){
-						$(".content h1").html("Модель \""+data["special_name"]+"\"");
+						$(".content h1").html(data["special_name"]);
 					}else{
 						$(".content h1").html("Акция \""+data["special_name"]+"\"");
 					}
