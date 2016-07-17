@@ -1462,44 +1462,86 @@ $(document).ready(function() {
 				type: 'GET',
 				dataType: 'json',
 				async: false,
-				data: {'page': order[key], 'inside_view': order.inside_view, 'key': key},
+				data: {'order': order},
 				success: function(data){
-					// console.log("fillpolee");
-					// console.log(key);
-					// console.log(data);
-					if(order[key]=="other"){
-						$(".setting_value.steklopak").html(order["steklopak_height"]+"*"+order["steklopak_width"]);
-					} else {
-						if (data['pagetitle'] !== undefined){
-							$('.setting_value.'+key).html(data['pagetitle']);
-							$('#check_'+key).prop('checked', true);
-												
-								var current_height = $('.setting_value.'+key).height();
-								// $('.option_settings').css('height', 'auto');
-								$('.option_settings.active').height(current_height);
-								// $('.option_name').css('height', 'auto');
-								$('.option_name.active').height(current_height);
-							
-							
+					console.log("fillpolee");
+					console.log(key);
+					console.log(data);
+					if(key!='all'){
+						if(order[key]=="other"){
+							$(".setting_value.steklopak").html(order["steklopak_height"]+"*"+order["steklopak_width"]);
+						} else {
+							if (data[key]['pagetitle'] !== undefined){
+								$('.setting_value.'+key).html(data[key]['pagetitle']);
+								$('#check_'+key).prop('checked', true);
+													
+									var current_height = $('.setting_value.'+key).height();
+									// $('.option_settings').css('height', 'auto');
+									$('.option_settings.active').height(current_height);
+									// $('.option_name').css('height', 'auto');
+									$('.option_name.active').height(current_height);
+								
+								
 
-							if(key=="metallokonstr"){
-								if(order[key]=="191"){
-									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-								} else if(order[key]=="192"){
-									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-								} else if(order[key]=="193"){
-									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+								if(key=="metallokonstr"){
+									if(order[key]=="191"){
+										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+									} else if(order[key]=="192"){
+										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+									} else if(order[key]=="193"){
+										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+									}
+								}
+							}else{
+								$('.setting_value.'+key).html('');
+								$('#check_'+key).prop('checked', false);	
+							}
+						}
+					} else {
+						for( var key_ord in data){
+							if (order[key_ord] !== null || order[key_ord] !== undefined || key_ord != 'width_door' || key_ord != 'height_door'){
+								if(order[key_ord]=="other"){
+									$(".setting_value.steklopak").html(order["steklopak_height"]+"*"+order["steklopak_width"]);
+								} else {
+									if (data[key_ord]['pagetitle'] !== undefined){
+										$('.setting_value.'+key_ord).html(data[key_ord]['pagetitle']);
+										$('#check_'+key_ord).prop('checked', true);
+															
+											var current_height = $('.setting_value.'+key_ord).height();
+											// $('.option_settings').css('height', 'auto');
+											$('.option_settings.active').height(current_height);
+											// $('.option_name').css('height', 'auto');
+											$('.option_name.active').height(current_height);
+										
+										
+
+										if(key_ord=="metallokonstr"){
+											if(order[key_ord]=="191"){
+												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
+												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
+											} else if(order[key_ord]=="192"){
+												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
+												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
+												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
+											} else if(order[key_ord]=="193"){
+												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
+												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
+												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
+												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
+											}
+										}
+									}else{
+										$('.setting_value.'+key_ord).html('');
+										$('#check_'+key_ord).prop('checked', false);	
+									}
 								}
 							}
-						}else{
-							$('.setting_value.'+key).html('');
-							$('#check_'+key).prop('checked', false);	
 						}
 					}
 				},
@@ -1783,12 +1825,9 @@ $(document).ready(function() {
 
 	//заполняем меню
 	function fillAll(){
-		for( var key in order){
-			if (order[key] !== null || order[key] !== undefined || key != 'width_door' || key != 'height_door'){
-				// console.log(key);
-				fillPole(key);
-			}
-		}
+		
+		fillPole('all');
+
 		$('#input-height').val(order.height_total);
 		$('#input-width').val(order.width_total);
 		$('.width-value').html(order.width_total);
@@ -3073,10 +3112,10 @@ $(document).ready(function() {
 				console.log(data);
 				$(".prices").remove();
 				// console.log(data);
-				$('.add_images').prepend('<div class = "prices">Промежуточные значения</div>')
-				for (var key in data){
-					$('.prices').append('<div>'+key+':'+data[key]+'</div>');
-				}
+				// $('.add_images').prepend('<div class = "prices">Промежуточные значения</div>')
+				// for (var key in data){
+				// 	$('.prices').append('<div>'+key+':'+data[key]+'</div>');
+				// }
 
 				//цена total
 				var str = String(data["total"]);
