@@ -19,10 +19,17 @@ if($projectId==null){
 
 	if ($row = mysql_fetch_assoc($res)) {
 		$result["status"]="ok";
-		if($row["door_type"]=="protivopojar"){
-			$result["link"]="http://ce77747.tmweb.ru/konstruktor-protivopozharnyix-dverej/?project=".$projectId;
-			$result["type"]="pp";
-		}else if($row["door_type"]=="stvorki"){
+		// if($row["door_type"]=="protivopojar"){
+		// 	$result["link"]="http://ce77747.tmweb.ru/konstruktor-protivopozharnyix-dverej/?project=".$projectId;
+		// 	$result["type"]="pp";
+		// }else if($row["door_type"]=="stvorki"){
+		// 	$result["link"]="http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi).html?project=".$projectId;
+		// 	$result["type"]="st";
+		// }else{
+		// 	$result["link"]="http://ce77747.tmweb.ru/konstruktor-dverej/?project=".$projectId;
+		// 	$result["type"]="mk";
+		// }
+		if($row["door_type"]== 1 || $row["door_type"] == 2 || $row["door_type"] == 3 || $row["door_type"] == 4 || $row["door_type"] == 5 || $row["door_type"] == 6 || $row["door_type"]=="protivopojar"){
 			$result["link"]="http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi).html?project=".$projectId;
 			$result["type"]="st";
 		}else{

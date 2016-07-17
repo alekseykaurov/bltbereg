@@ -14,13 +14,13 @@ $price = Array();
 $special_price = Array();
 
 //Площадь
-$S = ($order["height_door"]*$order["width_door"])/1000000;
+$S = ($order["height_total"]*$order["width_total"])/1000000;
 
 //Округляем до десятых
 function ceil3($number, $precision = 0) {
     return ceil($number * pow(10, $precision)) / pow(10, $precision);
 }
-$S = ceil3($S, 1);
+$S = ceil3($S, 2);
 
 //если пришел id спецпредложения, получаем цены
 $special_offer = $modx->getDocument($special);
@@ -66,9 +66,9 @@ $price["protivosem_price"] = 0;
 $special_price["protivosem_price"] = $price["protivosem_price"];
 
 //Узнаем цену на петли
-if($order["metallokonstr"]==191){
+if($order["door_type"]==4 || $order["door_type"]==6){
 	//если Основа
-	$price["petli_price"] = 3*150;
+	$price["petli_price"] = 6*150;
 } else {
 	//если не основа
 	$price["petli_price"] = 3*150;
@@ -160,10 +160,31 @@ if($order["glazok"]!="" && $order["glazok"]!=null){
 }
 
 //Узнаем цену на уплотнитель
-$uplotnitel_price = ceil(2*($order["width_door"] + $order["height_door"])*70/10000)*10;
-if($order["metallokonstr"]==191){
-	//если Основа
-	$price["uplotnitel_price"] = 1*$uplotnitel_price;
+//$uplotnitel_price = ceil(2*($order["width_total"] + $order["height_total"])*70/10000)*10;
+//$uplotnitel_price = ceil(2*($order["width_total"] + $order["height_total"])/1000)*70;
+$per_stvor = 0;
+$per_door = ceil(2*($order["width_door"] + $order["height_door"])/1000); //периметр двери
+if ($order["door_type"] == 4 || $order["door_type"] == 6){
+	$per_stvor = ceil(2*(($order["width_total"]-$order["width_door"]) + ($order["height_total"]))/1000); //периметр створки ?? как правильно посчитать
+}
+/*
+//пока закомментил, т.к. не понял как именно сделать
+if($order["door_type"] == 6 || $order["door_type"] == 4){
+	$perimetr = $per_door + $per_stvor;
+} else {
+	$perimetr = $per_door;
+}
+*/
+$perimetr = $per_door + $per_stvor;
+if($order["pp_type"]==1001){
+	//если Техническая
+	$price["uplotnitel_price"] = $perimetr*35;
+} else if($order["pp_type"]==1002){
+	//если EI 60
+	$price["uplotnitel_price"] = $perimetr*105;
+} else if($order["pp_type"]==1003){
+	//если EIS 60
+	$price["uplotnitel_price"] = $perimetr*270;
 }
 // } else if($order["metallokonstr"]==192){
 // 	//если Элит
@@ -330,12 +351,53 @@ foreach($price as $key => $value){
 foreach($special_price as $key => $value){
 	$total_special_price = $total_special_price + $value;
 }
+
+$price["total_old"] = $total_price;
+$price["total_special_old"] = $total_special_price;
+
+if ($order['door_type'] == 1) {
+    $productid = 994;
+} else if ($order['door_type'] == 2) {
+	// $total_price = $total_price + (ceil($total_price/100)*10);
+	// $total_special_price = $total_special_price + (ceil($total_special_price/100)*10);
+	$total_price = $total_price + (ceil(($price["metallkonstr_price"] + $price["petli_price"])/100)*10);
+	$total_special_price = $total_special_price + (ceil(($special_price["metallkonstr_price"] + $special_price["petli_price"])/100)*10);
+    $productid = 995;
+} else if ($order['door_type'] == 3) {
+	// $total_price = $total_price + (ceil($total_price/100)*10);
+	// $total_special_price = $total_special_price + (ceil($total_special_price/100)*10);
+	$total_price = $total_price + (ceil(($price["metallkonstr_price"] + $price["petli_price"])/100)*10);
+	$total_special_price = $total_special_price + (ceil(($special_price["metallkonstr_price"] + $special_price["petli_price"])/100)*10);
+    $productid = 996;
+} else if ($order['door_type'] == 4) {
+	// $total_price = $total_price + (ceil(($total_price*0.15)/10)*10) + 2*300;
+	// $total_special_price = $total_special_price + (ceil(($total_special_price*0.15)/10)*10) + 2*300;
+	$total_price = $total_price + (ceil((($price["metallkonstr_price"] + $price["petli_price"])*0.15)/10)*10) + 2*300;
+	$total_special_price = $total_special_price + (ceil((($special_price["metallkonstr_price"] + $special_price["petli_price"])*0.15)/10)*10) + 2*300;
+    $productid = 997;
+} else if ($order['door_type'] == 5) {
+	// $total_price = $total_price + (ceil(($total_price*0.15)/10)*10);
+	// $total_special_price = $total_special_price + (ceil(($total_special_price*0.15)/10)*10);
+	$total_price = $total_price + (ceil((($price["metallkonstr_price"] + $price["petli_price"])*0.15)/10)*10);
+	$total_special_price = $total_special_price + (ceil((($special_price["metallkonstr_price"] + $special_price["petli_price"])*0.15)/10)*10);
+    $productid = 998;
+} else if ($order['door_type'] == 6) {
+	// $total_price = $total_price + (ceil(($total_price*0.25)/10)*10) + 2*300;
+	// $total_special_price = $total_special_price + (ceil(($total_special_price*0.25)/10)*10) + 2*300;
+	$total_price = $total_price + (ceil((($price["metallkonstr_price"] + $price["petli_price"])*0.25)/10)*10) + 2*300;
+	$total_special_price = $total_special_price + (ceil((($special_price["metallkonstr_price"] + $special_price["petli_price"])*0.25)/10)*10) + 2*300;
+    $productid = 999;
+} else {
+    $productid = 979;
+}
+
 $price["spec"] = $special_price;
 $price["clear"] = $total_price;
 $price["skidka_percent"] = "";
 $price["skidka_ruble"] = "";
-$default_special_type = $modx->getTemplateVars(Array("sale_type"), "*", 979);
-$default_special_value = $modx->getTemplateVars(Array("sale_value"), "*", 979);
+
+$default_special_type = $modx->getTemplateVars(Array("sale_type"), "*", $productid);
+$default_special_value = $modx->getTemplateVars(Array("sale_value"), "*", $productid);
 if($specialTVs[11]["value"]==""){
 	$price["total"] = $total_special_price;
 	if ($default_special_value[0]['value'] != '' && $default_special_type[0]['value'] == 'В процентах'){

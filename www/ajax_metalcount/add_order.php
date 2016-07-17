@@ -106,6 +106,7 @@ $main_color_price = $price['main_color_price'];
 
 $outside_view = $modx->getDocument($insert["outside_view"]);
 $outside_view_name = $outside_view["pagetitle"]; // Название типа внешней отделки
+
 if ($insert['outside_view'] != 195){
 	$outside_color = $modx->getDocument($insert["outside_color"]);
 	$outside_color_name = $outside_color["pagetitle"]; // Название цвета внешней отделки

@@ -123,6 +123,9 @@ if($page==null){
 	}else if($page == 228){
 		$tpl = 'zadvijka';
 		$txt = getHtml($page, $tpl, $modx);
+	}else if($page == 1000){
+		$tpl = 'otdelka';
+		$txt = getHtml($page, $tpl, $modx);
 	}else if($page==983){
 
 		// //получаем список всех замков
