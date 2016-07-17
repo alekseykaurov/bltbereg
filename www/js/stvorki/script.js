@@ -329,11 +329,8 @@ $(document).ready(function() {
 			petlya_top_2 = petlya_top_2/pp;
 			petlya_top_3 = petlya_top_3/pp;
 			friz.set({height: f_h, width: w_d});
-<<<<<<< HEAD
 			console.log('w_d = ' + w_d);
 			console.log('friz_width = ' + friz.getWidth());
-=======
->>>>>>> 8383cb1a1deddb2a66cbfd22bf45f8311e2536f6
 			b_top = 0;
 			b_side = 0;
 			if (order.outside_nalichnik == 220){
@@ -370,10 +367,6 @@ $(document).ready(function() {
 			while (tmp_h + rama_bottom + rama_top > 380){
 				pp = pp + 0.05;
 				tmp_h = tmp_h/pp;
-<<<<<<< HEAD
-=======
-				console.log('tmp_h ' + tmp_h);
->>>>>>> 8383cb1a1deddb2a66cbfd22bf45f8311e2536f6
 			}
 			s_w = s_w/pp;
 			w_d = w_d/pp;
@@ -381,12 +374,6 @@ $(document).ready(function() {
 			b_w = b_w/pp;
 			h_d = h_d/pp;
 			b_h = h_d + f_h + rama_top + rama_bottom;
-<<<<<<< HEAD
-=======
-			console.log('height');
-			console.log(h_d + f_h + rama_bottom + rama_top);
-			console.log('pp ' + pp);
->>>>>>> 8383cb1a1deddb2a66cbfd22bf45f8311e2536f6
 			petlya_top_1 = petlya_top_1/pp;
 			petlya_top_2 = petlya_top_2/pp;
 			petlya_top_3 = petlya_top_3/pp;
@@ -459,11 +446,7 @@ $(document).ready(function() {
 			background.set({width: b_w, left: b_side, height: b_h, top: b_top});
 			shadow.set({width: b_w, height: b_h, left: b_side, top: b_top});
 			// canvas_inside.setWidth(canvas_inside_w);
-<<<<<<< HEAD
 			friz.set({width: w_d + s_w, height: f_h});
-=======
-			friz.set({width: b_w - 2*rama_side, height: f_h});
->>>>>>> 8383cb1a1deddb2a66cbfd22bf45f8311e2536f6
 			petlya_right_1.set({left: petlya_left, top: petlya_top_1 + f_h});
 			petlya_right_2.set({left: petlya_left, top: petlya_top_2 + f_h});
 			petlya_right_3.set({left: petlya_left, top: petlya_top_3 + f_h});
@@ -515,10 +498,6 @@ $(document).ready(function() {
 				makeSmaller = true;
 			}
 			if (makeSmaller){
-<<<<<<< HEAD
-=======
-				s_w = s_w/pp;
->>>>>>> 8383cb1a1deddb2a66cbfd22bf45f8311e2536f6
 				w_d = w_d/pp;
 				f_h = f_h/pp;
 				b_h = b_h/pp;
@@ -530,11 +509,7 @@ $(document).ready(function() {
 				petlya_top_3 = petlya_top_3/pp;
 			}
 			door.set({width: w_d, height: h_d, left: rama_side});
-<<<<<<< HEAD
 			stvorka.set({width: 0, height: 0});
-=======
-			stvorka.set({width: s_w, height: h_d});
->>>>>>> 8383cb1a1deddb2a66cbfd22bf45f8311e2536f6
 			b_w = s_w + w_d + 2*rama_side;
 			b_side = 0;
 			b_top = 0;
@@ -542,11 +517,7 @@ $(document).ready(function() {
 			var canvas_inside_w = b_w + 2;
 			if (order.outside_nalichnik == 220){
 				b_w = s_w + w_d + 2*rama_bottom;
-<<<<<<< HEAD
 				b_h = h_d + f_h + 2*rama_bottom;
-=======
-				b_h = h_d + 2*rama_bottom;
->>>>>>> 8383cb1a1deddb2a66cbfd22bf45f8311e2536f6
 				b_side = rama_side - rama_bottom;
 				b_top = b_side;
 				petlya_left = b_w;
@@ -556,11 +527,7 @@ $(document).ready(function() {
 			background.set({width: b_w, left: b_side, height: b_h, top: b_top});
 			shadow.set({width: b_w, height: b_h, left: b_side, top: b_top});
 			// canvas_inside.setWidth(canvas_inside_w);
-<<<<<<< HEAD
 			friz.set({width: w_d, height: f_h});
-=======
-			friz.set({width: b_w - 2*rama_side, height: f_h});
->>>>>>> 8383cb1a1deddb2a66cbfd22bf45f8311e2536f6
 			petlya_right_1.set({left: petlya_left, top: petlya_top_1 + f_h});
 			petlya_right_2.set({left: petlya_left, top: petlya_top_2 + f_h});
 			petlya_right_3.set({left: petlya_left, top: petlya_top_3 + f_h});
@@ -3565,11 +3532,6 @@ $(document).ready(function() {
 			petlya_top_2 = 85;
 			petlya_top_3 = 290;
 			pp = 1;
-<<<<<<< HEAD
-=======
-			var width_warn;
-			var height_warn;
->>>>>>> 8383cb1a1deddb2a66cbfd22bf45f8311e2536f6
 			defaultLoad(door_type);
 			fillAll();
 			check_color(order);

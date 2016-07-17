@@ -162,16 +162,11 @@ if($order["glazok"]!="" && $order["glazok"]!=null){
 //Узнаем цену на уплотнитель
 //$uplotnitel_price = ceil(2*($order["width_total"] + $order["height_total"])*70/10000)*10;
 //$uplotnitel_price = ceil(2*($order["width_total"] + $order["height_total"])/1000)*70;
-<<<<<<< HEAD
 $per_stvor = 0;
 $per_door = ceil(2*($order["width_door"] + $order["height_door"])/1000); //периметр двери
 if ($order["door_type"] == 4 || $order["door_type"] == 6){
 	$per_stvor = ceil(2*(($order["width_total"]-$order["width_door"]) + ($order["height_total"]))/1000); //периметр створки ?? как правильно посчитать
 }
-=======
-$per_door = ceil(2*($order["width_door"] + $order["height_door"])/1000); //периметр двери
-$per_stvor = ceil(2*(($order["width_total"]-$order["width_door"]) + ($order["height_total"]))/1000); //периметр створки ?? как правильно посчитать
->>>>>>> 8383cb1a1deddb2a66cbfd22bf45f8311e2536f6
 /*
 //пока закомментил, т.к. не понял как именно сделать
 if($order["door_type"] == 6 || $order["door_type"] == 4){
@@ -363,7 +358,6 @@ $price["total_special_old"] = $total_special_price;
 if ($order['door_type'] == 1) {
     $productid = 994;
 } else if ($order['door_type'] == 2) {
-<<<<<<< HEAD
 	// $total_price = $total_price + (ceil($total_price/100)*10);
 	// $total_special_price = $total_special_price + (ceil($total_special_price/100)*10);
 	$total_price = $total_price + (ceil(($price["metallkonstr_price"] + $price["petli_price"])/100)*10);
@@ -392,26 +386,6 @@ if ($order['door_type'] == 1) {
 	// $total_special_price = $total_special_price + (ceil(($total_special_price*0.25)/10)*10) + 2*300;
 	$total_price = $total_price + (ceil((($price["metallkonstr_price"] + $price["petli_price"])*0.25)/10)*10) + 2*300;
 	$total_special_price = $total_special_price + (ceil((($special_price["metallkonstr_price"] + $special_price["petli_price"])*0.25)/10)*10) + 2*300;
-=======
-	$total_price = $total_price + (ceil($total_price/100)*10);
-	$total_special_price = $total_special_price + (ceil($total_special_price/100)*10);
-    $productid = 995;
-} else if ($order['door_type'] == 3) {
-	$total_price = $total_price + (ceil($total_price/100)*10);
-	$total_special_price = $total_special_price + (ceil($total_special_price/100)*10);
-    $productid = 996;
-} else if ($order['door_type'] == 4) {
-	$total_price = $total_price + (ceil(($total_price*0.15)/10)*10) + 2*300;
-	$total_special_price = $total_special_price + (ceil(($total_special_price*0.15)/10)*10) + 2*300;
-    $productid = 997;
-} else if ($order['door_type'] == 5) {
-	$total_price = $total_price + (ceil(($total_price*0.15)/10)*10);
-	$total_special_price = $total_special_price + (ceil(($total_special_price*0.15)/10)*10);
-    $productid = 998;
-} else if ($order['door_type'] == 6) {
-	$total_price = $total_price + (ceil(($total_price*0.25)/10)*10) + 2*300;
-	$total_special_price = $total_special_price + (ceil(($total_special_price*0.25)/10)*10) + 2*300;
->>>>>>> 8383cb1a1deddb2a66cbfd22bf45f8311e2536f6
     $productid = 999;
 } else {
     $productid = 979;
