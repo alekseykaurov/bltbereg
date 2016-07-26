@@ -88,7 +88,8 @@ $(document).ready(function() {
     order.quantity_cells = quantity_cells;
     canvas.clear();
     countProportion(quantity_row, quantity_cells);
-    console.log(order);
+
+    getPrice();
   }
 
   defaultLoad(product);
@@ -110,6 +111,27 @@ $(document).ready(function() {
 
       }
     });
+  }
+
+  function getPrice(){
+
+  	$.ajax({
+      url: '/ajax_cells/getPrice.php',
+      type: 'POST',
+      dataType: 'json',
+      async: false,
+      data: {'order': order},
+      success: function(data){
+        
+        var str = String(data["total"]);
+		str = str.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+        $(".price").html(str + '=');
+        console.log("get price");
+        console.log(data);
+
+      }
+    });
+  	
   }
 
   // var width_cells_all = total_width - 90;
@@ -345,8 +367,6 @@ $(document).ready(function() {
     $("#width_cell_"+whoIsChecked).prop("checked",true);
     order.cell_width = widths[whoIsChecked-1];
     countPossibleHeights(widths[whoIsChecked-1] - 15);
-    console.log("ff");
-    console.log(widths);
 
     return widths;
   }
@@ -377,13 +397,11 @@ $(document).ready(function() {
       a = height_2/2;
       height_2 = Math.floor(Math.sqrt(4*a*a - current_width*current_width));
       if (height_2 >= 400 && height_2 < order.total_height){
-      $(".height-visible-possible").append('<label for="height_cell_2"> <span class="possible_height_2" data-quantityrow = "'+quantity_row_2+'">'+(height_2 - 15)+'</span><input type="radio" name="height_cell" id="height_cell_2"></label>');           
-      if(!flag){
-        order.cell_height = height_2;
-        $("#height_cell_2").prop("checked",true);
-      }
-      console.log("hahahah");
-      console.log(order);
+      	$(".height-visible-possible").append('<label for="height_cell_2"> <span class="possible_height_2" data-quantityrow = "'+quantity_row_2+'">'+(height_2 - 15)+'</span><input type="radio" name="height_cell" id="height_cell_2"></label>');           
+		if(!flag){
+			order.cell_height = height_2;
+			$("#height_cell_2").prop("checked",true);
+		}
       }
     }
   }
@@ -539,24 +557,23 @@ $(document).ready(function() {
       }
 
       if(!error){
-        order.total_height = tot_height;
-      order.total_width = tot_width;
-      countPossibleWidths();
-      var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
-      var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
-      canvas.clear();
-      order.quantity_cells = quantity_cells;
-      countProportion(quantity_row, quantity_cells);
+		order.total_height = tot_height;
+		order.total_width = tot_width;
+		countPossibleWidths();
+		var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
+		var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
+		canvas.clear();
+		order.quantity_cells = quantity_cells;
+		countProportion(quantity_row, quantity_cells);
 
-      $(".height-value").html(order.total_height);
-      $(".width-value").html(order.total_width);
+		$(".height-value").html(order.total_height);
+		$(".width-value").html(order.total_width);
 
-      $(".wrapper").hide();
-      console.log("width-height");
-      console.log(order);
+		$(".wrapper").hide();
+
+		getPrice();
+
       }
-
-    
 
   });
 
@@ -573,8 +590,8 @@ $(document).ready(function() {
       order.quantity_cells = quantity_cells;
       countProportion(quantity_row, quantity_cells);
 
-      console.log("type");
-      console.log(order);
+      getPrice();
+
   });
 
   //нажатие на выбор ширины
@@ -586,6 +603,8 @@ $(document).ready(function() {
     canvas.clear();
     order.quantity_cells = quantity_cells;
     countProportion(quantity_row, quantity_cells);
+
+    getPrice();
   });
 
   //нажатие на выбор высоты
@@ -596,56 +615,58 @@ $(document).ready(function() {
     order.quantity_cells = quantity_cells;
     canvas.clear();
     countProportion(quantity_row, quantity_cells);
-    console.log(order);
+
+    getPrice();
   });
 
   //нажатие на меню
 
   $(".setting_value").click(function(){
-    var type_id = $(this).data('pageid');
-  var classList = $(this).attr('class').split(/\s+/);
-  $.each(classList, function(index, item){
-    for (var i = 0; i < classList.length; i++){
-      if (classList[i] != 'setting_value' && classList[i] != 'active'){
-        type = classList[i];
-      }
-    }
-  });
+	var type_id = $(this).data('pageid');
+	var classList = $(this).attr('class').split(/\s+/);
+	$.each(classList, function(index, item){
+		for (var i = 0; i < classList.length; i++){
+		  if (classList[i] != 'setting_value' && classList[i] != 'active'){
+		    type = classList[i];
+		  }
+		}
+  	});
 
-  if(canChange!=false && isChange[type] != false){
+  	if(canChange!=false && isChange[type] != false){
 
-    $('.setting_value').removeClass('active');
-    $(this).addClass('active');
+	    $('.setting_value').removeClass('active');
+	    $(this).addClass('active');
 
-    $('.option_name').removeClass('active');
-    $('.option_name'+'.'+type).addClass('active');
-    $('.option_settings').removeClass('active');
-    $('.option_settings'+'.'+type).addClass('active');
-    $('.current_menu').remove();
-    $(this).parent().append('<div class = "current_menu"></div>');
-    $('.close_div').remove();
-    $('.current_menu').before('<div class = "close_div"><img class = "close" src = "/images/metalcount/close.gif" /></div>');
-    // $('.current_menu').append('<div class = "zamok_sort_title">Сортировка по цене:</div><form class = "zamok_sort"><select name="sort"><option value="up">По возр.</option><option value="down">По убыв.</option></select></form>');
+	    $('.option_name').removeClass('active');
+	    $('.option_name'+'.'+type).addClass('active');
+	    $('.option_settings').removeClass('active');
+	    $('.option_settings'+'.'+type).addClass('active');
+	    $('.current_menu').remove();
+	    $(this).parent().append('<div class = "current_menu"></div>');
+	    $('.close_div').remove();
+	    $('.current_menu').before('<div class = "close_div"><img class = "close" src = "/images/metalcount/close.gif" /></div>');
+	    // $('.current_menu').append('<div class = "zamok_sort_title">Сортировка по цене:</div><form class = "zamok_sort"><select name="sort"><option value="up">По возр.</option><option value="down">По убыв.</option></select></form>');
 
-    $.ajax({
-      url: '/ajax_cells/get_menu.php',
-      type: 'POST',
-      dataType: 'json',
-      data: {
-        'page': type_id,
-        'type': type
-      },
-      success: function(data){
-        // $('.current_menu').html('');
-        // alert(type);
-        console.log(data);
-        $('.current_menu h2').append(data['page']['pagetitle']);
-        $('.current_menu').append(data['txt']);
-        $(".current_menu div[data-pageid="+order[type]+"]").addClass("active-child");
-      }
-    });
+	    $.ajax({
+	      url: '/ajax_cells/get_menu.php',
+	      type: 'POST',
+	      dataType: 'json',
+	      data: {
+	        'page': type_id,
+	        'type': type
+	      },
+	      success: function(data){
+	        // $('.current_menu').html('');
+	        // alert(type);
+	        console.log("get_menu");
+	        console.log(data);
+	        $('.current_menu h2').append(data['page']['pagetitle']);
+	        $('.current_menu').append(data['txt']);
+	        $(".current_menu div[data-pageid="+order[type]+"]").addClass("active-child");
+	      }
+	    });
 
-  }
+  	}
 
   });
 
@@ -700,4 +721,13 @@ $(document).ready(function() {
       fillPole();
     }
   });
+
+  //для теста
+  $(".load_order_title").click(function(){
+  	console.log("order");
+  	console.log(order);
+  	getPrice();
+  });
+
+
 })
