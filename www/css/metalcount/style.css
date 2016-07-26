@@ -516,11 +516,11 @@ div#pokraska1:hover, div#mdf-6:hover, div#mdf-10:hover, div.nalichnik:hover, div
     font-size: 18px;
     margin-left: 100px;
 }
-.checkbox_main_lock, .checkbox_add_lock, .checkbox_glazok, .checkbox_dovodchik, .checkbox_zadvijka, .checkbox_steklopak, .checkbox_ruchka{
+.checkbox_main_lock, .checkbox_add_lock, .checkbox_glazok, .checkbox_dovodchik, .checkbox_zadvijka, .checkbox_steklopak, .checkbox_ruchka, .checkbox_proushina, .checkbox_rolik{
     float: left;
     padding-left: 10px !important;
 }
-.checkbox_main_lock.active, .checkbox_add_lock.active, .checkbox_glazok.active, .checkbox_dovodchik.active, .checkbox_zadvijka.active, .checkbox_steklopak.active, .checkbox_ruchka.active{
+.checkbox_main_lock.active, .checkbox_add_lock.active, .checkbox_glazok.active, .checkbox_dovodchik.active, .checkbox_zadvijka.active, .checkbox_steklopak.active, .checkbox_ruchka.active, .checkbox_proushina.active, .checkbox_rolik.active{
     border-top: 1px solid #ccc;
     border-radius: 0px;
 }
@@ -1213,7 +1213,7 @@ input[name=floors]{
 .load_order_title {
     margin-left: 615px;
 }
-.canvas_types, .canvas_types_2{
+.canvas_types, .canvas_types_2, .canvas_cells{
     margin-left: 15px;
 }
 .active_door, .active_stvorka{
@@ -1236,6 +1236,9 @@ input[name=floors]{
     float: left;
     width: 150px;
 }
+.cell_option .option_name{
+    margin-top: 40px;
+}
 .possible_visible_size{
     width: 250px;
 }
@@ -1253,7 +1256,7 @@ input[name=floors]{
     line-height: 15px;
 }
 .cell_image{
-    float: right;
+    /*float: right;
     width: 50px;
     height: 50px;
     -webkit-transform: rotate(-45deg);
@@ -1270,4 +1273,47 @@ input[name=floors]{
     margin-right: -14px;
     padding-left: 0px !important;
     border: 2px solid black;
+
+    -webkit-transform: skew(30deg) rotate(15deg);
+    -moz-transform: skew(30deg) rotate(15deg);
+    -o-transform: skew(30deg) rotate(15deg);
+    transform: skew(30deg) rotate(15deg);
+
+    -webkit-transform-origin: 0 100%;
+    -moz-transform-origin: 0 100%;
+    -ms-transform-origin: 0 100%;
+    -o-transform-origin: 0 100%;
+    transform-origin: 0 100%;*/
+}
+.cell_image{
+    display: none;
+    float: right;
+    height: 20px;
+    width: 80px;
+}
+.cell_line{
+    background: black;
+    width: 65px;
+    height: 2px;
+    position: absolute;
+}
+.cell_line_1{
+    transform: rotate(60deg);
+    margin-top: 29px;
+    margin-left: 23px;
+}
+.cell_line_2{
+    transform: rotate(-60deg);
+    margin-top: 30px;
+    margin-left: -10px;
+}
+.cell_line_3{
+    transform: rotate(-60deg);
+    margin-top: 85px;
+    margin-left: 23px;
+}
+.cell_line_4{
+    transform: rotate(60deg);
+    margin-top: 86px;
+    margin-left: -10px;
 }

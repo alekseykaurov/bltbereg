@@ -65,17 +65,19 @@ if($cookie!=false){
 				// 	$door_name = "<a href='http://ce77747.tmweb.ru/konstruktor-dverej/?project=".$value[0]."'>Мет.дверь, 1-ств, квартирная пр.№".$value[0]."</a>";
 				// }
 				if($row["door_type"]== 1 || $row["door_type"]=="protivopojar"){
-			    	$door_name = "<a href='/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 1-ств, противопожарная пр.№".$value[0]."</a>";
+			    	$door_name = "<a href='http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 1-ств, противопожарная пр.№".$value[0]."</a>";
 				} else if ($row["door_type"] == 2 || $row["door_type"] == 3) {
-					$door_name = "<a href='/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 1-створ. с глух. частью, противопожарная пр.№".$value[0]."</a>";
+					$door_name = "<a href='http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 1-створ. с глух. частью, противопожарная пр.№".$value[0]."</a>";
 				} else if($row["door_type"] == 4){
-					$door_name = "<a href='/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 2-створ., противопожарная пр.№".$value[0]."</a>";
+					$door_name = "<a href='http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 2-створ., противопожарная пр.№".$value[0]."</a>";
 				} else if($row["door_type"] == 5){
-					$door_name = "<a href='/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 1-створ. с 2-мя глух. частями, противопожарная пр.№".$value[0]."</a>";
+					$door_name = "<a href='http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 1-створ. с 2-мя глух. частями, противопожарная пр.№".$value[0]."</a>";
 				} else if($row["door_type"] == 6){
-					$door_name = "<a href='/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 2-створ. с глух. частm., противопожарная пр.№".$value[0]."</a>";
-				}else {
-					$door_name = "<a href='/konstruktor-dverej/?project=".$value[0]."'>Мет.дверь, 1-ств, квартирная пр.№".$value[0]."</a>";
+					$door_name = "<a href='http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 2-створ. с глух. частm., противопожарная пр.№".$value[0]."</a>";
+				} else if($row["door_type"] == "cells"){
+					$door_name = "<a href='http://ce77747.tmweb.ru/reshetki/?project=".$value[0]."'>Решетка пр.№".$value[0]."</a>";
+				} else {
+					$door_name = "<a href='http://ce77747.tmweb.ru/konstruktor-dverej/?project=".$value[0]."'>Мет.дверь, 1-ств, квартирная пр.№".$value[0]."</a>";
 				}
 			} else {
 				$door_name = "Дверь №".$value[0];

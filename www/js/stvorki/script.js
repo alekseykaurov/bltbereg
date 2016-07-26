@@ -3547,7 +3547,7 @@ $(document).ready(function() {
 		special = null;
 		getPrice();
 
-		$(".content h1").html("Конструктор \"Противопожарные двери\"");
+		$(".content h1").html("Конструктор \"Решетки\"");
 
 		$(".load_order_number input").val('');
 		$(".my_breadcrumb").detach();

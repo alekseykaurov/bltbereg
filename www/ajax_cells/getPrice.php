@@ -14,7 +14,7 @@ $price = Array();
 $special_price = Array();
 
 //Площадь
-$S = ($order["total_height"]*$order["total_width"])/1000000;
+$S = ($order["height_total"]*$order["width_total"])/1000000;
 
 //Округляем до десятых
 function ceil3($number, $precision = 0) {
@@ -23,7 +23,11 @@ function ceil3($number, $precision = 0) {
 $S = ceil3($S, 2);
 
 //стоимость окрашивания
-$price["color"] = 700 * $S;
+if($order["main_color_type"]==196){
+	$price["main_color"] = 700 * $S;
+} else {
+	$price["main_color"] = 1200 * $S;
+}
 
 //профильная часть
 if($order["bars_type"]==1 || $order["bars_type"]==3){
@@ -31,7 +35,10 @@ if($order["bars_type"]==1 || $order["bars_type"]==3){
 } else {
 	$stvorki_count = 2;
 }
-$price["profile"] = ceil((($order["total_height"]*2*$order["quantity_cells"]*40/1000)+($order["prolety"]*$order["quantity_cells"]*50))/10)*10*$stvorki_count;
+$price["profile"] = ceil((($order["width_total"]*2*$order["quantity_cells"]*40/1000)+($order["prolety"]*$order["quantity_cells"]*50))/10)*10*$stvorki_count;
+if($price["profile"]<2000){
+	$price["profile"] = 2000;
+}
 
 //стоимость петель
 if($order["bars_type"]==3){
@@ -44,28 +51,38 @@ if($order["bars_type"]==3){
 
 //стоимость планок
 if($order["bars_type"]==1 || $order["bars_type"]==2){
-	$price["planki"] = 144*2;
+	$price["planki"] = (80*$order["height_total"])/1000*2;
 } else {
-	$price["planki"] = 144*4;
+	$price["planki"] = (80*$order["height_total"])/1000*4;
 }
 
 //стоимость несущ. профиля
 if($order["bars_type"]==1){
-	$price["nes_profile"] = 144*1;
+	$price["nes_profile"] = (80*$order["height_total"])/1000*1;
 } else if($order["bars_type"]==3 || $order["bars_type"]==4){
-	$price["nes_profile"] = 144*2;
+	$price["nes_profile"] = (80*$order["height_total"])/1000*2;
 } else {
 	$price["nes_profile"] = 0;
 }
 
 //Проуш. Нав.замок
-$price["nav_zamok"] = 100;
+if($order["proushina"]){
+	$proushina = 1;
+} else {
+	$proushina = 0;
+}
+$price["nav_zamok"] = 100*$proushina;
 
 //стоимость поворотного ролика
-if($order["bars_type"]==1 || $order["bars_type"]==3){
-	$price["rolik"] = 250*1;
+if($order["rolik"]){
+	$rolik = 1;
 } else {
-	$price["rolik"] = 250*2;
+	$rolik = 0;
+}
+if($order["bars_type"]==1 || $order["bars_type"]==3){
+	$price["rolik"] = 250*1*$rolik;
+} else {
+	$price["rolik"] = 250*2*$rolik;
 }
 
 $total_price = 0;

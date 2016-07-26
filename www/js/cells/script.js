@@ -25,7 +25,8 @@ $(document).ready(function() {
   var lines_1 = new Array();
   var lines_2 = new Array();
   var lugs = new Array();
-
+  var handles = new Array();
+  var price = {};
   if(product==undefined && project==undefined){
     // window.location.pathname = "/";
     product = 1005;
@@ -35,8 +36,8 @@ $(document).ready(function() {
       isProduct = true;
     }
   }
-  var total_width = 2000;
-  var total_height = 1800;
+  var width_total = 2000;
+  var height_total = 1800;
   var visible_width = 150;
   var order = {};
   var isChange = {};
@@ -55,30 +56,32 @@ $(document).ready(function() {
       data: {'product': prod},
       success: function(data){
         order = {
-          total_width: data['total_width']['value'],
-          total_height: data['total_height']['value'],
+          width_total: data['total_width']['value'],
+          height_total: data['total_height']['value'],
           bars_type: data['bars_type']['value'],
           main_color_type: data['main_color_type']['value'],
-          main_color: data['main_color']['value']
+          main_color: data['main_color']['value'],
+          main_color_value: data['main_color_value']['value']
         }
 
         isChange = {
-          total_width: data['total_width']['changable'],
-          total_height: data['total_height']['changable'],
+          width_total: data['total_width']['changable'],
+          height_total: data['total_height']['changable'],
           bars_type: data['bars_type']['changable'],
           main_color_type: data['main_color_type']['changable'],
           main_color: data['main_color']['changable']
         }
       }
     });
-
+    order.proushina = true;
+    order.rolik = true;
     $(".cell_type").removeClass("active");
     $(".cell_type[data-celltype='"+order.bars_type+"']").addClass("active");
 
-    $(".height-value").html(order.total_height);
-    $(".width-value").html(order.total_width);
-    $("#input-height").val(order.total_height);
-    $("#input-width").val(order.total_width);
+    $(".height-value").html(order.height_total);
+    $(".width-value").html(order.width_total);
+    $("#input-height").val(order.height_total);
+    $("#input-width").val(order.width_total);
 
     fillPole();
 
@@ -86,13 +89,44 @@ $(document).ready(function() {
     var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
     var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
     order.quantity_cells = quantity_cells;
+    order.quantity_row = quantity_row;
     canvas.clear();
     countProportion(quantity_row, quantity_cells);
-
+    $('.cell_image').show();
     getPrice();
   }
 
-  defaultLoad(product);
+  function isDisabled(canChange){
+		if (canChange === false){
+			$('select, input').prop('disabled', true);
+			$('.load_order_number input').prop('disabled', false);
+			$('.setting_value, .side').css({
+				'color': 'blue',
+				'font-weight': 'bold',
+				'text-decoration': 'none',
+				'cursor' : 'default'
+			});
+			$(".load_order_form input").prop('disabled', false);
+			$(".possible_visible_size input").prop('disabled', true);
+		}else{
+			$('select, input').prop('disabled', false);
+			$('.setting_value, .side').css({
+				'color': 'blue',
+				'font-weight': 'normal',
+				'text-decoration': 'underline',
+				'cursor' : 'pointer'
+			});
+		}
+		// $("#check_ruchka").prop('disabled', true);
+	}
+	isDisabled(canChange);
+
+	if(project==undefined ){ 
+		defaultLoad(product); 
+	} else { 
+		//defaultLoad(special, product);
+		getOrder(project); 
+	}
 
   function fillPole(){
     $.ajax({
@@ -105,9 +139,6 @@ $(document).ready(function() {
 
         $(".setting_value.main_color_type").html(data["main_color_type"]["pagetitle"]);
         $(".setting_value.main_color").html(data["main_color"]["pagetitle"]);
-        
-        console.log("get names");
-        console.log(data);
 
       }
     });
@@ -124,7 +155,9 @@ $(document).ready(function() {
       success: function(data){
         
         var str = String(data["total"]);
-		str = str.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+        order.total_price = data["total"];
+        price = data;
+		    str = str.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
         $(".price").html(str + '=');
         console.log("get price");
         console.log(data);
@@ -134,7 +167,200 @@ $(document).ready(function() {
   	
   }
 
-  // var width_cells_all = total_width - 90;
+  //проверка корзины
+	function checkCart(){
+    	$.ajax({
+			url: '/ajax_cart/checkCart.php',
+			type: 'POST',
+			dataType: 'json',
+			data: {},
+			success: function(data){
+				console.log('CheckCart');
+				console.log(data);
+				$('.q_items').html(data['products']);
+				$('.p_items').html(data['price']);
+				if (data['products'] == 0){
+					$('.inside_add_cart').hide();
+					$('.cart_total_price').hide();
+					$('.cart_order_form').hide();
+				}else{
+					$('.inside_add_cart').show();
+					$('.cart_total_price').show();
+					$('.cart_order_form').show();	
+				}
+			}
+		});
+    }
+
+  //меняет фразу на кнопке "Добавить в корзину"
+    function change_phrase(phrase){
+    	// alert(product_id);
+    	$('.order-button').html(phrase);
+    }
+    //Добавляет дверь в корзину
+	function add_cart(order_id){
+		$.ajax({
+			url: '/ajax_cart/addToCart.php',
+			type: 'POST',
+			dataType: 'json',
+			data: {'product_id': order_id,
+					'price': order['total_price'],
+				   'isPay': 'no',
+				   'count': 1},
+			success: function(data){
+				console.log('Cart Updated');
+				console.log(data);
+				change_phrase('Добавлено');
+				checkCart();
+				setTimeout(change_phrase, 2000, 'Добавить в корзину');
+
+				$(".wrapper_3 .added_text").html("Проект №"+order_id+" сохранен на сайте и добавлен в корзину");
+				$(".wrapper_3").show();
+				// window.location.href = "http://ce77747.tmweb.ru/konstruktor-protivopozharnyix-dverej/";
+			},
+			error: function(data){
+				console.log('error');
+				console.log(data);
+			}
+		});		
+	}
+
+  $('.order-button').click(function(){
+		// $(".order_wrap").show(200);
+		console.log(order);
+		$.ajax({
+			url: '/ajax_cells/add_order.php',
+			type: 'POST',
+			dataType: 'json',
+			async: false,
+			data: { 'order':order, 'price':price },
+			success: function(data){
+				console.log('success add order');
+				console.log(data);
+				add_cart(data['order_id']);
+				// alert("Спасибо, ваш заказ принят в обработку. В ближайшее время с вами свяжутся.");
+				// $(".order_info form").trigger("reset");
+				// $('.order_wrap').hide();
+
+			},
+			error: function(data){
+				console.log('error');
+				console.log(data);
+			}
+		});
+	});
+
+  	function getOrder(num_of_order){
+		if($.isNumeric(num_of_order)){
+			$.ajax({
+				url: '/ajax_stvorki/get_order.php',
+				type: 'POST',
+				dataType: 'json',
+				async: false,
+				data: {'order_id':num_of_order },
+				success: function(data){
+					console.log("Get Order");
+					console.log(data);
+					if (data['status'] == 'error'){
+						$(".warning_text").html('Заказа с таким номером не существует! <br> Вы будете перенаправлены на главную страницу.');
+						$(".agree_button").hide();
+						$(".wrapper_4").show();
+						setTimeout('window.location.href = "http://ce77747.tmweb.ru/"', 2000);
+
+					}else if(data['status'] == 'ok'){
+						$(".warning_text").html('<b>Внимание!</b> <br> Внесение изменений в проект №'+data['order']['order_id']+' невозможно.');
+						$(".wrapper_4").show();
+						// $(".project_preloader").hide();
+						console.log("get order");
+						console.log(data);
+						order = {
+				          width_total: data['order']['width_total'],
+				          height_total: data['order']['height_total'],
+				          bars_type: data['order']['bars_type'],
+				          main_color_type: data['order']['main_color_type'],
+				          main_color: data['order']['main_color']
+				        }
+
+				        isChange = {
+				          width_total: false,
+				          height_total: false,
+				          bars_type: false,
+				          main_color_type: false,
+				          main_color: false
+				        }
+						//форматирование даты
+						var date = new Date(data['order']['date']);
+
+						var dd = date.getDate();
+						if (dd < 10) dd = '0' + dd;
+
+						var mm = date.getMonth() + 1;
+						if (mm < 10) mm = '0' + mm;
+
+						var yy = date.getFullYear() % 100;
+						if (yy < 10) yy = '0' + yy;
+
+						var ddmmyy = dd + '.' + mm + '.' + yy;
+
+	      				$(".my_breadcrumb").detach();
+						$(".B_crumbBox").append('<span class="my_breadcrumb">Проект № '+data['order']['order_id']+' от '+ddmmyy+'г.</span>');
+
+						var str = String(data["order"]["total_price"]);
+						str = str.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+						$(".price").html(str+"=");
+
+						canChange = false;
+						isDisabled(canChange);
+						// $('.order-button').hide();
+						$('h1').before('<div class = "new_project">Новый проект</div>');
+
+						child_color = data['order']['child_color'];
+						child_standart_color = data['order']['child_standart_color'];
+						child_antik_color = data['order']['child_antik_color'];
+						child_spec_color = data['order']['child_spec_color'];
+						$(".setting_value.main_color").data("pageid",order.main_color_type);
+						$(".content h1").show();
+
+						order.proushina = true;
+					    order.rolik = true;
+					    $(".cell_type").removeClass("active");
+					    $(".cell_type[data-celltype='"+order.bars_type+"']").addClass("active");
+
+					    $(".height-value").html(order.height_total);
+					    $(".width-value").html(order.width_total);
+					    $("#input-height").val(order.height_total);
+					    $("#input-width").val(order.width_total);
+
+					    fillPole();
+
+					    countPossibleWidths();
+					    var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
+					    var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
+					    order.quantity_cells = quantity_cells;
+					    order.quantity_row = quantity_row;
+					    canvas.clear();
+					    countProportion(quantity_row, quantity_cells);
+					    $('.cell_image').show();
+					    getPrice();
+
+					}
+				}
+			});
+		} else {
+			$(".warning_text").html('Неправильно введен номер заказа! <br> Вы будете перенаправлены на главную страницу.');
+			$(".agree_button").hide();
+			$(".wrapper_4").show();
+			setTimeout('window.location.href = "http://ce77747.tmweb.ru/"', 2000);
+		}
+	}
+
+	$(".agree_button").click(function(){
+		$(".wrapper_4").hide();
+		$(".project_preloader").hide();
+		console.log("project_preloader hide2");
+	});
+
+  // var width_cells_all = width_total - 90;
   // var quantity_cells = width_cells_all/(visible_width + 15);
   // var cells_1 = Math.floor(quantity_cells);
   // var cells_2 = Math.ceil(quantity_cells);
@@ -146,14 +372,14 @@ $(document).ready(function() {
   // $('.possible_width_2').html(possible_width_2);
   // var possible_step_1 = (possible_width_2 + 15)*2.8;
   // var possible_step_2 = (possible_width_2 + 15)*3.8;
-  // var points_1 = Math.floor(total_height/possible_step_1);
-  // var points_2 = Math.ceil(total_height/possible_step_2);
+  // var points_1 = Math.floor(height_total/possible_step_1);
+  // var points_2 = Math.ceil(height_total/possible_step_2);
 
   // console.log(' points_1 = '+ points_1 + ' points_2 = '+points_2);
   // var quantity_row;
-  // if ((total_height - 20) < possible_step_1*1.5){
+  // if ((height_total - 20) < possible_step_1*1.5){
   //   quantity_row = 3;
-  // }else if ((total_height - 20) < possible_step_1 * 2){
+  // }else if ((height_total - 20) < possible_step_1 * 2){
   //   quantity_row = 4;
   // }else{
   //   quantity_row = points_1 * 2 + 1;
@@ -169,15 +395,64 @@ $(document).ready(function() {
     });
     canvas.add(rect);
     rects[count] = rect;
-    if (order.bars_type == 4){
-      if (count == 2){
+    if (count == 1){
+      if (order.bars_type == 1){
         drawLug(rect_height, rect_width, rect_left + 2, 0);
-      }else if(count == 3){
-        drawLug(rect_height, rect_width, rect_left, 1);
+        drawHandle(rect_height, rect_left - 4, rect_width, 0);
+      }else if (order.bars_type == 2){
+        drawLug(rect_height, rect_width, rect_left + 2, 0);
+        drawHandle(rect_height, rect_left - 4, rect_width, 0);
       }
+    }else if (count == 2){
+      if (order.bars_type == 1){
+        drawLug(rect_height, rect_width, rect_left, 1);
+      }else if (order.bars_type == 2){
+        drawLug(rect_height, rect_width, rect_left, 1);
+        drawHandle(rect_height, rect_left, rect_width, 1);
+      }else if (order.bars_type == 3){
+        drawLug(rect_height, rect_width, rect_left + 2, 0);
+        drawHandle(rect_height, rect_left - 4, rect_width, 0);
+      }else if (order.bars_type == 4){
+        drawLug(rect_height, rect_width, rect_left + 2, 0);
+        drawHandle(rect_height, rect_left - 4, rect_width, 0);
+      }
+    }else if (count == 3){
+      if (order.bars_type == 3){
+         drawLug(rect_height, rect_width, rect_left, 1);
+       }else if (order.bars_type == 4){
+         drawLug(rect_height, rect_width, rect_left, 1);
+         drawHandle(rect_height, rect_left, rect_width, 1);
+       }
+    // }
+    // if (order.bars_type == 1 || order.bars_type == 2){
+    //   if (count == 1){
+    //     drawLug(rect_height, rect_width, rect_left + 2, 0);
+    //   }else if (count == 2){
+    //     drawLug(rect_height, rect_width, rect_left, 1);
+    //   }
+    // }else if (order.bars_type == 4 || order.bars_type == 3){
+    //   if (count == 2){
+    //     drawLug(rect_height, rect_width, rect_left + 2, 0);
+    //   }else if(count == 3){
+    //     drawLug(rect_height, rect_width, rect_left, 1);
+    //   }
     }else{
       canvas.renderAll();
     }
+  }
+  function drawHandle(rect_height, rect_left, radius, count){
+    var handle = new fabric.Circle({
+      top: rect_height + 11,
+      left: rect_left,
+      radius: radius,
+      fill: '#fff',
+      stroke: '#ccc',
+      strokeWidth: 1,
+      selectable: false
+    });
+    canvas.add(handle);
+    handles[count] = handle;
+    canvas.renderAll();
   }
   function drawLug(rect_height, rect_width, rect_left, count){
     var lug = new fabric.Rect({
@@ -337,13 +612,13 @@ $(document).ready(function() {
     var i = 1;
     var whoIsChecked = 0;
     if (order.bars_type == 1){
-      cells_width = order.total_width - 90;
+      cells_width = order.width_total - 90;
     }else if(order.bars_type == 2){
-      cells_width = order.total_width/2 - 60;
+      cells_width = order.width_total/2 - 60;
     }else if (order.bars_type == 3){
-      cells_width = order.total_width - 120;
+      cells_width = order.width_total - 120;
     }else{
-      cells_width = order.total_width/2 - 90;
+      cells_width = order.width_total/2 - 90;
     }
 
     $(".width-visible-possible").html("");
@@ -375,28 +650,28 @@ $(document).ready(function() {
       current_width = Number(current_width) + 15;
       var possible_step_1 = current_width*2.8;
     var possible_step_2 = current_width*3.8;
-    var points_1 = Math.floor(order.total_height/possible_step_1);
-    var points_2 = Math.ceil(order.total_height/possible_step_2);
+    var points_1 = Math.floor(order.height_total/possible_step_1);
+    var points_2 = Math.ceil(order.height_total/possible_step_2);
     var flag = false;
 
     var quantity_row_1, quantity_row_2;
     console.log(' points_1 = '+ points_1 + ' points_2 = '+points_2);
     $(".height-visible-possible").html("");
     quantity_row_1 = points_1;
-        var height_1 = Math.floor(order.total_height/quantity_row_1);
+        var height_1 = Math.floor(order.height_total/quantity_row_1);
       var a = height_1/2;
       height_1 = Math.floor(Math.sqrt(Math.abs(4*a*a - current_width*current_width)));
-      if (height_1 >= 400 && height_1 < order.total_height){
+      if (height_1 >= 400 && height_1 < order.height_total){
         $(".height-visible-possible").append('<label for="height_cell_1"> <span class="possible_height_1" data-quantityrow = "'+quantity_row_1+'">'+(height_1 - 15)+'</span><input type="radio" name="height_cell" id="height_cell_1" checked></label>');
         order.cell_height = height_1;
         flag = true;
       }
     quantity_row_2 = points_2;
     if (quantity_row_1 != quantity_row_2){
-      var height_2 = Math.floor(order.total_height/quantity_row_2);
+      var height_2 = Math.floor(order.height_total/quantity_row_2);
       a = height_2/2;
       height_2 = Math.floor(Math.sqrt(4*a*a - current_width*current_width));
-      if (height_2 >= 400 && height_2 < order.total_height){
+      if (height_2 >= 400 && height_2 < order.height_total){
       	$(".height-visible-possible").append('<label for="height_cell_2"> <span class="possible_height_2" data-quantityrow = "'+quantity_row_2+'">'+(height_2 - 15)+'</span><input type="radio" name="height_cell" id="height_cell_2"></label>');           
 		if(!flag){
 			order.cell_height = height_2;
@@ -406,42 +681,43 @@ $(document).ready(function() {
     }
   }
   function countProportion(quantity_row, quantity_cells){
-    var total_height = order.total_height;
-    var total_width = order.total_width;
-    var pp = total_width/250;
+    var height_total = order.height_total;
+    var width_total = order.width_total;
+    var pp = width_total/250;
     var rect_width, rect_height, rect_left, count, cells_width;
-    while (total_height/pp > 300){
+    while (height_total/pp > 300){
       pp = pp + 0.5;
     }
-    var cells_height = total_height/pp;
+    var cells_height = height_total/pp;
     var hinge_width = 5;
     var hinge_height = 20;
     rect_height = cells_height;
     if (order.bars_type == 1){
-      cells_width = (total_width - 90)/pp;
-      drawVertical(((90/3)*2)/pp, rect_height, 0, 0);
-      drawVertical((90/3)/pp, rect_height, ((90/3)*2)/pp + cells_width, 1);
-      if (order.total_height - 20 < order.cell_width*2.8*1.5){
+      cells_width = (width_total - 90)/pp;
+      drawVertical((90/3)/pp, rect_height, 0, 0);
+      drawVertical((90/3)/pp, rect_height, (90/3)/pp + cells_width, 1);
+      drawVertical((90/3)/pp, rect_height, ((90/3)*2)/pp + cells_width + 1, 2);
+      if (order.height_total - 20 < order.cell_width*2.8*1.5){
         order.prolety = 3;
-        drawCells_2_2(cells_width, cells_height, ((90/3)*2)/pp, lines_1, quantity_row, quantity_cells);
-      }else if (order.total_height - 20 < order.cell_width*2.8*2){
+        drawCells_2_2(cells_width, cells_height, (90/3)/pp, lines_1, quantity_row, quantity_cells);
+      }else if (order.height_total - 20 < order.cell_width*2.8*2){
         order.prolety = 4;
-        drawCells_2_3(cells_width, cells_height, ((90/3)*2)/pp, lines_1, quantity_row, quantity_cells);
+        drawCells_2_3(cells_width, cells_height, (90/3)/pp, lines_1, quantity_row, quantity_cells);
       }else{
         order.prolety = quantity_row*2 + 1;
-        drawCells(cells_width, cells_height, ((90/3)*2)/pp, lines_1, quantity_row, quantity_cells);
+        drawCells(cells_width, cells_height, (90/3)/pp, lines_1, quantity_row, quantity_cells);
       }
     }else if (order.bars_type == 2){
-      cells_width = ((total_width - 60)/2)/pp;
+      cells_width = ((width_total - 60)/2)/pp;
       drawVertical(((60/3)*2)/pp, rect_height, 0, 0);
       drawVertical((60/3)/pp, rect_height, ((60/3)*2)/pp + cells_width, 1);
       drawVertical((60/3)/pp, rect_height, 60/pp + cells_width + 1, 2);
       drawVertical(((60/3)*2)/pp, rect_height, (60/3)/pp + 2*cells_width + 60/pp + 1, 3);
-      if (order.total_height - 20 < order.cell_width*2.8*1.5){
+      if (order.height_total - 20 < order.cell_width*2.8*1.5){
         order.prolety = 3;
         drawCells_2_2(cells_width, cells_height, ((60/3)*2)/pp, lines_1, quantity_row, quantity_cells);
         drawCells_2_2(cells_width, cells_height, (60/3)/pp + cells_width + 1 + 60/pp, lines_2, quantity_row, quantity_cells);
-      }else if (order.total_height - 20 < order.cell_width*2.8*2){
+      }else if (order.height_total - 20 < order.cell_width*2.8*2){
         order.prolety = 4;
         drawCells_2_3(cells_width, cells_height, ((60/3)*2)/pp, lines_1, quantity_row, quantity_cells);
         drawCells_2_3(cells_width, cells_height, (60/3)/pp + cells_width + 1 + 60/pp, lines_2, quantity_row, quantity_cells);
@@ -451,14 +727,15 @@ $(document).ready(function() {
         drawCells(cells_width, cells_height, (60/3)/pp + cells_width + 1 + 60/pp, lines_2, quantity_row, quantity_cells);
       }
     }else if (order.bars_type == 3){
-      cells_width = (total_width - 120)/pp;
+      cells_width = (width_total - 120)/pp;
      drawVertical((90/3)/pp, rect_height, 0, 0);
      drawVertical((90/3)/pp, rect_height, (90/3)/pp + 1, 1);
-     drawVertical((90/3)/pp, rect_height, ((90/3)*2)/pp + cells_width + 1, 2);
-     if (order.total_height - 20 < order.cell_width*2.8*1.5){
+     drawVertical((90/3)/pp, rect_height, (90/3)*2/pp + cells_width + 1, 2);
+     drawVertical((90/3)/pp, rect_height, 90/pp + cells_width + 2, 3);
+     if (order.height_total - 20 < order.cell_width*2.8*1.5){
         order.prolety = 3;
         drawCells_2_2(cells_width, cells_height, ((90/3)*2)/pp + 1, lines_1, quantity_row, quantity_cells);
-      }else if (order.total_height - 20 < order.cell_width*2.8*2){
+      }else if (order.height_total - 20 < order.cell_width*2.8*2){
         order.prolety = 4;
         drawCells_2_3(cells_width, cells_height, ((90/3)*2)/pp + 1, lines_1, quantity_row, quantity_cells);
       }else{
@@ -468,18 +745,18 @@ $(document).ready(function() {
      drawHinge(hinge_width, hinge_height, (90/3)/pp - 1, cells_height/7, 0);
      drawHinge(hinge_width, hinge_height, (90/3)/pp - 1, (cells_height/7)*5, 1);
     }else if (order.bars_type == 4){
-      cells_width = ((total_width - 90)/2)/pp;
+      cells_width = ((width_total - 90)/2)/pp;
       drawVertical((90/3)/pp, rect_height, 0, 0);
       drawVertical((90/3)/pp, rect_height, (90/3)/pp + 1, 1);
       drawVertical((90/3)/pp, rect_height, ((90/3)*2)/pp + cells_width + 1, 2);
       drawVertical((90/3)/pp, rect_height, 90/pp + cells_width + 2, 3);
       drawVertical((90/3)/pp, rect_height, (90/3)/pp + 2*cells_width + 90/pp + 2, 4);
       drawVertical((90/3)/pp, rect_height, ((90/3)*2)/pp + 2*cells_width + 90/pp + 3, 5);
-      if (order.total_height - 20 < order.cell_width*2.8*1.5){
+      if (order.height_total - 20 < order.cell_width*2.8*1.5){
         order.prolety = 3;
         drawCells_2_2(cells_width, cells_height, ((90/3)*2)/pp, lines_1, quantity_row, quantity_cells);
         drawCells_2_2(cells_width, cells_height, (90/3)/pp + cells_width + 1 + 90/pp, lines_2, quantity_row, quantity_cells);
-      }else if (order.total_height - 20 < order.cell_width*2.8*2){
+      }else if (order.height_total - 20 < order.cell_width*2.8*2){
         order.prolety = 4;
         drawCells_2_3(cells_width, cells_height, ((90/3)*2)/pp, lines_1, quantity_row, quantity_cells);
         drawCells_2_3(cells_width, cells_height, (90/3)/pp + cells_width + 1 + 90/pp, lines_2, quantity_row, quantity_cells);
@@ -557,17 +834,18 @@ $(document).ready(function() {
       }
 
       if(!error){
-		order.total_height = tot_height;
-		order.total_width = tot_width;
+		order.height_total = tot_height;
+		order.width_total = tot_width;
 		countPossibleWidths();
 		var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
 		var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
 		canvas.clear();
 		order.quantity_cells = quantity_cells;
+    order.quantity_row = quantity_row;
 		countProportion(quantity_row, quantity_cells);
 
-		$(".height-value").html(order.total_height);
-		$(".width-value").html(order.total_width);
+		$(".height-value").html(order.height_total);
+		$(".width-value").html(order.width_total);
 
 		$(".wrapper").hide();
 
@@ -580,17 +858,20 @@ $(document).ready(function() {
   //нажатие на тип решетки
   $(".cell_type").click(function(){
       
-      order.bars_type = $(this).data("celltype");
-      $(".cell_type").removeClass("active");
-      $(this).addClass("active");
-      countPossibleWidths();
-      var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
-      var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
-      canvas.clear();
-      order.quantity_cells = quantity_cells;
-      countProportion(quantity_row, quantity_cells);
+      if(isChange.bars_type){
+	      order.bars_type = $(this).data("celltype");
+	      $(".cell_type").removeClass("active");
+	      $(this).addClass("active");
+	      countPossibleWidths();
+	      var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
+	      var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
+	      canvas.clear();
+	      order.quantity_cells = quantity_cells;
+	      order.quantity_row = quantity_row;
+	      countProportion(quantity_row, quantity_cells);
 
-      getPrice();
+	      getPrice();
+      }
 
   });
 
@@ -602,6 +883,7 @@ $(document).ready(function() {
     var quantity_cells = Number($(this).prev().data("quantitycells"));
     canvas.clear();
     order.quantity_cells = quantity_cells;
+    order.quantity_row = quantity_row;
     countProportion(quantity_row, quantity_cells);
 
     getPrice();
@@ -613,12 +895,38 @@ $(document).ready(function() {
     var quantity_row = Number($(this).prev().data("quantityrow"));
     var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
     order.quantity_cells = quantity_cells;
+    order.quantity_row = quantity_row;
     canvas.clear();
     countProportion(quantity_row, quantity_cells);
 
     getPrice();
   });
-
+  $('.checkbox_proushina').on('change', '#check_proushina', function(){
+    var prop_check = $(this).prop('checked');
+    var quantity_lug = lugs.length;
+    order.proushina = prop_check;
+    if (prop_check){
+      countProportion(order.quantity_row, order.quantity_cells);
+    }else{
+      for (i = 0; i < quantity_lug; i++){
+        lugs[i].set({width: 0});
+      }
+    }
+    canvas.renderAll();
+  });
+  $('.checkbox_rolik').on('change', '#check_rolik', function(){
+    var prop_check = $(this).prop('checked');
+    var quantity_lug = handles.length;
+    order.rolik = prop_check;
+    if (prop_check){
+      countProportion(order.quantity_row, order.quantity_cells);
+    }else{
+      for (i = 0; i < quantity_lug; i++){
+        handles[i].set({radius: 0});
+      }
+    }
+    canvas.renderAll();
+  });
   //нажатие на меню
 
   $(".setting_value").click(function(){
@@ -686,47 +994,87 @@ $(document).ready(function() {
       return false;
     }else{
 
-      var type_id = $(this).data('pageid');
-      order[type] = type_id;
+		var type_id = $(this).data('pageid');
+		var color;
+		order[type] = type_id;
 
-      $(".current_menu div").removeClass("active-child");
-      $(".current_menu div[data-pageid="+order[type]+"]").addClass("active-child");
+		$(".current_menu div").removeClass("active-child");
+		$(".current_menu div[data-pageid="+order[type]+"]").addClass("active-child");
 
-      if(type=="main_color_type"){
-        if($(this).attr('id')=="standart"){
-          order["main_color"] = 197;
-          $(".setting_value.main_color").data("pageid","196");
-        } else {
-          order["main_color"] = 201;
-          $(".setting_value.main_color").data("pageid","200");
-        }
-      } else {
-        // alert($(this).children(".color_color_ral").css("background-color"));
-        var color = $(this).children(".color_color_ral").css("background-color");
-        var quantity_rects = rects.length;
-        for (i = 0; i < quantity_rects; i++){
-          rects[i].set({fill: color});
-        }
-        var quantity_lines_1 = lines_1.length;
-        var quantity_lines_2 = lines_2.length;
-        for (i = 0; i<quantity_lines_1; i++){
-          lines_1[i].set({stroke: color});
-        }
-        for (i = 0; i<quantity_lines_2; i++){
-          lines_2[i].set({stroke: color});
-        }
-        canvas.renderAll();
-      }
-      
-      fillPole();
+		if(type=="main_color_type"){
+			if($(this).attr('id')=="standart"){
+				order["main_color"] = 197;
+				$(".setting_value.main_color").data("pageid","196");
+				order["main_color_value"] = "#3d2219";
+			} else {
+				order["main_color"] = 201;
+				$(".setting_value.main_color").data("pageid","200");
+				order["main_color_value"] = "#C2B078";
+			}
+		} else {
+		// alert($(this).children(".color_color_ral").css("background-color"));
+		order["main_color_value"] = $(this).children(".color_color_ral").css("background-color");
+
+		}
+
+		var quantity_rects = rects.length;
+		for (i = 0; i < quantity_rects; i++){
+			rects[i].set({fill: order["main_color_value"]});
+		}
+		var quantity_lines_1 = lines_1.length;
+		var quantity_lines_2 = lines_2.length;
+		for (i = 0; i<quantity_lines_1; i++){
+			lines_1[i].set({stroke: order["main_color_value"]});
+		}
+		for (i = 0; i<quantity_lines_2; i++){
+			lines_2[i].set({stroke: order["main_color_value"]});
+		}
+		var quantity_lug = handles.length;
+		for (i = 0; i<quantity_lug; i++){
+	    	handles[i].set({stroke: order["main_color_value"]});
+	    }
+		canvas.renderAll();
+		  
+		fillPole();
     }
   });
+
+  $('body').on('click', '.new_project', function(){
+		// check_color(order);
+		// draw(color);
+		product = null;
+		special = null;
+		getPrice();
+
+		$(".content h1").html("Конструктор \"Противопожарные двери\"");
+
+		$(".load_order_number input").val('');
+		$(".my_breadcrumb").detach();
+		$(this).detach();
+		$(".B_crumbBox").append('<span class="my_breadcrumb">Новый проект</span>');
+
+		canChange = true;
+		for( var key in isChange){
+			// if (key == 'outside_view' && order[key] == 195){
+			// 	isChange[key] = true;
+			// 	isChange['outside_color'] = false;
+			// }else if(key == 'inside_view' && order[key] == 195){
+			// 	isChange[key] = true;
+			// 	isChange['inside_color'] = false;
+			// }else{
+				isChange[key]=true;
+			// }
+		}
+		isDisabled(canChange);
+		$('.order-button').show();
+	});
 
   //для теста
   $(".load_order_title").click(function(){
   	console.log("order");
   	console.log(order);
-  	getPrice();
+  	// getPrice();
+    console.log(price);
   });
 
 

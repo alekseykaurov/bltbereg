@@ -53,7 +53,9 @@ if($cookie!=false){
 					$door_name = "<a href='/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 1-створ. с 2-мя глух. частями, противопожарная пр.№".$value[0]."</a>";
 				} else if($row["door_type"] == 6){
 					$door_name = "<a href='/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 2-створ. с глух. частm., противопожарная пр.№".$value[0]."</a>";
-				}else {
+				} else if($row["door_type"] == "cells"){
+					$door_name = "<a href='/reshetki/?project=".$value[0]."'>Решетка пр.№".$value[0]."</a>";
+				} else {
 					$door_name = "<a href='/konstruktor-dverej/?project=".$value[0]."'>Мет.дверь, 1-ств, квартирная пр.№".$value[0]."</a>";
 				}
 			} else {
