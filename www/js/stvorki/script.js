@@ -311,6 +311,7 @@ $(document).ready(function() {
 	}
 	function check_canvas_sizes(need_start){
 		$('.preloader').show();
+		console.log("preloader show 1");
 		if (order.friz != 'false'){
 			var p_h = order.height_door/order.friz_height;
 			f_h = h_d/p_h;
@@ -550,6 +551,7 @@ $(document).ready(function() {
 	}
 	function change_main_color(){
 		$('.preloader').show();
+		console.log("preloader show 2");
 		if (color.main_color_type == "tablicza-czvetov-ral1"){
 			background.set({fill: color.main_color_color});
 			door.set({fill: color.main_color_color});
@@ -598,6 +600,7 @@ $(document).ready(function() {
 	}
 	function draw_petlya(petlya, flag){
 		$('.preloader').show();
+		console.log("preloader show 3");
 		var pattern_image =  new fabric.Image.fromURL('/images/metalcount/petlya.png', function(pattern_image){
 			pattern_image.set({width: petlya_width, height: petlya_height});
 
@@ -625,6 +628,7 @@ $(document).ready(function() {
 	}
 	function change_shadow(){
 		$('.preloader').show();
+		console.log("preloader show 4");
 		var shadow_src;
 		if (color.main_color_shade == 'Dark'){
 			// shadow_src = "/images/stvorki/shadow.png";
@@ -661,6 +665,7 @@ $(document).ready(function() {
 
 	function change_main_lock(){
 		$('.preloader').show();
+		console.log("preloader show 5");
 		var pattern_image =  new fabric.Image.fromURL(color.main_lock, function(pattern_image){
 			if (color.main_lock_ruchka != "Ручка на планке"){
 				pattern_image.scaleToWidth(13/pp);
@@ -734,6 +739,7 @@ $(document).ready(function() {
 	}
 	function change_main_lock_back(){
 		$('.preloader').show();
+		console.log("preloader show 6");
 		var main_lock_src;
 		if (color.main_lock_ruchka != "Ручка на планке" && color.main_lock_inside_bottom != ''){
 			main_lock_src = color.main_lock_inside_bottom;
@@ -878,6 +884,8 @@ $(document).ready(function() {
 			canvas.renderAll();
 			if (order.ruchka != 'true'){
 				canvas_inside.renderAll();
+			} else {
+				$(".preloader").hide();
 			}
 		});
 	}
@@ -983,6 +991,7 @@ $(document).ready(function() {
 	// }
 	function draw_antipanika(){
 		$('.preloader').show();
+		console.log("preloader show 7");
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/antipanika.png', function(pattern_image){
 			var handle_left;
 			var handle_top;
@@ -1037,6 +1046,7 @@ $(document).ready(function() {
 	}
 	function change_zadvijka(){
 		$('.preloader').show();
+		console.log("preloader show 8");
 		var pattern_image =  new fabric.Image.fromURL(color.zadvijka_image, function(pattern_image){
 			var handle_left;
 			var handle_top;
@@ -1091,6 +1101,7 @@ $(document).ready(function() {
 	var corner_height;
 	function draw_steklopak(){
 		$('.preloader').show();
+		console.log("preloader show 9");
 		var w = order['steklopak_width']/70*rama_side/pp;
 		var h = order['steklopak_height']/70*rama_side/pp;
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/steklo.png', function(pattern_image){
@@ -1854,7 +1865,7 @@ $(document).ready(function() {
 				'inside_frezer': order.inside_frezer,
 				'main_lock': order.main_lock,
 				'add_lock': order.add_lock,
-				'glazok': order.glazok,
+				// 'glazok': order.glazok,
 				'zadvijka': order.zadvijka,
 				'ruchka': order.ruchka
 			},
@@ -2009,7 +2020,9 @@ $(document).ready(function() {
 	start();
 	canvas_inside.on('after:render', function(e){
 		$('.preloader').hide();
+		console.log("preloader hide");
 		$('.project_preloader').hide();
+		console.log("project_preloader hide");
 		if (reverseFlag == false){
 			console.log('renderCount = '+renderCount+'   kk =' +kk + '   reverseFlag = '+reverseFlag);
 			if (kk == renderCount){
@@ -2037,6 +2050,7 @@ $(document).ready(function() {
 		if(canChange==false || isChange[type] == false){
 		}else{
 			if ($(this).is(':checked')==false){
+				console.log('hello');
 				$('.current_menu').remove();
 				$('.close_div').remove();
 				$(this).removeClass('active');
@@ -2085,6 +2099,7 @@ $(document).ready(function() {
 						break;
 				}
 			}else{
+				console.log('jeje');
 				if (type != 'ruchka'){
 					$('.checkbox_main_lock, .checkbox_add_lock, .checkbox_glazok, .checkbox_dovodchik, .checkbox_zadvijka, .checkbox_steklopak').removeClass('active');
 					$(this).addClass('active');
@@ -2805,7 +2820,7 @@ $(document).ready(function() {
 					fillPole('inside_color');
 					order.inside_frezer = child_frezer_10z;
 					fillPole('inside_frezer');
-					order.glazok = '';
+					// order.glazok = '';
 				}
 			}else if(type_id == 231){
 				if (type == 'inside_view'){
@@ -2928,13 +2943,13 @@ $(document).ready(function() {
 			}
 			fillPole(type);
 			getPrice();
-			if(order.inside_view==215){
-				isChange.glazok = false;
-				fillPole('glazok');
-			} else {
-				isChange.glazok = true;
-				fillPole('glazok');
-			}
+			// if(order.inside_view==215){
+			// 	isChange.glazok = false;
+			// 	fillPole('glazok');
+			// } else {
+			// 	isChange.glazok = true;
+			// 	fillPole('glazok');
+			// }
 			$(".current_menu div").removeClass("active-child");
 			$(".current_menu div[data-pageid="+order[type]+"]").addClass("active-child");
 		}
@@ -3467,6 +3482,29 @@ $(document).ready(function() {
 						str = str.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
 						$(".price").html(str+"=");
 
+						$('.stvorka_pos').hide();
+						if (order.stvorka_position != 'none'){
+							if (order.stvorka_position == 'left'){
+								$('#left_stvorka').show();
+								$('.stvorka_right').removeClass('active_stvorka');
+								$('.stvorka_left').addClass('active_stvorka');
+							}else{
+								$('#right_stvorka').show();
+								$('.stvorka_right').addClass('active_stvorka');
+								$('.stvorka_left').removeClass('active_stvorka');
+							}
+						}else{
+							if (order.door_side == 'left'){
+								$('#left_stvorka').show();
+								$('.stvorka_right').removeClass('active_stvorka');
+								$('.stvorka_left').addClass('active_stvorka');
+							}else{
+								$('#right_stvorka').show();
+								$('.stvorka_right').addClass('active_stvorka');
+								$('.stvorka_left').removeClass('active_stvorka');
+							}
+						}
+
 						canChange = false;
 						isDisabled(canChange);
 						// $('.order-button').hide();
@@ -3494,6 +3532,7 @@ $(document).ready(function() {
 	$(".agree_button").click(function(){
 		$(".wrapper_4").hide();
 		$(".project_preloader").hide();
+		console.log("project_preloader hide2");
 	});
 	$('body').on('click', '.add_images img', function(){
 		$('body').prepend('<div class = "wrapper_lock"></div>');

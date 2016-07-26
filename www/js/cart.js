@@ -304,4 +304,8 @@ $(document).ready(function(){
 		});
 	});
 
+	$(".load_order_form").submit(function(){
+		alert("kakak");
+	});
+
 });

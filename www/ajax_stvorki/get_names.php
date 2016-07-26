@@ -14,19 +14,20 @@ $inside_view = isset($_GET["inside_view"]) ? $_GET["inside_view"] : null;
 $order = isset($_GET["order"]) ? $_GET["order"] : null;
 
 $neSmotri = array("door_side",
-				  "friz",
+				  // "friz",
 				  "height_door",
 				  "height_total",
 				  "width_door",
-				  "width_total",
-				  "ruchka",
-				  "steklopak",
-				  "steklopak_height",
-				  "steklopak_width",
-				  "stvorka_position",
-				  "stvorka_width",
-				  "total_price",
-				  "window_align");
+				  "width_total"
+				  // "ruchka",
+				  // "steklopak",
+				  // "steklopak_height",
+				  // "steklopak_width",
+				  // "stvorka_position",
+				  // "stvorka_width",
+				  // "total_price",
+				  // "window_align"
+				  );
 foreach($order as $key => $value){
 	if($value!="" && !(in_array($key, $neSmotri))){
 		if($key=="inside_color"){
@@ -39,6 +40,8 @@ foreach($order as $key => $value){
 		} else {
 			$txt[$key] = $modx->getDocument($value);
 		}
+	} else {
+		$txt[$key] = "";
 	}
 
 }
