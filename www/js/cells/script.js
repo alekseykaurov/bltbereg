@@ -25,13 +25,8 @@ $(document).ready(function() {
   var lines_1 = new Array();
   var lines_2 = new Array();
   var lugs = new Array();
-<<<<<<< HEAD
   var handles = new Array();
   var price = {};
-=======
-  var handle = new fabric.Circle();
-
->>>>>>> c0a4b1b8201da209aadf5edad5c94b021770a7ca
   if(product==undefined && project==undefined){
     // window.location.pathname = "/";
     product = 1005;
@@ -97,15 +92,7 @@ $(document).ready(function() {
     order.quantity_row = quantity_row;
     canvas.clear();
     countProportion(quantity_row, quantity_cells);
-<<<<<<< HEAD
     $('.cell_image').show();
-=======
-<<<<<<< HEAD
-    $('.cell_image').show();
-=======
-
->>>>>>> 8f2541c1986d22e81683ee7087e1b85f0866fe44
->>>>>>> c0a4b1b8201da209aadf5edad5c94b021770a7ca
     getPrice();
   }
 
@@ -152,33 +139,9 @@ $(document).ready(function() {
 
         $(".setting_value.main_color_type").html(data["main_color_type"]["pagetitle"]);
         $(".setting_value.main_color").html(data["main_color"]["pagetitle"]);
-<<<<<<< HEAD
-=======
 
       }
     });
-  }
-
-  function getPrice(){
-
-  	$.ajax({
-      url: '/ajax_cells/getPrice.php',
-      type: 'POST',
-      dataType: 'json',
-      async: false,
-      data: {'order': order},
-      success: function(data){
-        
-        var str = String(data["total"]);
-		str = str.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
-        $(".price").html(str + '=');
-        console.log("get price");
-        console.log(data);
->>>>>>> c0a4b1b8201da209aadf5edad5c94b021770a7ca
-
-      }
-    });
-  	
   }
 
   function getPrice(){
@@ -432,23 +395,11 @@ $(document).ready(function() {
     });
     canvas.add(rect);
     rects[count] = rect;
-<<<<<<< HEAD
     if (count == 1){
       if (order.bars_type == 1){
         drawLug(rect_height, rect_width, rect_left + 2, 0);
         drawHandle(rect_height, rect_left - 4, rect_width, 0);
       }else if (order.bars_type == 2){
-=======
-    if (order.bars_type == 1 || order.bars_type == 2){
-      if (count == 1){
-        drawLug(rect_height, rect_width, rect_left + 2, 0);
-        drawHandle(rect_height, rect_left);
-      }else if (count == 2){
-        drawLug(rect_height, rect_width, rect_left, 1);
-      }
-    }else if (order.bars_type == 4 || order.bars_type == 3){
-      if (count == 2){
->>>>>>> c0a4b1b8201da209aadf5edad5c94b021770a7ca
         drawLug(rect_height, rect_width, rect_left + 2, 0);
         drawHandle(rect_height, rect_left - 4, rect_width, 0);
       }
@@ -489,7 +440,6 @@ $(document).ready(function() {
       canvas.renderAll();
     }
   }
-<<<<<<< HEAD
   function drawHandle(rect_height, rect_left, radius, count){
     var handle = new fabric.Circle({
       top: rect_height + 11,
@@ -502,19 +452,6 @@ $(document).ready(function() {
     });
     canvas.add(handle);
     handles[count] = handle;
-=======
-  function drawHandle(rect_height, rect_left){
-    handle.set({
-      top: rect_height + 11,
-      left: rect_left - 3,
-      radius: 4,
-      fill: '#fff',
-      stroke: '#ccc',
-      strokeWidth: 5,
-      selectable: false
-    });
-    canvas.add(handle);
->>>>>>> c0a4b1b8201da209aadf5edad5c94b021770a7ca
     canvas.renderAll();
   }
   function drawLug(rect_height, rect_width, rect_left, count){
@@ -756,7 +693,6 @@ $(document).ready(function() {
     var hinge_height = 20;
     rect_height = cells_height;
     if (order.bars_type == 1){
-<<<<<<< HEAD
       cells_width = (width_total - 90)/pp;
       drawVertical((90/3)/pp, rect_height, 0, 0);
       drawVertical((90/3)/pp, rect_height, (90/3)/pp + cells_width, 1);
@@ -765,16 +701,6 @@ $(document).ready(function() {
         order.prolety = 3;
         drawCells_2_2(cells_width, cells_height, (90/3)/pp, lines_1, quantity_row, quantity_cells);
       }else if (order.height_total - 20 < order.cell_width*2.8*2){
-=======
-      cells_width = (total_width - 90)/pp;
-      drawVertical((90/3)/pp, rect_height, 0, 0);
-      drawVertical((90/3)/pp, rect_height, (90/3)/pp + cells_width, 1);
-      drawVertical((90/3)/pp, rect_height, ((90/3)*2)/pp + cells_width + 1, 2);
-      if (order.total_height - 20 < order.cell_width*2.8*1.5){
-        order.prolety = 3;
-        drawCells_2_2(cells_width, cells_height, (90/3)/pp, lines_1, quantity_row, quantity_cells);
-      }else if (order.total_height - 20 < order.cell_width*2.8*2){
->>>>>>> c0a4b1b8201da209aadf5edad5c94b021770a7ca
         order.prolety = 4;
         drawCells_2_3(cells_width, cells_height, (90/3)/pp, lines_1, quantity_row, quantity_cells);
       }else{
@@ -806,11 +732,7 @@ $(document).ready(function() {
      drawVertical((90/3)/pp, rect_height, (90/3)/pp + 1, 1);
      drawVertical((90/3)/pp, rect_height, (90/3)*2/pp + cells_width + 1, 2);
      drawVertical((90/3)/pp, rect_height, 90/pp + cells_width + 2, 3);
-<<<<<<< HEAD
      if (order.height_total - 20 < order.cell_width*2.8*1.5){
-=======
-     if (order.total_height - 20 < order.cell_width*2.8*1.5){
->>>>>>> c0a4b1b8201da209aadf5edad5c94b021770a7ca
         order.prolety = 3;
         drawCells_2_2(cells_width, cells_height, ((90/3)*2)/pp + 1, lines_1, quantity_row, quantity_cells);
       }else if (order.height_total - 20 < order.cell_width*2.8*2){
@@ -926,15 +848,9 @@ $(document).ready(function() {
 		$(".width-value").html(order.width_total);
 
 		$(".wrapper").hide();
-<<<<<<< HEAD
 
 		getPrice();
 
-=======
-
-		getPrice();
-
->>>>>>> 8f2541c1986d22e81683ee7087e1b85f0866fe44
       }
 
   });
@@ -1081,7 +997,6 @@ $(document).ready(function() {
 		var type_id = $(this).data('pageid');
 		var color;
 		order[type] = type_id;
-<<<<<<< HEAD
 
 		$(".current_menu div").removeClass("active-child");
 		$(".current_menu div[data-pageid="+order[type]+"]").addClass("active-child");
@@ -1105,36 +1020,10 @@ $(document).ready(function() {
 		var quantity_rects = rects.length;
 		for (i = 0; i < quantity_rects; i++){
 			rects[i].set({fill: order["main_color_value"]});
-=======
-
-		$(".current_menu div").removeClass("active-child");
-		$(".current_menu div[data-pageid="+order[type]+"]").addClass("active-child");
-
-		if(type=="main_color_type"){
-			if($(this).attr('id')=="standart"){
-				order["main_color"] = 197;
-				$(".setting_value.main_color").data("pageid","196");
-				color = "#3d2219";
-			} else {
-				order["main_color"] = 201;
-				$(".setting_value.main_color").data("pageid","200");
-				color = "#C2B078";
-			}
-		} else {
-		// alert($(this).children(".color_color_ral").css("background-color"));
-		color = $(this).children(".color_color_ral").css("background-color");
-
-		}
-
-		var quantity_rects = rects.length;
-		for (i = 0; i < quantity_rects; i++){
-			rects[i].set({fill: color});
->>>>>>> c0a4b1b8201da209aadf5edad5c94b021770a7ca
 		}
 		var quantity_lines_1 = lines_1.length;
 		var quantity_lines_2 = lines_2.length;
 		for (i = 0; i<quantity_lines_1; i++){
-<<<<<<< HEAD
 			lines_1[i].set({stroke: order["main_color_value"]});
 		}
 		for (i = 0; i<quantity_lines_2; i++){
@@ -1144,14 +1033,6 @@ $(document).ready(function() {
 		for (i = 0; i<quantity_lug; i++){
 	    	handles[i].set({stroke: order["main_color_value"]});
 	    }
-=======
-			lines_1[i].set({stroke: color});
-		}
-		for (i = 0; i<quantity_lines_2; i++){
-			lines_2[i].set({stroke: color});
-		}
-    handle.set({stroke: color});
->>>>>>> c0a4b1b8201da209aadf5edad5c94b021770a7ca
 		canvas.renderAll();
 		  
 		fillPole();
