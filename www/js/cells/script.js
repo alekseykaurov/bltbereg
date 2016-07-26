@@ -89,7 +89,11 @@ $(document).ready(function() {
     order.quantity_cells = quantity_cells;
     canvas.clear();
     countProportion(quantity_row, quantity_cells);
+<<<<<<< HEAD
     $('.cell_image').show();
+=======
+
+>>>>>>> 8f2541c1986d22e81683ee7087e1b85f0866fe44
     getPrice();
   }
 
@@ -109,6 +113,27 @@ $(document).ready(function() {
 
       }
     });
+  }
+
+  function getPrice(){
+
+  	$.ajax({
+      url: '/ajax_cells/getPrice.php',
+      type: 'POST',
+      dataType: 'json',
+      async: false,
+      data: {'order': order},
+      success: function(data){
+        
+        var str = String(data["total"]);
+		str = str.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+        $(".price").html(str + '=');
+        console.log("get price");
+        console.log(data);
+
+      }
+    });
+  	
   }
 
   function getPrice(){
@@ -590,9 +615,15 @@ $(document).ready(function() {
 		$(".width-value").html(order.total_width);
 
 		$(".wrapper").hide();
+<<<<<<< HEAD
 
 		getPrice();
 
+=======
+
+		getPrice();
+
+>>>>>>> 8f2541c1986d22e81683ee7087e1b85f0866fe44
       }
 
   });
