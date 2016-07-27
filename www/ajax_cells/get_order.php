@@ -42,6 +42,10 @@ $childs_color = $modx->getActiveChildren(208);
 $childs_standart_color = $modx->getActiveChildren(196);
 $childs_spec_color = $modx->getActiveChildren(200);
 
+
+$main_color_value = $modx->getTemplateVars(Array("cvet_RAL"), '*', $result["order"]['main_color']);
+
+$result["order"]["main_color_value"] = $main_color_value[0]["value"];
 $result["order"]['child_color'] = $childs_color[0]["id"];
 $result["order"]['child_standart_color'] = $childs_standart_color[0]["id"];
 $result["order"]['child_spec_color'] = $childs_spec_color[0]["id"];

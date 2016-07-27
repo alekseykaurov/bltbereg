@@ -25,8 +25,14 @@ $S = ceil3($S, 2);
 //стоимость окрашивания
 if($order["main_color_type"]==196){
 	$price["main_color"] = 700 * $S;
+	if($price["main_color"]<700){
+		$price["main_color"] = 700;
+	}
 } else {
 	$price["main_color"] = 1200 * $S;
+	if($price["main_color"]<1200){
+		$price["main_color"] = 1200;
+	}
 }
 
 //профильная часть
@@ -35,9 +41,9 @@ if($order["bars_type"]==1 || $order["bars_type"]==3){
 } else {
 	$stvorki_count = 2;
 }
-$price["profile"] = ceil((($order["width_total"]*2*$order["quantity_cells"]*40/1000)+($order["prolety"]*$order["quantity_cells"]*50))/10)*10*$stvorki_count;
-if($price["profile"]<2000){
-	$price["profile"] = 2000;
+$price["profile"] = ceil((($order["height_total"]*2*$order["quantity_cells"]*40/1000)+($order["prolety"]*$order["quantity_cells"]*50))/10)*10*$stvorki_count;
+if($price["profile"]<1500){
+	$price["profile"] = 1500;
 }
 
 //стоимость петель
@@ -66,7 +72,7 @@ if($order["bars_type"]==1){
 }
 
 //Проуш. Нав.замок
-if($order["proushina"]){
+if($order["proushina"] == 'true'){
 	$proushina = 1;
 } else {
 	$proushina = 0;
@@ -74,7 +80,7 @@ if($order["proushina"]){
 $price["nav_zamok"] = 100*$proushina;
 
 //стоимость поворотного ролика
-if($order["rolik"]){
+if($order["rolik"] == 'true'){
 	$rolik = 1;
 } else {
 	$rolik = 0;
@@ -91,7 +97,6 @@ foreach($price as $key=>$value){
 }
 
 $price["total"] = $total_price;
-
 $price["S"] = $S;
 
 print json_encode($price); 

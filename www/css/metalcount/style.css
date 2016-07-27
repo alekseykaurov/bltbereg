@@ -1317,3 +1317,10 @@ input[name=floors]{
     margin-top: 86px;
     margin-left: -10px;
 }
+.inform_text{
+    text-align: center;
+    border: 1px solid #ccc;
+    display: inline-block;
+    margin-top: 10px;
+    padding: 5px;
+}

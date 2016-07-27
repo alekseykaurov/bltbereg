@@ -87,11 +87,12 @@ $(document).ready(function() {
 
     countPossibleWidths();
     var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
+    var num = Number($("input[name='height_cell']:checked").prev().data("number"));
     var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
     order.quantity_cells = quantity_cells;
     order.quantity_row = quantity_row;
     canvas.clear();
-    countProportion(quantity_row, quantity_cells);
+    countProportion(quantity_row, quantity_cells, num);
     $('.cell_image').show();
     getPrice();
   }
@@ -253,7 +254,7 @@ $(document).ready(function() {
   	function getOrder(num_of_order){
 		if($.isNumeric(num_of_order)){
 			$.ajax({
-				url: '/ajax_stvorki/get_order.php',
+				url: '/ajax_cells/get_order.php',
 				type: 'POST',
 				dataType: 'json',
 				async: false,
@@ -278,7 +279,12 @@ $(document).ready(function() {
 				          height_total: data['order']['height_total'],
 				          bars_type: data['order']['bars_type'],
 				          main_color_type: data['order']['main_color_type'],
-				          main_color: data['order']['main_color']
+				          main_color: data['order']['main_color'],
+				          main_color_value: data['order']['main_color_value'],
+                  cell_width: data['order']['cell_width'],
+                  cell_height: data['order']['cell_height'],
+                  rolik: data['order']['rolik'],
+                  proushina: data['order']['proushina']
 				        }
 
 				        isChange = {
@@ -286,7 +292,11 @@ $(document).ready(function() {
 				          height_total: false,
 				          bars_type: false,
 				          main_color_type: false,
-				          main_color: false
+				          main_color: false,
+                  cell_width: false,
+                  cell_height: false,
+                  rolik: false,
+                  proushina: false
 				        }
 						//форматирование даты
 						var date = new Date(data['order']['date']);
@@ -322,26 +332,33 @@ $(document).ready(function() {
 						$(".content h1").show();
 
 						order.proushina = true;
-					    order.rolik = true;
-					    $(".cell_type").removeClass("active");
-					    $(".cell_type[data-celltype='"+order.bars_type+"']").addClass("active");
+				    order.rolik = true;
+				    $(".cell_type").removeClass("active");
+				    $(".cell_type[data-celltype='"+order.bars_type+"']").addClass("active");
+            if (order.width_total <= 1000){
+              $('.cell_type[data-celltype = 2]').hide();
+              $('.cell_type[data-celltype = 4]').hide();
+            }else if (order.width_total >= 2500){
+              $('.cell_type[data-celltype = 1]').hide();
+              $('.cell_type[data-celltype = 3]').hide();
+            }
 
-					    $(".height-value").html(order.height_total);
-					    $(".width-value").html(order.width_total);
-					    $("#input-height").val(order.height_total);
-					    $("#input-width").val(order.width_total);
+				    $(".height-value").html(order.height_total);
+				    $(".width-value").html(order.width_total);
+				    $("#input-height").val(order.height_total);
+				    $("#input-width").val(order.width_total);
 
-					    fillPole();
-
-					    countPossibleWidths();
-					    var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
-					    var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
-					    order.quantity_cells = quantity_cells;
-					    order.quantity_row = quantity_row;
-					    canvas.clear();
-					    countProportion(quantity_row, quantity_cells);
-					    $('.cell_image').show();
-					    getPrice();
+				    fillPole();
+				    countPossibleWidths();
+				    var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
+				    var num = Number($("input[name='height_cell']:checked").prev().data("number"));
+            var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
+				    order.quantity_cells = quantity_cells;
+				    order.quantity_row = quantity_row;
+				    canvas.clear();
+				    countProportion(quantity_row, quantity_cells, num);
+				    $('.cell_image').show();
+				    getPrice();
 
 					}
 				}
@@ -390,7 +407,7 @@ $(document).ready(function() {
       width: rect_width,
       height: rect_height + 12,
       left: rect_left,
-      fill: '#ccc', 
+      fill: order.main_color_value, 
       selectable: false
     });
     canvas.add(rect);
@@ -441,31 +458,35 @@ $(document).ready(function() {
     }
   }
   function drawHandle(rect_height, rect_left, radius, count){
-    var handle = new fabric.Circle({
-      top: rect_height + 11,
-      left: rect_left,
-      radius: radius,
-      fill: '#fff',
-      stroke: '#ccc',
-      strokeWidth: 1,
-      selectable: false
-    });
-    canvas.add(handle);
-    handles[count] = handle;
-    canvas.renderAll();
+    if (order.rolik){
+      var handle = new fabric.Circle({
+        top: rect_height + 11,
+        left: rect_left,
+        radius: radius,
+        fill: '#fff',
+        stroke: order.main_color_value,
+        strokeWidth: 1,
+        selectable: false
+      });
+      canvas.add(handle);
+      handles[count] = handle;
+      canvas.renderAll();
+    }
   }
   function drawLug(rect_height, rect_width, rect_left, count){
-    var lug = new fabric.Rect({
-      width: rect_width - 2,
-      height: 20,
-      left: rect_left,
-      top: rect_height/2 - 10,
-      fill: '#8f8f8f',
-      selectable: false
-    });
-    canvas.add(lug);
-    lugs[count] = lug;
-    canvas.renderAll();
+    if (order.proushina){
+      var lug = new fabric.Rect({
+        width: rect_width - 2,
+        height: 20,
+        left: rect_left,
+        top: rect_height/2 - 10,
+        fill: '#8f8f8f',
+        selectable: false
+      });
+      canvas.add(lug);
+      lugs[count] = lug;
+      canvas.renderAll();
+    }
   }
   function drawHinge(hinge_width, hinge_height, hinge_left, hinge_top, count){
     var hinge = new fabric.Rect();
@@ -507,7 +528,7 @@ $(document).ready(function() {
     var k = 0;
     for (j = 1; j <= quantity_cells; j++){
       var path = new fabric.Path('M '+x0+' '+y0+' L '+x1+' '+y1+' L '+x2+' '+y2);
-      path.set({ fill: 'white', stroke: '#ccc', strokeWidth: 2, selectable: false});
+      path.set({ fill: 'white', stroke: order.main_color_value, strokeWidth: 2, selectable: false});
       canvas.add(path);
       lines_array[j] = path;
       x0 = x2 + 1;
@@ -522,7 +543,7 @@ $(document).ready(function() {
     y2 = y0;
     for (j = 1; j <= quantity_cells; j++){
       var path = new fabric.Path('M '+x0+' '+y0+' L '+x1+' '+y1+' L '+x2+' '+y2);
-      path.set({ fill: 'white', stroke: '#ccc', strokeWidth: 2, selectable: false});
+      path.set({ fill: 'white', stroke: order.main_color_value, strokeWidth: 2, selectable: false});
       canvas.add(path);
       lines_array[j + quantity_cells] = path;
       x0 = x2 + 1;
@@ -542,7 +563,7 @@ $(document).ready(function() {
     var k = 0;
     for (j = 1; j <= quantity_cells; j++){
       var path = new fabric.Path('M '+x0+' '+y0+' L '+x1+' '+y1+' L '+x2+' '+y2);
-      path.set({ fill: 'white', stroke: '#ccc', strokeWidth: 2, selectable: false});
+      path.set({ fill: 'white', stroke: order.main_color_value, strokeWidth: 2, selectable: false});
       canvas.add(path);
       lines_array[j] = path;
       x0 = x2 + 1;
@@ -561,9 +582,9 @@ $(document).ready(function() {
     var k = 0;
     for (j = 1; j <= quantity_cells; j++){
       var path = new fabric.Path('M '+x0+' '+y0+' L '+x1+' '+y1+' L '+x2+' '+y2+' L '+x3+' '+y3+' z');
-      path.set({ fill: 'white', stroke: '#ccc', strokeWidth: 2, selectable: false});
+      path.set({ fill: 'white', stroke: order.main_color_value, strokeWidth: 2, selectable: false});
       canvas.add(path);
-      lines_array[quantity_row + j] = path;
+      lines_array[quantity_cells + j] = path;
       x0 = x2 + 1;
       x1 = x1 + cells_width/quantity_cells;
       x2 = x2 + cells_width/quantity_cells;
@@ -589,7 +610,7 @@ $(document).ready(function() {
       x3 = (cells_width/quantity_cells)/2 + x0_0;
       for (i = 1; i <= quantity_cells; i++){
         var path = new fabric.Path('M '+x0+' '+y0+' L '+x1+' '+y1+' L '+x2+' '+y2+' L '+x3+' '+y3+' z');
-        path.set({ fill: 'white', stroke: '#ccc', strokeWidth: 2, selectable: false});
+        path.set({ fill: 'white', stroke: order.main_color_value, strokeWidth: 2, selectable: false});
         canvas.add(path);
         lines_array[k] = path;
         x0 = x2 + 1;
@@ -622,26 +643,39 @@ $(document).ready(function() {
     }
 
     $(".width-visible-possible").html("");
-
-    while (cells_width/k  >= 155){
-      if (cells_width/k <= 225){
+    var min_width = 150;
+    var max_width = 225;
+    if (order.height_total < 1000){
+      min_width = 135;
+    }
+    console.log("cells_width = "+cells_width);
+    while (cells_width/k >= min_width){
+      console.log("k = "+k+", cells_width/k = "+cells_width/k+", min_width = "+min_width+", max_width = "+max_width);
+      if (cells_width/k <= max_width){
+        console.log("success");
         widths.push(Math.floor(cells_width/k));
         $(".width-visible-possible").prepend('<label for="width_cell_'+i+'"> <span class="possible_width_'+i+'" data-quantitycells = "'+k+'">'+(widths[i-1] - 15)+'</span><input type="radio" name="width_cell" id="width_cell_'+i+'"></label>');
-        if(cells_width/k >= 160 && cells_width/k <= 180 && whoIsChecked==0){
-          whoIsChecked = i;
+        if(project!=undefined){
+          if(order.cell_width==widths[i-1]){
+            whoIsChecked = i;
+          }
+        } else {
+          if(cells_width/k >= 160 && cells_width/k <= 180 && whoIsChecked==0){
+            whoIsChecked = i;
+          }
         }
         i++;
       }
       k++;
     }
-
     if(whoIsChecked==0){
       whoIsChecked = i-1;
     }
-
     $("#width_cell_"+whoIsChecked).prop("checked",true);
     order.cell_width = widths[whoIsChecked-1];
     countPossibleHeights(widths[whoIsChecked-1] - 15);
+
+    isDisabled(canChange);
 
     return widths;
   }
@@ -658,29 +692,61 @@ $(document).ready(function() {
     console.log(' points_1 = '+ points_1 + ' points_2 = '+points_2);
     $(".height-visible-possible").html("");
     quantity_row_1 = points_1;
-        var height_1 = Math.floor(order.height_total/quantity_row_1);
+    var q_r_1 = quantity_row_1;
+    var coef = 2.8;
+    if (order.width_total < 1000){
+      coef = 2.5;
+    }
+    if (order.height_total - 20 < order.cell_width*coef*1.5){
+      points_1 = 2;
+      q_r_1 = 1;
+    }else if (order.height_total - 20 < order.cell_width*coef*2){
+      points_1 = 2;
+      q_r_1 = 1.5;
+    }
+      var height_1 = Math.floor((order.height_total-20)/q_r_1);
       var a = height_1/2;
       height_1 = Math.floor(Math.sqrt(Math.abs(4*a*a - current_width*current_width)));
+      // alert(height_1);
       if (height_1 >= 400 && height_1 < order.height_total){
-        $(".height-visible-possible").append('<label for="height_cell_1"> <span class="possible_height_1" data-quantityrow = "'+quantity_row_1+'">'+(height_1 - 15)+'</span><input type="radio" name="height_cell" id="height_cell_1" checked></label>');
-        order.cell_height = height_1;
-        flag = true;
+        $(".height-visible-possible").append('<label for="height_cell_1"> <span class="possible_height_1" data-quantityrow = "'+quantity_row_1+'" data-number = "'+20+'">'+(height_1 - 15)+'</span><input type="radio" name="height_cell" id="height_cell_1"></label>');
+        if(project==undefined){
+          order.cell_height = height_1;
+          $("#height_cell_1").prop("checked",true);
+          flag = true;
+        } else {
+          if(order.cell_height==height_1){
+            $("#height_cell_1").prop("checked",true);
+            flag = true;
+          }
+        }
       }
     quantity_row_2 = points_2;
-    if (quantity_row_1 != quantity_row_2){
-      var height_2 = Math.floor(order.height_total/quantity_row_2);
+      var q_r_2 = quantity_row_2;
+    if (order.height_total - 10 < order.cell_width*coef*1.5){
+      points_2 = 2;
+      q_r_2 = 1;
+    }else if (order.height_total - 10 < order.cell_width*coef*2){
+      points_2 = 2;
+      q_r_2 = 1.5;
+    }
+    if (q_r_1 != q_r_2){
+      var height_2 = Math.floor((order.height_total-20)/q_r_2);
       a = height_2/2;
       height_2 = Math.floor(Math.sqrt(4*a*a - current_width*current_width));
       if (height_2 >= 400 && height_2 < order.height_total){
-      	$(".height-visible-possible").append('<label for="height_cell_2"> <span class="possible_height_2" data-quantityrow = "'+quantity_row_2+'">'+(height_2 - 15)+'</span><input type="radio" name="height_cell" id="height_cell_2"></label>');           
-		if(!flag){
-			order.cell_height = height_2;
-			$("#height_cell_2").prop("checked",true);
-		}
+      	$(".height-visible-possible").append('<label for="height_cell_2"> <span class="possible_height_2" data-quantityrow = "'+quantity_row_2+'" data-number = "'+10+'">'+(height_2 - 15)+'</span><input type="radio" name="height_cell" id="height_cell_2"></label>');           
+		    if(!flag){
+    			order.cell_height = height_2;
+    			$("#height_cell_2").prop("checked",true);
+    		}
       }
     }
+
+    isDisabled(canChange);
+
   }
-  function countProportion(quantity_row, quantity_cells){
+  function countProportion(quantity_row, quantity_cells, num){
     var height_total = order.height_total;
     var width_total = order.width_total;
     var pp = width_total/250;
@@ -692,15 +758,19 @@ $(document).ready(function() {
     var hinge_width = 5;
     var hinge_height = 20;
     rect_height = cells_height;
+    var coef = 2.8;
+    if (order.width_total < 1000){
+      coef = 2.5;
+    }
     if (order.bars_type == 1){
       cells_width = (width_total - 90)/pp;
       drawVertical((90/3)/pp, rect_height, 0, 0);
       drawVertical((90/3)/pp, rect_height, (90/3)/pp + cells_width, 1);
       drawVertical((90/3)/pp, rect_height, ((90/3)*2)/pp + cells_width + 1, 2);
-      if (order.height_total - 20 < order.cell_width*2.8*1.5){
+      if (order.height_total - num < order.cell_width*coef*1.5){
         order.prolety = 3;
         drawCells_2_2(cells_width, cells_height, (90/3)/pp, lines_1, quantity_row, quantity_cells);
-      }else if (order.height_total - 20 < order.cell_width*2.8*2){
+      }else if (order.height_total - num < order.cell_width*coef*2){
         order.prolety = 4;
         drawCells_2_3(cells_width, cells_height, (90/3)/pp, lines_1, quantity_row, quantity_cells);
       }else{
@@ -713,11 +783,11 @@ $(document).ready(function() {
       drawVertical((60/3)/pp, rect_height, ((60/3)*2)/pp + cells_width, 1);
       drawVertical((60/3)/pp, rect_height, 60/pp + cells_width + 1, 2);
       drawVertical(((60/3)*2)/pp, rect_height, (60/3)/pp + 2*cells_width + 60/pp + 1, 3);
-      if (order.height_total - 20 < order.cell_width*2.8*1.5){
+      if (order.height_total - num < order.cell_width*coef*1.5){
         order.prolety = 3;
         drawCells_2_2(cells_width, cells_height, ((60/3)*2)/pp, lines_1, quantity_row, quantity_cells);
         drawCells_2_2(cells_width, cells_height, (60/3)/pp + cells_width + 1 + 60/pp, lines_2, quantity_row, quantity_cells);
-      }else if (order.height_total - 20 < order.cell_width*2.8*2){
+      }else if (order.height_total - num < order.cell_width*coef*2){
         order.prolety = 4;
         drawCells_2_3(cells_width, cells_height, ((60/3)*2)/pp, lines_1, quantity_row, quantity_cells);
         drawCells_2_3(cells_width, cells_height, (60/3)/pp + cells_width + 1 + 60/pp, lines_2, quantity_row, quantity_cells);
@@ -732,10 +802,10 @@ $(document).ready(function() {
      drawVertical((90/3)/pp, rect_height, (90/3)/pp + 1, 1);
      drawVertical((90/3)/pp, rect_height, (90/3)*2/pp + cells_width + 1, 2);
      drawVertical((90/3)/pp, rect_height, 90/pp + cells_width + 2, 3);
-     if (order.height_total - 20 < order.cell_width*2.8*1.5){
+     if (order.height_total - num < order.cell_width*coef*1.5){
         order.prolety = 3;
         drawCells_2_2(cells_width, cells_height, ((90/3)*2)/pp + 1, lines_1, quantity_row, quantity_cells);
-      }else if (order.height_total - 20 < order.cell_width*2.8*2){
+      }else if (order.height_total - num < order.cell_width*coef*2){
         order.prolety = 4;
         drawCells_2_3(cells_width, cells_height, ((90/3)*2)/pp + 1, lines_1, quantity_row, quantity_cells);
       }else{
@@ -752,11 +822,11 @@ $(document).ready(function() {
       drawVertical((90/3)/pp, rect_height, 90/pp + cells_width + 2, 3);
       drawVertical((90/3)/pp, rect_height, (90/3)/pp + 2*cells_width + 90/pp + 2, 4);
       drawVertical((90/3)/pp, rect_height, ((90/3)*2)/pp + 2*cells_width + 90/pp + 3, 5);
-      if (order.height_total - 20 < order.cell_width*2.8*1.5){
+      if (order.height_total - num < order.cell_width*coef*1.5){
         order.prolety = 3;
         drawCells_2_2(cells_width, cells_height, ((90/3)*2)/pp, lines_1, quantity_row, quantity_cells);
         drawCells_2_2(cells_width, cells_height, (90/3)/pp + cells_width + 1 + 90/pp, lines_2, quantity_row, quantity_cells);
-      }else if (order.height_total - 20 < order.cell_width*2.8*2){
+      }else if (order.height_total - num < order.cell_width*coef*2){
         order.prolety = 4;
         drawCells_2_3(cells_width, cells_height, ((90/3)*2)/pp, lines_1, quantity_row, quantity_cells);
         drawCells_2_3(cells_width, cells_height, (90/3)/pp + cells_width + 1 + 90/pp, lines_2, quantity_row, quantity_cells);
@@ -834,22 +904,43 @@ $(document).ready(function() {
       }
 
       if(!error){
-		order.height_total = tot_height;
-		order.width_total = tot_width;
-		countPossibleWidths();
-		var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
-		var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
-		canvas.clear();
-		order.quantity_cells = quantity_cells;
-    order.quantity_row = quantity_row;
-		countProportion(quantity_row, quantity_cells);
+    		order.height_total = tot_height;
+    		order.width_total = tot_width;
+        $('.cell_type').show();
+        if (tot_width <= 1000){
+          if (order.bars_type == 2){
+            order.bars_type = 1;
+          }else if (order.bars_type == 4){
+            order.bars_type = 3;
+          }
+          $('.cell_type[data-celltype = 2]').hide();
+          $('.cell_type[data-celltype = 4]').hide();
+        }else if (tot_width >= 2500){
+          if (order.bars_type == 1){
+            order.bars_type = 2;
+          }else if (order.bars_type == 3){
+            order.bars_type = 4;
+          }
+          $('.cell_type[data-celltype = 1]').hide();
+          $('.cell_type[data-celltype = 3]').hide();
+        }
+        $(".cell_type").removeClass("active");
+        $(".cell_type[data-celltype='"+order.bars_type+"']").addClass("active");
+    		countPossibleWidths();
+    		var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
+        var num = Number($("input[name='height_cell']:checked").prev().data("number"));
+    		var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
+    		canvas.clear();
+    		order.quantity_cells = quantity_cells;
+        order.quantity_row = quantity_row;
+    		countProportion(quantity_row, quantity_cells,num);
 
-		$(".height-value").html(order.height_total);
-		$(".width-value").html(order.width_total);
+    		$(".height-value").html(order.height_total);
+    		$(".width-value").html(order.width_total);
 
-		$(".wrapper").hide();
+    		$(".wrapper").hide();
 
-		getPrice();
+    		getPrice();
 
       }
 
@@ -864,11 +955,12 @@ $(document).ready(function() {
 	      $(this).addClass("active");
 	      countPossibleWidths();
 	      var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
+        var num = Number($("input[name='height_cell']:checked").prev().data("number"));
 	      var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
 	      canvas.clear();
 	      order.quantity_cells = quantity_cells;
 	      order.quantity_row = quantity_row;
-	      countProportion(quantity_row, quantity_cells);
+	      countProportion(quantity_row, quantity_cells, num);
 
 	      getPrice();
       }
@@ -880,11 +972,12 @@ $(document).ready(function() {
     order.cell_width = Number($(this).prev().html()) + 15;
     countPossibleHeights($(this).prev().html());
     var quantity_row = Number($("input[name='height_cell']:checked").prev().data("quantityrow"));
+    var num = Number($("input[name='height_cell']:checked").prev().data("number"));
     var quantity_cells = Number($(this).prev().data("quantitycells"));
     canvas.clear();
     order.quantity_cells = quantity_cells;
     order.quantity_row = quantity_row;
-    countProportion(quantity_row, quantity_cells);
+    countProportion(quantity_row, quantity_cells, num);
 
     getPrice();
   });
@@ -894,10 +987,11 @@ $(document).ready(function() {
     order.cell_height = Number($(this).prev().html()) + 15;
     var quantity_row = Number($(this).prev().data("quantityrow"));
     var quantity_cells = Number($("input[name='width_cell']:checked").prev().data("quantitycells"));
+    var num = Number($("input[name='height_cell']:checked").prev().data("number"));
     order.quantity_cells = quantity_cells;
     order.quantity_row = quantity_row;
     canvas.clear();
-    countProportion(quantity_row, quantity_cells);
+    countProportion(quantity_row, quantity_cells, num);
 
     getPrice();
   });
@@ -905,27 +999,19 @@ $(document).ready(function() {
     var prop_check = $(this).prop('checked');
     var quantity_lug = lugs.length;
     order.proushina = prop_check;
-    if (prop_check){
-      countProportion(order.quantity_row, order.quantity_cells);
-    }else{
-      for (i = 0; i < quantity_lug; i++){
-        lugs[i].set({width: 0});
-      }
-    }
-    canvas.renderAll();
+    canvas.clear();
+    var num = Number($("input[name='height_cell']:checked").prev().data("number"));
+    countProportion(order.quantity_row, order.quantity_cells, num);
+    getPrice();
   });
   $('.checkbox_rolik').on('change', '#check_rolik', function(){
     var prop_check = $(this).prop('checked');
-    var quantity_lug = handles.length;
+    var quantity_handles = handles.length;
+    var num = Number($("input[name='height_cell']:checked").prev().data("number"));
     order.rolik = prop_check;
-    if (prop_check){
-      countProportion(order.quantity_row, order.quantity_cells);
-    }else{
-      for (i = 0; i < quantity_lug; i++){
-        handles[i].set({radius: 0});
-      }
-    }
-    canvas.renderAll();
+    canvas.clear();
+    countProportion(order.quantity_row, order.quantity_cells, num);
+    getPrice();
   });
   //нажатие на меню
 
@@ -994,48 +1080,49 @@ $(document).ready(function() {
       return false;
     }else{
 
-		var type_id = $(this).data('pageid');
-		var color;
-		order[type] = type_id;
+  		var type_id = $(this).data('pageid');
+  		var color;
+  		order[type] = type_id;
 
-		$(".current_menu div").removeClass("active-child");
-		$(".current_menu div[data-pageid="+order[type]+"]").addClass("active-child");
+  		$(".current_menu div").removeClass("active-child");
+  		$(".current_menu div[data-pageid="+order[type]+"]").addClass("active-child");
 
-		if(type=="main_color_type"){
-			if($(this).attr('id')=="standart"){
-				order["main_color"] = 197;
-				$(".setting_value.main_color").data("pageid","196");
-				order["main_color_value"] = "#3d2219";
-			} else {
-				order["main_color"] = 201;
-				$(".setting_value.main_color").data("pageid","200");
-				order["main_color_value"] = "#C2B078";
-			}
-		} else {
-		// alert($(this).children(".color_color_ral").css("background-color"));
-		order["main_color_value"] = $(this).children(".color_color_ral").css("background-color");
+  		if(type=="main_color_type"){
+  			if($(this).attr('id')=="standart"){
+  				order["main_color"] = 197;
+  				$(".setting_value.main_color").data("pageid","196");
+  				order["main_color_value"] = "#3d2219";
+  			} else {
+  				order["main_color"] = 201;
+  				$(".setting_value.main_color").data("pageid","200");
+  				order["main_color_value"] = "#C2B078";
+  			}
+  		} else {
+  		// alert($(this).children(".color_color_ral").css("background-color"));
+  		  order["main_color_value"] = $(this).children(".color_color_ral").css("background-color");
 
-		}
+  		}
 
-		var quantity_rects = rects.length;
-		for (i = 0; i < quantity_rects; i++){
-			rects[i].set({fill: order["main_color_value"]});
-		}
-		var quantity_lines_1 = lines_1.length;
-		var quantity_lines_2 = lines_2.length;
-		for (i = 0; i<quantity_lines_1; i++){
-			lines_1[i].set({stroke: order["main_color_value"]});
-		}
-		for (i = 0; i<quantity_lines_2; i++){
-			lines_2[i].set({stroke: order["main_color_value"]});
-		}
-		var quantity_lug = handles.length;
-		for (i = 0; i<quantity_lug; i++){
-	    	handles[i].set({stroke: order["main_color_value"]});
-	    }
-		canvas.renderAll();
-		  
-		fillPole();
+  		var quantity_rects = rects.length;
+  		for (i = 0; i < quantity_rects; i++){
+  			rects[i].set({fill: order["main_color_value"]});
+  		}
+  		var quantity_lines_1 = lines_1.length;
+  		var quantity_lines_2 = lines_2.length;
+  		for (i = 0; i<quantity_lines_1; i++){
+  			lines_1[i].set({stroke: order["main_color_value"]});
+  		}
+  		for (i = 0; i<quantity_lines_2; i++){
+  			lines_2[i].set({stroke: order["main_color_value"]});
+  		}
+  		var quantity_lug = handles.length;
+  		for (i = 0; i<quantity_lug; i++){
+  	    	handles[i].set({stroke: order["main_color_value"]});
+  	    }
+  		canvas.renderAll();
+  		  
+  		fillPole();
+      getPrice();
     }
   });
 
