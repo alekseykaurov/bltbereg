@@ -18,7 +18,7 @@ $S = ($order["height_door"]*$order["width_door"])/1000000;
 
 //Округляем до десятых
 function ceil3($number, $precision = 0) {
-    return ceil($number * pow(10, $precision)) / pow(10, $precision);
+    return ceil($number * pow(100, $precision)) / pow(100, $precision);
 }
 $S = ceil3($S, 1);
 

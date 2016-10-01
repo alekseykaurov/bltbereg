@@ -111,7 +111,7 @@ $result['pp_type']['value'] = $pp_type[0]['value'];
 $result['pp_type']['changable'] = true;
 
 $product_offer = $modx->getDocument($product);
-if($product_offer["parent"]==506 || $product_offer["parent"]==9 || $product_offer["parent"]==993){
+if($product_offer["parent"]==506 || $product_offer["parent"]==9 || $product_offer["parent"]==558){
 
 	$result["special_name"] = $product_offer["pagetitle"];
 
@@ -166,7 +166,7 @@ if($product_offer["parent"]==506 || $product_offer["parent"]==9 || $product_offe
 			$page = $modx->getDocument($value["value"]);
 
 			$result[$value["name"]."_id"]["value"] = $page["id"];
-			$result[$value["name"]."_id"]["changable"] = false;
+			$result[$value["name"]."_id"]["changable"] = true;
 		}
 
 	}
@@ -188,7 +188,7 @@ if($product_offer["parent"]==506 || $product_offer["parent"]==9 || $product_offe
 		$result['door_side']["changable"] = true;
 	}
 
-	//если не заполнено окрашивание, приваиваем первого ребенка из заполненного типа цвета
+	//если не заполнено окрашивание, присваиваем первого ребенка из заполненного типа цвета
 	if($productTVs[4]["value"]==""){
 		if($result["main_color_type_id"]["value"]==196){
 			$result["okrashivanie_id"]["value"] = $result['child_standart_color']["value"];

@@ -560,8 +560,8 @@ mysql_close($db);
 // mail($to, $subject, $message, $headers);
 
 
-$to = "ekaterina.bidyanova@yandex.ru";
-// $to = "bmihh@yandex.ru";
+// $to = "ekaterina.bidyanova@yandex.ru";
+$to = "bmihh@yandex.ru";
 	$from = "admin@blt-bereg.ru";
 
 	// тема письма
@@ -576,7 +576,7 @@ $to = "ekaterina.bidyanova@yandex.ru";
 	<body>
 	  <p style="text-align: center; font-size: 22px; font-weight: bold; padding: 5px 0px">Новая дверь была добавлена в корзину на сайте "Балтийский берег"</p>
 	  <p style="">Номер проекта: '.$order["order_id"].'</p>
-	  <p style="">Ссылка на проект: <a href="http://ce77747.tmweb.ru/konstruktor-protivopozharnyix-dverej/?project='.$order["order_id"].'">http://ce77747.tmweb.ru/konstruktor-protivopozharnyix-dverej/?project='.$order["order_id"].'</a></p>
+	  <p style="">Ссылка на проект: <a href="http://blt-bereg.ru/konstruktor-protivopozharnyix-dverej/?project='.$order["order_id"].'">http://blt-bereg.ru/konstruktor-protivopozharnyix-dverej/?project='.$order["order_id"].'</a></p>
 	</body>
 	</html>
 	';

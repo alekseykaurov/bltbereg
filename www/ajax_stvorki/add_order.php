@@ -113,7 +113,13 @@ $main_color_price = $price['main_color_price'];
 $outside_view = $modx->getDocument($insert["outside_view"]);
 $outside_view_name = $outside_view["pagetitle"]; // Название типа внешней отделки
 
-$pp_type = $insert['pp_type']; //тип противопожарной двери
+// $pp_type = $insert['pp_type']; //тип противопожарной двери
+if($insert["pp_type"]!=null && $insert["pp_type"]!=""){
+	$pp_type = $modx->getDocument($insert["pp_type"]);
+	$pp_type_name = $pp_type["pagetitle"];// Название типа противопожарной двери
+} else {
+	$pp_type_name = "";
+}
 if ($insert['outside_view'] != 195){
 	$outside_color = $modx->getDocument($insert["outside_color"]);
 	$outside_color_name = $outside_color["pagetitle"]; // Название цвета внешней отделки
@@ -318,6 +324,8 @@ if($personal_price!=null && $personal_price!=""){
 	$total_price = $insert["total_price"];
 }
 
+$nadbavka = $price["total"] - $price["total_old"]; //надбавка
+
 //Стоимость без скидки
 $clear_price = $price["clear"];
 
@@ -358,7 +366,7 @@ $glazok_name = iconv("utf-8", "windows-1251", $glazok_name);
 $dovodchik_name = iconv("utf-8", "windows-1251", $dovodchik_name);
 $zadvijka_name = iconv("utf-8", "windows-1251", $zadvijka_name);
 $stvorka_name = iconv("utf-8", "windows-1251", $stvorka_name);
-$pp_type = iconv("utf-8", "windows-1251", $pp_type);
+$pp_type_name = iconv("utf-8", "windows-1251", $pp_type_name);
 //$stvorka_position = iconv("utf-8", "windows-1251", $stvorka_position);
 // $steklopak_position = iconv("utf-8", "windows-1251", $steklopak_position);
 
@@ -467,6 +475,9 @@ $text .= xlsWriteLabel(48,0,"Петли");
 $text .= xlsWriteLabel(49,0,"Уплотнитель");
 $text .= xlsWriteLabel(50,0,"Стеклопакет");
 $text .= xlsWriteLabel(51,0,"Положение стеклопакета");
+
+$text .= xlsWriteLabel(53,0,"Надбавка (руб.)");
+
 // $text .= xlsWriteLabel(52,0,"Антипаника (1-да/0-нет)");
 
 
@@ -506,7 +517,7 @@ $text .= xlsWriteLabel(22,2,$outside_nalichnik_price);
 $text .= xlsWriteLabel(23,1,$glazok_name);
 $text .= xlsWriteLabel(23,2,$glazok_price);
 
-$text .= xlsWriteLabel(25,1,$pp_type);
+$text .= xlsWriteLabel(25,1,$pp_type_name);
 // $text .= xlsWriteLabel(24,1,$floors);
 // $text .= xlsWriteLabel(25,1,$lift);
 // $text .= xlsWriteLabel(26,1,$montaj);
@@ -551,6 +562,7 @@ $text .= xlsWriteLabel(50,2,$steklopak_price);
 $text .= xlsWriteLabel(51,1,$steklopak_position);
 // $text .= xlsWriteLabel(52,1,$antipanika); //антипаника
 // $text .= xlsWriteLabel(52,2,$antipanika_price); //цена антипаники
+$text .= xlsWriteLabel(53,1,$nadbavka); //антипаника
 
 $text .= xlsEOF(); //заканчиваем собирать
 
@@ -599,8 +611,8 @@ mysql_close($db);
 // mail($to, $subject, $message, $headers);
 
 
- $to = "ekaterina.bidyanova@yandex.ru";
-//$to = "bmihh@yandex.ru";
+ // $to = "ekaterina.bidyanova@yandex.ru";
+$to = "bmihh@yandex.ru";
 	$from = "admin@blt-bereg.ru";
 
 	// тема письма
@@ -615,7 +627,7 @@ mysql_close($db);
 	<body>
 	  <p style="text-align: center; font-size: 22px; font-weight: bold; padding: 5px 0px">Новая дверь была добавлена в корзину на сайте "Балтийский берег"</p>
 	  <p style="">Номер проекта: '.$order["order_id"].'</p>
-	  <p style="">Ссылка на проект: <a href="http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi).html?project='.$order["order_id"].'">http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi).html?project='.$order["order_id"].'</a></p>
+	  <p style="">Ссылка на проект: <a href="http://blt-bereg.ru/konstruktor-protivopozharnyix-dverej/?project='.$order["order_id"].'">http://blt-bereg.ru/konstruktor-protivopozharnyix-dverej/?project='.$order["order_id"].'</a></p>
 	</body>
 	</html>
 	';

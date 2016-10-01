@@ -67,19 +67,56 @@ $result["post"] = $_POST;
 $result["add_lock"] = $add_lock;
 
 $ml = "";
-if($default_main_lock==""){
-	foreach($childs_sorted as $key => $value){
-		if($ml==""){
-			$current_ispp = $modx->getTemplateVars(Array("is_pp"), '*', $value["id"]);
-			if($current_ispp[0]["value"]=="true"){
-				$ml = $value["id"];
+if($main_lock=="" || $main_lock==null){
+	if($default_main_lock==""){
+		foreach($childs_sorted as $key => $value){
+			if($ml==""){
+				$current_ispp = $modx->getTemplateVars(Array("is_pp"), '*', $value["id"]);
+				$current_najim = $modx->getTemplateVars(Array("najim"), '*', $value["id"]);
+				if($current_ispp[0]["value"]=="true" && $current_najim[0]["value"]=="true"){
+					$ml = $value["id"];
+				}
+			} else {
+				break;
 			}
+		}
+	} else {
+		$default_ispp = $modx->getTemplateVars(Array("is_pp"), '*', $default_main_lock);
+		$default_najim = $modx->getTemplateVars(Array("najim"), '*', $default_main_lock);
+		if($default_ispp[0]["value"]=="true" && $default_najim[0]["value"]=="true"){
+			$ml = $default_main_lock;
 		} else {
-			break;
+			foreach($childs_sorted as $key => $value){
+				if($ml==""){
+					$current_ispp = $modx->getTemplateVars(Array("is_pp"), '*', $value["id"]);
+					$current_najim = $modx->getTemplateVars(Array("najim"), '*', $value["id"]);
+					if($current_ispp[0]["value"]=="true" && $current_najim[0]["value"]=="true"){
+						$ml = $value["id"];
+					}
+				} else {
+					break;
+				}
+			}
 		}
 	}
 } else {
-	$ml=$default_main_lock;
+	$main_ispp = $modx->getTemplateVars(Array("is_pp"), '*', $main_lock);
+	$main_najim = $modx->getTemplateVars(Array("najim"), '*', $main_lock);
+	if($main_ispp[0]["value"]=="true" && $main_najim[0]["value"]=="true"){
+		$ml = $main_lock;
+	} else {
+		foreach($childs_sorted as $key => $value){
+			if($ml==""){
+				$current_ispp = $modx->getTemplateVars(Array("is_pp"), '*', $value["id"]);
+				$current_najim = $modx->getTemplateVars(Array("najim"), '*', $value["id"]);
+				if($current_ispp[0]["value"]=="true" && $current_najim[0]["value"]=="true"){
+					$ml = $value["id"];
+				}
+			} else {
+				break;
+			}
+		}
+	}
 }
 $result["main_lock"] = $ml;
 // if($type=="checkbox_add"){

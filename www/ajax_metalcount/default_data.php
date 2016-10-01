@@ -80,7 +80,7 @@ if ($door_side == 'налево'){
 $result['door_side']["changable"] = true;
 
 $special_offer = $modx->getDocument($special);
-if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_offer["parent"]==30 || $special_offer["parent"]==31 || $special_offer["parent"]==32 || $special_offer["parent"]==33 || $special_offer["parent"]==9){
+if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_offer["parent"]==30 || $special_offer["parent"]==31 || $special_offer["parent"]==32 || $special_offer["parent"]==33 || $special_offer["parent"]==9 || $special_offer["parent"]==1022){
 
 	$result["special_name"] = $special_offer["pagetitle"];
 
@@ -104,6 +104,8 @@ if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_off
 				"height",
 				"door_side");
 	$specialTVs = $modx->getTemplateVars($params, '*', $special);
+	$inside_frezer_check = $modx->getTemplateVars(Array('inside_frezer_check'), '*', $special);
+	$outside_frezer_check = $modx->getTemplateVars(Array('outside_frezer_check'), '*', $special);
 	$cena_main_color = $modx->getTemplateVars(Array('cena_main-color'), '*', $special);
 	$cena_inside_color = $modx->getTemplateVars(Array('cena_inside-color'), '*', $special);
 	$cena_outside_color = $modx->getTemplateVars(Array('cena_outside-color'), '*', $special);
@@ -270,8 +272,16 @@ if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_off
 	} else {
 		$result['ruchka_id']['changable'] = true;
 	}
-	$result['outside-frezer_id']['changable'] = true;
-	$result['inside-frezer_id']['changable'] = true;
+	if ($inside_frezer_check[0]['value'] == 'true'){
+		$result['inside-frezer_id']['changable'] = false;
+	}else{
+		$result['inside-frezer_id']['changable'] = true;
+	}
+	if ($outside_frezer_check[0]['value'] == 'true'){
+		$result['outside-frezer_id']['changable'] = false;
+	}else{
+		$result['outside-frezer_id']['changable'] = true;
+	}
 }
 
 

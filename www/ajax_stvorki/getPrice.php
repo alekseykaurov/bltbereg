@@ -165,24 +165,16 @@ if($order["glazok"]!="" && $order["glazok"]!=null){
 $per_stvor = 0;
 $per_door = ceil(2*($order["width_door"] + $order["height_door"])/1000); //периметр двери
 if ($order["door_type"] == 4 || $order["door_type"] == 6){
-	$per_stvor = ceil(2*(($order["width_total"]-$order["width_door"]) + ($order["height_total"]))/1000); //периметр створки ?? как правильно посчитать
+	$per_stvor = ceil(2*(($order["width_total"]-$order["width_door"]) + ($order["height_total"]))/1000); //периметр створки
 }
-/*
-//пока закомментил, т.к. не понял как именно сделать
-if($order["door_type"] == 6 || $order["door_type"] == 4){
-	$perimetr = $per_door + $per_stvor;
-} else {
-	$perimetr = $per_door;
-}
-*/
 $perimetr = $per_door + $per_stvor;
-if($order["pp_type"]==1001){
+if($order["pp_type"]==995){
 	//если Техническая
 	$price["uplotnitel_price"] = $perimetr*35;
-} else if($order["pp_type"]==1002){
+} else if($order["pp_type"]==996){
 	//если EI 60
 	$price["uplotnitel_price"] = $perimetr*105;
-} else if($order["pp_type"]==1003){
+} else if($order["pp_type"]==997){
 	//если EIS 60
 	$price["uplotnitel_price"] = $perimetr*270;
 }
@@ -356,37 +348,37 @@ $price["total_old"] = $total_price;
 $price["total_special_old"] = $total_special_price;
 
 if ($order['door_type'] == 1) {
-    $productid = 994;
+    $productid = 979;
 } else if ($order['door_type'] == 2) {
 	// $total_price = $total_price + (ceil($total_price/100)*10);
 	// $total_special_price = $total_special_price + (ceil($total_special_price/100)*10);
 	$total_price = $total_price + (ceil(($price["metallkonstr_price"] + $price["petli_price"])/100)*10);
 	$total_special_price = $total_special_price + (ceil(($special_price["metallkonstr_price"] + $special_price["petli_price"])/100)*10);
-    $productid = 995;
+    $productid = 998;
 } else if ($order['door_type'] == 3) {
 	// $total_price = $total_price + (ceil($total_price/100)*10);
 	// $total_special_price = $total_special_price + (ceil($total_special_price/100)*10);
 	$total_price = $total_price + (ceil(($price["metallkonstr_price"] + $price["petli_price"])/100)*10);
 	$total_special_price = $total_special_price + (ceil(($special_price["metallkonstr_price"] + $special_price["petli_price"])/100)*10);
-    $productid = 996;
+    $productid = 999;
 } else if ($order['door_type'] == 4) {
 	// $total_price = $total_price + (ceil(($total_price*0.15)/10)*10) + 2*300;
 	// $total_special_price = $total_special_price + (ceil(($total_special_price*0.15)/10)*10) + 2*300;
 	$total_price = $total_price + (ceil((($price["metallkonstr_price"] + $price["petli_price"])*0.15)/10)*10) + 2*300;
 	$total_special_price = $total_special_price + (ceil((($special_price["metallkonstr_price"] + $special_price["petli_price"])*0.15)/10)*10) + 2*300;
-    $productid = 997;
+    $productid = 1000;
 } else if ($order['door_type'] == 5) {
 	// $total_price = $total_price + (ceil(($total_price*0.15)/10)*10);
 	// $total_special_price = $total_special_price + (ceil(($total_special_price*0.15)/10)*10);
 	$total_price = $total_price + (ceil((($price["metallkonstr_price"] + $price["petli_price"])*0.15)/10)*10);
 	$total_special_price = $total_special_price + (ceil((($special_price["metallkonstr_price"] + $special_price["petli_price"])*0.15)/10)*10);
-    $productid = 998;
+    $productid = 1001;
 } else if ($order['door_type'] == 6) {
 	// $total_price = $total_price + (ceil(($total_price*0.25)/10)*10) + 2*300;
 	// $total_special_price = $total_special_price + (ceil(($total_special_price*0.25)/10)*10) + 2*300;
 	$total_price = $total_price + (ceil((($price["metallkonstr_price"] + $price["petli_price"])*0.25)/10)*10) + 2*300;
 	$total_special_price = $total_special_price + (ceil((($special_price["metallkonstr_price"] + $special_price["petli_price"])*0.25)/10)*10) + 2*300;
-    $productid = 999;
+    $productid = 1002;
 } else {
     $productid = 979;
 }

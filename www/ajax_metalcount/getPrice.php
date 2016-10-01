@@ -18,13 +18,13 @@ $S = ($order["height_door"]*$order["width_door"])/1000000;
 
 //Округляем до десятых
 function ceil3($number, $precision = 0) {
-    return ceil($number * pow(10, $precision)) / pow(10, $precision);
+    return ceil($number * pow(100, $precision)) / pow(100, $precision);
 }
 $S = ceil3($S, 1);
 
 //если пришел id спецпредложения, получаем цены
 $special_offer = $modx->getDocument($special);
-if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_offer["parent"]==30 || $special_offer["parent"]==31 || $special_offer["parent"]==32 || $special_offer["parent"]==33){
+if($special_offer["parent"]==506 || $special_offer["parent"]==29 || $special_offer["parent"]==30 || $special_offer["parent"]==31 || $special_offer["parent"]==32 || $special_offer["parent"]==33 || $special_offer["parent"]==9 || $special_offer["parent"]==1022){
 
 	$params = Array(
 				"cena_metallokonstr", //0+
@@ -159,7 +159,7 @@ if($order["glazok"]!="" && $order["glazok"]!=null){
 }
 
 //Узнаем цену на уплотнитель
-$uplotnitel_price = ceil(2*($order["width_door"] + $order["height_door"])*35/10000)*10;
+$uplotnitel_price = 35*ceil(2*($order["width_door"] + $order["height_door"])/1000);
 if($order["metallokonstr"]==191){
 	//если Основа
 	$price["uplotnitel_price"] = 1*$uplotnitel_price;
@@ -340,7 +340,7 @@ if($specialTVs[11]["value"]==""){
 		$price["skidka_ruble"] = $skidka;
 	}
 }
-
+$price['tt'] = $specialTVs[11]['value'];
 print json_encode($price); 
 
 ?>

@@ -20,6 +20,7 @@ if(isset($_COOKIE['products'])){
 $result["products"] = 0;
 $result["total_price"] = 0;
 $result["txt"] = "";
+$result["demontag"] = false;
 if($cookie!=false){
 	foreach($cookie as $key => $value){
 		$item = explode("-", $value);
@@ -33,6 +34,7 @@ if($cookie!=false){
 <th class = 'sum_price_item'>Стоимость</th>
 <th class = 'delete_item'>Удалить</th>
 </tr>";
+	$pp_type_name = '';
 	foreach($items as $key => $value){
 		$result["txt"] .= "<tr>";
 
@@ -43,20 +45,33 @@ if($cookie!=false){
 			$res = mysql_query("SELECT * FROM orders WHERE `order_id`='".$value[0]."' LIMIT 1", $db);
 
 			if ($row = mysql_fetch_assoc($res)) {
+				if ($row["pp_type"] == 995){
+					$pp_type_name = 'Техническая';
+				}else if ($row["pp_type"] == 996){
+					$pp_type_name = 'EI 60';
+				}else if ($row["pp_type"] == 997){
+					$pp_type_name = 'EIS 60';
+				}
 				if($row["door_type"]== 1 || $row["door_type"]=="protivopojar"){
-			    	$door_name = "<a href='/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 1-ств, противопожарная пр.№".$value[0]."</a>";
+			    	$door_name = "<a href='/konstruktor-protivopozharnyix-dverej/?project=".$value[0]."'>Дверь п/п 1-створ. ".$pp_type_name.". Пр.№".$value[0]."</a>";
+			    	$result["demontag"] = true;
 				} else if ($row["door_type"] == 2 || $row["door_type"] == 3) {
-					$door_name = "<a href='/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 1-створ. с глух. частью, противопожарная пр.№".$value[0]."</a>";
+					$door_name = "<a href='/konstruktor-protivopozharnyix-dverej/?project=".$value[0]."'>Дверь п/п 1-створ. с глух. частью. ".$pp_type_name.". Пр.№".$value[0]."</a>";
+					$result["demontag"] = true;
 				} else if($row["door_type"] == 4){
-					$door_name = "<a href='/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 2-створ., противопожарная пр.№".$value[0]."</a>";
+					$door_name = "<a href='/konstruktor-protivopozharnyix-dverej/?project=".$value[0]."'>Дверь п/п 2-створ. ".$pp_type_name.". Пр.№".$value[0]."</a>";
+					$result["demontag"] = true;
 				} else if($row["door_type"] == 5){
-					$door_name = "<a href='/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 1-створ. с 2-мя глух. частями, противопожарная пр.№".$value[0]."</a>";
+					$door_name = "<a href='/konstruktor-protivopozharnyix-dverej/?project=".$value[0]."'>Дверь п/п 1-створ. с 2-мя глух. частями. ".$pp_type_name.". Пр.№".$value[0]."</a>";
+					$result["demontag"] = true;
 				} else if($row["door_type"] == 6){
-					$door_name = "<a href='/slozhnyie-dveri-(testyi)/?project=".$value[0]."'>Мет.дверь, 2-створ. с глух. частm., противопожарная пр.№".$value[0]."</a>";
+					$door_name = "<a href='/konstruktor-protivopozharnyix-dverej/?project=".$value[0]."'>Дверь п/п 2-створ. с глух. частью. ".$pp_type_name.". Пр.№".$value[0]."</a>";
+					$result["demontag"] = true;
 				} else if($row["door_type"] == "cells"){
-					$door_name = "<a href='/reshetki/?project=".$value[0]."'>Решетка пр.№".$value[0]."</a>";
-				} else {
+					$door_name = "<a href='/razdvizhnyie-reshetki1/?project=".$value[0]."'>Решетка раздв. (тип.".$row["bars_type"].") В".$row["height_total"]."хШ".$row["width_total"]." пр.№".$value[0]."</a>";
+				}else {
 					$door_name = "<a href='/konstruktor-dverej/?project=".$value[0]."'>Мет.дверь, 1-ств, квартирная пр.№".$value[0]."</a>";
+					$result["demontag"] = true;
 				}
 			} else {
 				$door_name = "Дверь №".$value[0];

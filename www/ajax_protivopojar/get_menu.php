@@ -107,9 +107,9 @@ if($page==null){
 	} else if($page==196 || $page==198 || $page==200){
 		if($page==200){
 			$tpl = 'color_ral';
-		} if($page==196){
-			$tpl = 'standart_color';
-		} else {
+		} else if($page==196){
+			$tpl="standart_color";
+		}else {
 			$tpl = 'antic_color';
 		}
 		$txt = '';

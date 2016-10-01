@@ -107,8 +107,8 @@ if($page==null){
 	} else if($page==196 || $page==198 || $page==200){
 		if($page==200){
 			$tpl = 'color_ral';
-		} if($page==196){
-			$tpl = 'standart_color';
+		}else if($page==196){
+			$tpl="standart_color";
 		} else {
 			$tpl = 'antic_color';
 		}
@@ -125,7 +125,7 @@ if($page==null){
 	}else if($page == 228){
 		$tpl = 'zadvijka';
 		$txt = getHtml($page, $tpl, $modx);
-	}else if($page == 1000){
+	}else if($page == 994){
 		$tpl = 'otdelka';
 		$txt = getHtml($page, $tpl, $modx);
 	}else if($page==983){

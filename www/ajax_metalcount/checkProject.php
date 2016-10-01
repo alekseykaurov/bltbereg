@@ -30,10 +30,13 @@ if($projectId==null){
 		// 	$result["type"]="mk";
 		// }
 		if($row["door_type"]== 1 || $row["door_type"] == 2 || $row["door_type"] == 3 || $row["door_type"] == 4 || $row["door_type"] == 5 || $row["door_type"] == 6 || $row["door_type"]=="protivopojar"){
-			$result["link"]="http://ce77747.tmweb.ru/slozhnyie-dveri-(testyi).html?project=".$projectId;
+			$result["link"]="http://blt-bereg.ru/konstruktor-protivopozharnyix-dverej/?project=".$projectId;
 			$result["type"]="st";
+		}else if($row["door_type"]== "cells"){
+			$result["link"]="http://blt-bereg.ru/razdvizhnyie-reshetki1/?project=".$projectId;
+			$result["type"]="cells";
 		}else{
-			$result["link"]="http://ce77747.tmweb.ru/konstruktor-dverej/?project=".$projectId;
+			$result["link"]="http://blt-bereg.ru/konstruktor-dverej/?project=".$projectId;
 			$result["type"]="mk";
 		}
 

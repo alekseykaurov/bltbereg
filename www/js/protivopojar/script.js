@@ -17,6 +17,7 @@ $.extend({
 
 $(document).ready(function() {
 	var order = {};
+	var default_order = {};
 	var color = {};
 	var price = {};
 	var horizont = 12;
@@ -238,7 +239,6 @@ $(document).ready(function() {
 		getOrder(project);
 	}
 
-	var default_order = {};
 	var child_color;
 	var child_color_l;
 
@@ -1929,6 +1929,7 @@ $(document).ready(function() {
 		// console.log(order);
 		// alert(order.add_lock);
 		// alert(order.main_lock);
+		// console.log(default_order);
 		$.ajax({
 			url: '/ajax_protivopojar/checkLock.php',
 			type: 'POST',
@@ -1939,7 +1940,8 @@ $(document).ready(function() {
 				'outside_view': outside_view,
 				'main_lock': order.main_lock,
 				'add_lock': order.add_lock,
-				'type': type
+				'type': type,
+				'default_main_lock': default_order.main_lock
 			},
 			success: function(data){
 				console.log("checkLock");
@@ -2150,7 +2152,7 @@ $(document).ready(function() {
 
 				$(".wrapper_3 .added_text").html("Проект №"+order_id+" сохранен на сайте и добавлен в корзину");
 				$(".wrapper_3").show();
-				// window.location.href = "http://ce77747.tmweb.ru/konstruktor-protivopozharnyix-dverej/";
+				// window.location.href = "http://blt-bereg.ru/konstruktor-protivopozharnyix-dverej/";
 			},
 			error: function(data){
 				console.log('error');

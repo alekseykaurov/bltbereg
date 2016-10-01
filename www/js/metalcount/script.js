@@ -940,6 +940,7 @@ $(document).ready(function() {
 						$('.current_menu').append('<div class = "zamok_list"></div>');
 					} else {
 						$('.current_menu').append('<div class = "zamok_sort_title">Сортировка по цене:</div><form class = "zamok_sort"><select name="sort"><option value="up">По возр.</option><option value="down">По убыв.</option></select></form>');
+						$('.current_menu').append('<div class = "zamok_list"></div>');
 					}
 					order[type] = default_order.add_lock;
 					// alert(order.add_lock);
@@ -981,6 +982,7 @@ $(document).ready(function() {
 						$('.current_menu').append('<div class = "zamok_list"></div>');
 					} else {
 						$('.current_menu').append('<div class = "zamok_sort_title">Сортировка по цене:</div><form class = "zamok_sort"><select name="sort"><option value="up">По возр.</option><option value="down">По убыв.</option></select></form>');
+						$('.current_menu').append('<div class = "zamok_list"></div>');
 					}
 					order[type] = default_order.main_lock;
 					//if(order.metallokonstr==193 && order.outside_view != 195){
@@ -1097,6 +1099,7 @@ $(document).ready(function() {
 				} else {
 					$('.current_menu').before('<div class = "close_div"><img class = "close" src = "/images/metalcount/close.gif" /></div>');
 					$('.current_menu').append('<div class = "zamok_sort_title">Сортировка по цене:</div><form class = "zamok_sort"><select name="sort"><option value="up">По возр.</option><option value="down">По убыв.</option></select></form>');
+					$('.current_menu').append('<div class = "zamok_list"></div>');
 				}
 				// var current_height = $(this).height();
 				// $('.option_settings').css('height', 'auto');
@@ -1231,9 +1234,14 @@ $(document).ready(function() {
 			success: function(data){
 				if(product!=141){
 					$('.current_menu').html('');
+					$('.current_menu').append('<div class = "zamok_list"></div>');
 				}
 				$('.current_menu h2').append(data['page']['pagetitle']);
-				$('.current_menu').append(data['txt']);
+				if (type == 'main_lock'){
+					$('.zamok_list').append(data['txt']);
+				}else{
+					$('.current_menu').append(data['txt']);
+				}
 				$(".current_menu div[data-pageid="+order[type]+"]").addClass("active-child");
 			}
 		});
@@ -1680,7 +1688,7 @@ $(document).ready(function() {
 				change_phrase('Добавлено');
 				checkCart();
 				setTimeout(change_phrase, 2000, 'Добавить в корзину');
-				// window.location.href = "http://ce77747.tmweb.ru/konstruktor-dverej/";
+				// window.location.href = "http://blt-bereg.ru/konstruktor-dverej/";
 				$(".wrapper_3 .added_text").html("Проект №"+order_id+" сохранен на сайте и добавлен в корзину");
 				$(".wrapper_3").show();
 			},

@@ -130,10 +130,10 @@ $(document).ready(function(){
 	});
 	$(".keep_shopping").click(function() {
 		var loc = window.location.pathname;
-		window.location.href = "http://ce77747.tmweb.ru"+loc;
+		window.location.href = "http://blt-bereg.ru"+loc;
 	});
 	$(".open_cart").click(function() {
-		window.location.href = "http://ce77747.tmweb.ru/cart/";
+		window.location.href = "http://blt-bereg.ru/cart/";
 	});
 
 	function getCart(){
@@ -147,6 +147,9 @@ $(document).ready(function(){
 				console.log(data);
 				$(".cart_items").html(data["txt"]);
 				$(".cart_total_price span").html(data["total_price"]);
+				if(data["demontag"]==false){
+					$(".block_3 .demontaj").hide();
+				}
 			},
 			error: function(data){
 				console.log('error');
@@ -279,7 +282,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$("#ajaxSearch_button_new").click(function(){
+	$(".load_order_form").submit(function(){
 		var projectId = $("#ajaxSearch_input_new").val();
 
 		$.ajax({
@@ -302,10 +305,6 @@ $(document).ready(function(){
 				alert("Произошла ошибка")
 			}
 		});
-	});
-
-	$(".load_order_form").submit(function(){
-		alert("kakak");
 	});
 
 });

@@ -22,7 +22,7 @@ $(document).ready(function() {
 	var isProduct = false;
 	if(product==undefined && project==undefined){
 		// window.location.pathname = "/";
-		product = 994;
+		product = 979;
 		isProduct = true;
 	} else {
 		if(product!=undefined){
@@ -311,7 +311,6 @@ $(document).ready(function() {
 	}
 	function check_canvas_sizes(need_start){
 		$('.preloader').show();
-		console.log("preloader show 1");
 		if (order.friz != 'false'){
 			var p_h = order.height_door/order.friz_height;
 			f_h = h_d/p_h;
@@ -551,7 +550,6 @@ $(document).ready(function() {
 	}
 	function change_main_color(){
 		$('.preloader').show();
-		console.log("preloader show 2");
 		if (color.main_color_type == "tablicza-czvetov-ral1"){
 			background.set({fill: color.main_color_color});
 			door.set({fill: color.main_color_color});
@@ -600,7 +598,6 @@ $(document).ready(function() {
 	}
 	function draw_petlya(petlya, flag){
 		$('.preloader').show();
-		console.log("preloader show 3");
 		var pattern_image =  new fabric.Image.fromURL('/images/metalcount/petlya.png', function(pattern_image){
 			pattern_image.set({width: petlya_width, height: petlya_height});
 
@@ -628,7 +625,6 @@ $(document).ready(function() {
 	}
 	function change_shadow(){
 		$('.preloader').show();
-		console.log("preloader show 4");
 		var shadow_src;
 		if (color.main_color_shade == 'Dark'){
 			// shadow_src = "/images/stvorki/shadow.png";
@@ -665,7 +661,6 @@ $(document).ready(function() {
 
 	function change_main_lock(){
 		$('.preloader').show();
-		console.log("preloader show 5");
 		var pattern_image =  new fabric.Image.fromURL(color.main_lock, function(pattern_image){
 			if (color.main_lock_ruchka != "Ручка на планке"){
 				pattern_image.scaleToWidth(13/pp);
@@ -739,7 +734,6 @@ $(document).ready(function() {
 	}
 	function change_main_lock_back(){
 		$('.preloader').show();
-		console.log("preloader show 6");
 		var main_lock_src;
 		if (color.main_lock_ruchka != "Ручка на планке" && color.main_lock_inside_bottom != ''){
 			main_lock_src = color.main_lock_inside_bottom;
@@ -838,16 +832,28 @@ $(document).ready(function() {
 			switch (order.stvorka_position){
 				case 'left':
 					handle_left = s_w + rama_side + 5/pp;
+					if (color.main_lock_ruchka == 'Без ручки' || color.main_lock_ruchka == '' || color.main_lock_ruchka == 'Ручка-кнопка'){
+						handle_left = s_w + rama_side;
+					}
 					pattern_image.set({flipX: true});
 					break;
 				case 'right':
 					handle_left = w_d - pattern_image.getWidth()  + rama_side - 5/pp;
+					if (color.main_lock_ruchka == 'Без ручки' || color.main_lock_ruchka == '' || color.main_lock_ruchka == 'Ручка-кнопка'){
+						handle_left = w_d - pattern_image.getWidth()  + rama_side;
+					}
 					break;
 				case 'none':
 					if (order.door_side == 'left'){
 						handle_left = w_d + rama_side - pattern_image.getWidth() - 5/pp;
+						if (color.main_lock_ruchka == 'Без ручки' || color.main_lock_ruchka == '' || color.main_lock_ruchka == 'Ручка-кнопка'){
+							handle_left = w_d + rama_side - pattern_image.getWidth();
+						}
 					}else{
 						handle_left = rama_side + 5/pp;
+						if (color.main_lock_ruchka == 'Без ручки' || color.main_lock_ruchka == '' || color.main_lock_ruchka == 'Ручка-кнопка'){
+							handle_left = rama_side;
+						}
 						pattern_image.set({flipX: true});
 					}
 					break;
@@ -884,8 +890,6 @@ $(document).ready(function() {
 			canvas.renderAll();
 			if (order.ruchka != 'true'){
 				canvas_inside.renderAll();
-			} else {
-				$(".preloader").hide();
 			}
 		});
 	}
@@ -991,7 +995,6 @@ $(document).ready(function() {
 	// }
 	function draw_antipanika(){
 		$('.preloader').show();
-		console.log("preloader show 7");
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/antipanika.png', function(pattern_image){
 			var handle_left;
 			var handle_top;
@@ -1046,7 +1049,6 @@ $(document).ready(function() {
 	}
 	function change_zadvijka(){
 		$('.preloader').show();
-		console.log("preloader show 8");
 		var pattern_image =  new fabric.Image.fromURL(color.zadvijka_image, function(pattern_image){
 			var handle_left;
 			var handle_top;
@@ -1101,7 +1103,6 @@ $(document).ready(function() {
 	var corner_height;
 	function draw_steklopak(){
 		$('.preloader').show();
-		console.log("preloader show 9");
 		var w = order['steklopak_width']/70*rama_side/pp;
 		var h = order['steklopak_height']/70*rama_side/pp;
 		var pattern_image =  new fabric.Image.fromURL('/images/steklopak/steklo.png', function(pattern_image){
@@ -1473,86 +1474,46 @@ $(document).ready(function() {
 				type: 'GET',
 				dataType: 'json',
 				async: false,
-				data: {'order': order},
+				data: {'page': order[key], 'inside_view': order.inside_view, 'key': key},
 				success: function(data){
-					console.log("fillpolee");
-					console.log(key);
-					console.log(data);
-					if(key!='all'){
-						if(order[key]=="other"){
-							$(".setting_value.steklopak").html(order["steklopak_height"]+"*"+order["steklopak_width"]);
-						} else {
-							if (data[key]['pagetitle'] !== undefined){
-								$('.setting_value.'+key).html(data[key]['pagetitle']);
-								$('#check_'+key).prop('checked', true);
-													
-									var current_height = $('.setting_value.'+key).height();
-									// $('.option_settings').css('height', 'auto');
-									$('.option_settings.active').height(current_height);
-									// $('.option_name').css('height', 'auto');
-									$('.option_name.active').height(current_height);
-								
-								
-
-								if(key=="metallokonstr"){
-									if(order[key]=="191"){
-										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-									} else if(order[key]=="192"){
-										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-									} else if(order[key]=="193"){
-										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-										$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
-									}
-								}
-							}else{
-								$('.setting_value.'+key).html('');
-								$('#check_'+key).prop('checked', false);	
-							}
-						}
+					// console.log("fillpolee");
+					// console.log(key);
+					// console.log(data);
+					if(order[key]=="other"){
+						$(".setting_value.steklopak").html(order["steklopak_height"]+"*"+order["steklopak_width"]);
 					} else {
-						for( var key_ord in data){
-							if (order[key_ord] !== null || order[key_ord] !== undefined || key_ord != 'width_door' || key_ord != 'height_door'){
-								if(order[key_ord]=="other"){
-									$(".setting_value.steklopak").html(order["steklopak_height"]+"*"+order["steklopak_width"]);
-								} else {
-									if (data[key_ord]['pagetitle'] !== undefined){
-										$('.setting_value.'+key_ord).html(data[key_ord]['pagetitle']);
-										$('#check_'+key_ord).prop('checked', true);
-															
-											var current_height = $('.setting_value.'+key_ord).height();
-											// $('.option_settings').css('height', 'auto');
-											$('.option_settings.active').height(current_height);
-											// $('.option_name').css('height', 'auto');
-											$('.option_name.active').height(current_height);
-										
-										
+						if (data['pagetitle'] !== undefined){
+							$('.setting_value.'+key).html(data['pagetitle']);
+							$('#check_'+key).prop('checked', true);
+												
+								var current_height = $('.setting_value.'+key).height();
+								// $('.option_settings').css('height', 'auto');
+								$('.option_settings.active').height(current_height);
+								// $('.option_name').css('height', 'auto');
+								$('.option_name.active').height(current_height);
+							
+							
 
-										if(key_ord=="metallokonstr"){
-											if(order[key_ord]=="191"){
-												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
-												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
-											} else if(order[key_ord]=="192"){
-												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
-												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
-												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
-											} else if(order[key_ord]=="193"){
-												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
-												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
-												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
-												$('.setting_value.'+key_ord).append('<img class="star" src="/images/metalcount/star.png">');
-											}
-										}
-									}else{
-										$('.setting_value.'+key_ord).html('');
-										$('#check_'+key_ord).prop('checked', false);	
-									}
+							if(key=="metallokonstr"){
+								if(order[key]=="191"){
+									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+								} else if(order[key]=="192"){
+									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+								} else if(order[key]=="193"){
+									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
+									$('.setting_value.'+key).append('<img class="star" src="/images/metalcount/star.png">');
 								}
+							}else if(key == 'pp_type'){
+								$('.content h1 .pp_type_name').html(data['pagetitle']);
 							}
+						}else{
+							$('.setting_value.'+key).html('');
+							$('#check_'+key).prop('checked', false);	
 						}
 					}
 				},
@@ -1717,6 +1678,8 @@ $(document).ready(function() {
 					friz_height: data['friz_height']['value']
 				};
 				isChange = {
+					door_type: data['door_type']['changable'],
+					pp_type: data['pp_type']['changable'],
 					metallokonstr: data['metallokonstrikcii_id']['changable'],
 					width_total: data['total_width']['changable'],
 					height_total: data['total_height']['changable'],
@@ -1754,7 +1717,18 @@ $(document).ready(function() {
 				child_spec_color = data['child_spec_color']['value'];
 				if(data["special_name"]!=undefined){
 					if (isProduct){
-						$(".content h1").html(data["special_name"]);
+						if (order.door_type == 1){
+							$(".content h1").html("Дверь п/п 1-створ. <span class = 'pp_type_name'></span>");
+						}else if (order.door_type == 2 || order.door_type == 3){
+							$(".content h1").html("Дверь п/п 1-створ. с глух. частью. <span class = 'pp_type_name'></span>");
+						}else if (order.door_type == 4){
+							$(".content h1").html("Дверь п/п 2-створ. <span class = 'pp_type_name'></span>");
+						}else if (order.door_type == 5){
+							$(".content h1").html("Дверь п/п 1-створ. с 2-мя глух. частями. <span class = 'pp_type_name'></span>");
+						}else if (order.door_type == 6){
+							$(".content h1").html("Дверь п/п 2-створ. с глух. частью. <span class = 'pp_type_name'></span>");
+						}
+						// $(".content h1").html(data["special_name"]);
 					}else{
 						$(".content h1").html("Акция \""+data["special_name"]+"\"");
 					}
@@ -1767,13 +1741,13 @@ $(document).ready(function() {
 				$('.stvorka_pos').hide();
 				if (order.stvorka_position != 'none'){
 					if (order.stvorka_position == 'left'){
-						$('#left_stvorka').show();
-						$('.stvorka_right').removeClass('active_stvorka');
-						$('.stvorka_left').addClass('active_stvorka');
-					}else{
 						$('#right_stvorka').show();
-						$('.stvorka_right').addClass('active_stvorka');
 						$('.stvorka_left').removeClass('active_stvorka');
+						$('.stvorka_right').addClass('active_stvorka');
+					}else{
+						$('#left_stvorka').show();
+						$('.stvorka_left').addClass('active_stvorka');
+						$('.stvorka_right').removeClass('active_stvorka');
 					}
 				}else{
 					if (order.door_side == 'left'){
@@ -1788,11 +1762,13 @@ $(document).ready(function() {
 				}
 				var width_warn;
 				var height_warn;
+				$('.door_type').removeClass('active');
 				switch (order.door_type){
 					case 1:
 						$('.door_row').hide();
 						width_warn = '800-1100';
 						height_warn = '1800-2200';
+						$(".door_type[data-doortype = 979]").addClass('active');
 						break;
 					case 2:
 						$('.door_row').show();
@@ -1800,22 +1776,39 @@ $(document).ready(function() {
 						$('#door-height').prop('disabled', false);
 						width_warn = '800-1100';
 						height_warn = '2200-2800';
+						$(".door_type[data-doortype = 998]").addClass('active');
 						break;
 					case 3:
+						$('.door_row').show();
+						$('#door-width').prop('disabled', false);
+						$('#door-height').prop('disabled', true);
+						width_warn = '1100-2000';
+						height_warn = '1800-2200';
+						$(".door_type[data-doortype = 999]").addClass('active');
+						break;
 					case 4:
 						$('.door_row').show();
 						$('#door-width').prop('disabled', false);
 						$('#door-height').prop('disabled', true);
 						width_warn = '1100-2000';
 						height_warn = '1800-2200';
+						$(".door_type[data-doortype = 1000]").addClass('active');
 						break;
 					case 5:
+						$('.door_row').show();
+						$('#door-width').prop('disabled', false);
+						$('#door-height').prop('disabled', false);
+						width_warn = '1100-2000';
+						height_warn = '2200-2800';
+						$(".door_type[data-doortype = 1001]").addClass('active');
+						break;
 					case 6:
 						$('.door_row').show();
 						$('#door-width').prop('disabled', false);
 						$('#door-height').prop('disabled', false);
 						width_warn = '1100-2000';
 						height_warn = '2200-2800';
+						$(".door_type[data-doortype = 1002]").addClass('active');
 						break;
 				}
 				$('.width_warning').html(width_warn);
@@ -1836,9 +1829,12 @@ $(document).ready(function() {
 
 	//заполняем меню
 	function fillAll(){
-		
-		fillPole('all');
-
+		for( var key in order){
+			if (order[key] !== null || order[key] !== undefined || key != 'width_door' || key != 'height_door'){
+				// console.log(key);
+				fillPole(key);
+			}
+		}
 		$('#input-height').val(order.height_total);
 		$('#input-width').val(order.width_total);
 		$('.width-value').html(order.width_total);
@@ -1865,7 +1861,7 @@ $(document).ready(function() {
 				'inside_frezer': order.inside_frezer,
 				'main_lock': order.main_lock,
 				'add_lock': order.add_lock,
-				// 'glazok': order.glazok,
+				'glazok': order.glazok,
 				'zadvijka': order.zadvijka,
 				'ruchka': order.ruchka
 			},
@@ -2020,9 +2016,7 @@ $(document).ready(function() {
 	start();
 	canvas_inside.on('after:render', function(e){
 		$('.preloader').hide();
-		console.log("preloader hide");
 		$('.project_preloader').hide();
-		console.log("project_preloader hide");
 		if (reverseFlag == false){
 			console.log('renderCount = '+renderCount+'   kk =' +kk + '   reverseFlag = '+reverseFlag);
 			if (kk == renderCount){
@@ -2050,7 +2044,6 @@ $(document).ready(function() {
 		if(canChange==false || isChange[type] == false){
 		}else{
 			if ($(this).is(':checked')==false){
-				console.log('hello');
 				$('.current_menu').remove();
 				$('.close_div').remove();
 				$(this).removeClass('active');
@@ -2099,7 +2092,6 @@ $(document).ready(function() {
 						break;
 				}
 			}else{
-				console.log('jeje');
 				if (type != 'ruchka'){
 					$('.checkbox_main_lock, .checkbox_add_lock, .checkbox_glazok, .checkbox_dovodchik, .checkbox_zadvijka, .checkbox_steklopak').removeClass('active');
 					$(this).addClass('active');
@@ -2733,6 +2725,7 @@ $(document).ready(function() {
 			}else{
 				renderCount = 1;
 				change_main_lock();
+				$('.preloader').hide();
 			}
 			// draw(color);
 			draw_under_doors();
@@ -2820,7 +2813,7 @@ $(document).ready(function() {
 					fillPole('inside_color');
 					order.inside_frezer = child_frezer_10z;
 					fillPole('inside_frezer');
-					// order.glazok = '';
+					order.glazok = '';
 				}
 			}else if(type_id == 231){
 				if (type == 'inside_view'){
@@ -2943,13 +2936,13 @@ $(document).ready(function() {
 			}
 			fillPole(type);
 			getPrice();
-			// if(order.inside_view==215){
-			// 	isChange.glazok = false;
-			// 	fillPole('glazok');
-			// } else {
-			// 	isChange.glazok = true;
-			// 	fillPole('glazok');
-			// }
+			if(order.inside_view==215){
+				isChange.glazok = false;
+				fillPole('glazok');
+			} else {
+				isChange.glazok = true;
+				fillPole('glazok');
+			}
 			$(".current_menu div").removeClass("active-child");
 			$(".current_menu div[data-pageid="+order[type]+"]").addClass("active-child");
 		}
@@ -3042,7 +3035,7 @@ $(document).ready(function() {
     });
     
     $("#input-width").keyup(function(event) {
-    	if(order.pp_type=="1002"){
+    	if(order.door_type== 2){
 	        var new_width = $(this).val();
 	        $("#door-width").val(new_width);
 	    }
@@ -3050,7 +3043,7 @@ $(document).ready(function() {
 
 	
     $("#input-height").keyup(function(event) {
-    	if(order.pp_type=="1003"){
+    	if(order.door_type== 3 || order.door_type == 4){
         	var new_height = $(this).val();
 	        $("#door-height").val(new_height);
         }
@@ -3179,7 +3172,7 @@ $(document).ready(function() {
 				if (order.stvorka_position == 'none'){
 					order.door_side = 'left';
 				}else{
-					order.stvorka_position = 'left';
+					order.stvorka_position = 'right';
 				}
 
 				$('.stvorka_right').removeClass('active_stvorka');
@@ -3193,7 +3186,7 @@ $(document).ready(function() {
 				if (order.stvorka_position == 'none'){
 					order.door_side = 'right';
 				}else{
-					order.stvorka_position = 'right';
+					order.stvorka_position = 'left';
 				}
 				$('.stvorka_right').addClass('active_stvorka');
 				$('.stvorka_left').removeClass('active_stvorka');
@@ -3354,7 +3347,7 @@ $(document).ready(function() {
 						$(".warning_text").html('Заказа с таким номером не существует! <br> Вы будете перенаправлены на главную страницу.');
 						$(".agree_button").hide();
 						$(".wrapper_4").show();
-						setTimeout('window.location.href = "http://ce77747.tmweb.ru/"', 2000);
+						setTimeout('window.location.href = "http://blt-bereg.ru/"', 2000);
 
 					}else if(data['status'] == 'ok'){
 						$(".warning_text").html('<b>Внимание!</b> <br> Внесение изменений в проект №'+data['order']['order_id']+' невозможно.');
@@ -3394,6 +3387,7 @@ $(document).ready(function() {
 						};
 						default_order ={
 							door_type: data['order']['door_type'],
+							pp_type: data['order']['pp_type'],
 							metallokonstr: data['order']['metallokonstr'],
 							width_total: data['order']['width_total'],
 							height_total: data['order']['height_total'],
@@ -3424,6 +3418,8 @@ $(document).ready(function() {
 							friz_height: data['order']['friz_height']
 						};
 						isChange = {
+							door_type: false,
+							pp_type: false,
 							metallokonstr: false,
 							width_total: false,
 							height_total: false,
@@ -3468,7 +3464,7 @@ $(document).ready(function() {
 						var ddmmyy = dd + '.' + mm + '.' + yy;
 
 	      				$(".my_breadcrumb").detach();
-						$(".B_crumbBox").append('<span class="my_breadcrumb">Проект № '+data['order']['order_id']+' от '+ddmmyy+'г.</span>');
+						$(".B_crumbBox").append(' » <span class="my_breadcrumb">Проект № '+data['order']['order_id']+' от '+ddmmyy+'г.</span>');
 						for( var key in order){
 							if (order[key] != null || order[key] != undefined || order[key] != "0"){
 								fillPole(key);
@@ -3505,6 +3501,26 @@ $(document).ready(function() {
 							}
 						}
 
+						$(".door_type").removeClass('active');
+						if(order.door_type==1){
+							$(".door_type[data-doortype='979']").addClass('active');
+							$(".content h1").html("Дверь п/п 1-створ. <span class = 'pp_type_name'></span>");
+						} else if(order.door_type==2){
+							$(".door_type[data-doortype='998']").addClass('active');
+							$(".content h1").html("Дверь п/п 1-створ. с глух. частью. <span class = 'pp_type_name'></span>");
+						} else if(order.door_type==3){
+							$(".door_type[data-doortype='999']").addClass('active');
+							$(".content h1").html("Дверь п/п 1-створ. с глух. частью. <span class = 'pp_type_name'></span>");
+						} else if(order.door_type==4){
+							$(".door_type[data-doortype='1000']").addClass('active');
+							$(".content h1").html("Дверь п/п 2-створ. <span class = 'pp_type_name'></span>");
+						} else if(order.door_type==5){
+							$(".door_type[data-doortype='1001']").addClass('active');
+							$(".content h1").html("Дверь п/п 1-створ. с 2-мя глух. частями. <span class = 'pp_type_name'></span>");
+						} else if(order.door_type==6){
+							$(".door_type[data-doortype='1002']").addClass('active');
+							$(".content h1").html("Дверь п/п 2-створ. с глух. частью. <span class = 'pp_type_name'></span>");
+						}
 						canChange = false;
 						isDisabled(canChange);
 						// $('.order-button').hide();
@@ -3532,7 +3548,6 @@ $(document).ready(function() {
 	$(".agree_button").click(function(){
 		$(".wrapper_4").hide();
 		$(".project_preloader").hide();
-		console.log("project_preloader hide2");
 	});
 	$('body').on('click', '.add_images img', function(){
 		$('body').prepend('<div class = "wrapper_lock"></div>');
@@ -3544,10 +3559,22 @@ $(document).ready(function() {
 		check_color(order);
 		// draw(color);
 		product = null;
+		project = undefined;
 		special = null;
 		getPrice();
 
-		$(".content h1").html("Конструктор \"Решетки\"");
+		// $(".content h1").html("Конструктор \"Противопожарные двери\"");
+		if (order.door_type == 1){
+			$(".content h1").html("Дверь п/п 1-створ. <span class = 'pp_type_name'></span>");
+		}else if (order.door_type == 2 || order.door_type == 3){
+			$(".content h1").html("Дверь п/п 1-створ. с глух. частью. <span class = 'pp_type_name'></span>");
+		}else if (order.door_type == 4){
+			$(".content h1").html("Дверь п/п 2-створ. <span class = 'pp_type_name'></span>");
+		}else if (order.door_type == 5){
+			$(".content h1").html("Дверь п/п 1-створ. с 2-мя глух. частями. <span class = 'pp_type_name'></span>");
+		}else if (order.door_type == 6){
+			$(".content h1").html("Дверь п/п 2-створ. с глух. частью. <span class = 'pp_type_name'></span>");
+		}
 
 		$(".load_order_number input").val('');
 		$(".my_breadcrumb").detach();
@@ -3577,24 +3604,26 @@ $(document).ready(function() {
 		$('.order_wrap').hide();
 	});
 	$('.open_big').click(function(){
-		var canvas_1 = document.getElementById('door-front');
-		var canvas_2 = document.getElementById('door-back');
-		var front_url = canvas_1.toDataURL();
-		var back_url = canvas_2.toDataURL();
+		var width_image = b_w + 1;
+		if (order.outside_nalichnik == 220){
+			width_image = b_w + 2*(rama_side - rama_bottom) - 5;
+		}
+		var front_url = canvas.toDataURL({width: width_image});
+		var back_url = canvas_inside.toDataURL({width: width_image});
 
 		$('body').prepend('<div class = "door_wrapper"></div>');
-		$('.door_wrapper').append('<img id = "close_image" src = "/images/metalcount/close.gif" />');
-		$('.door_wrapper').append('<div class = "doors"></div>');
+		$('.door_wrapper').append('<img id = "close_image" src = "/images/metalcount/close.gif" style = "margin-left: 280px !important"/>');
+		$('.door_wrapper').append('<div class = "doors" style = "width: 569px"></div>');
 		$('.doors').append('<div class = "front_big"><img src = "'+front_url+'" /></div>');
-		if (order.door_side == 'right'){
-			$('.front_big img').css('margin-left', '-3px');
-		}else{
-			$('.front_big img').css('margin-left', '0px');
-		}
-		$('.doors').append('<div class = "back_big"><img src = "'+back_url+'" /></div>');
+		// if (order.door_side == 'right'){
+		// 	$('.front_big img').css('margin-left', '-3px');
+		// }else{
+		// 	$('.front_big img').css('margin-left', '0px');
+		// }
+		$('.doors').append('<div class = "back_big" style = "margin-left: 10px"><img src = "'+back_url+'" /></div>');
 	});
 	$('.door_type').click(function(){
-		if ($(this).hasClass('active') == false){
+		if ($(this).hasClass('active') == false && isChange.door_type == true){
 			var door_type = $(this).data('doortype');
 			// switch (door_type)
 			$('.door_type').removeClass('active');
@@ -3616,6 +3645,12 @@ $(document).ready(function() {
 			reverseFlag = false;
 			kk = 1;
 			renderCount = 0;
+			$('.current_menu').remove();
+			$('.close_div').remove();
+			$('.option_name').removeClass('active');
+			$('.option_settings').removeClass('active');
+			$('.setting_value').removeClass('active');
+			$('.checkbox_main_lock, .checkbox_add_lock, .checkbox_glazok, .checkbox_dovodchik, .checkbox_zadvijka, .checkbox_steklopak').removeClass('active');
 			start();
 		}
 	})

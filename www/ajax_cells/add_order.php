@@ -51,10 +51,14 @@ $result = mysql_query("SELECT * FROM orders ORDER BY id DESC LIMIT 1", $db);
 if ($row = mysql_fetch_assoc($result)) {
 	//возвращаем заказ
     $order = $row;
+    $resultat["db"] = $row;
 }
+$resultat["insert"] = $insert;
+$resultat["insert2"] = $insert2;
+print json_encode($resultat);
 
 //выводим заказ
-print json_encode($insert);
+//print json_encode($insert);
 
 /*Сохранение в excel*/
 
@@ -286,8 +290,9 @@ mysql_close($db);
 // mail($to, $subject, $message, $headers);
 
 
- $to = "ekaterina.bidyanova@yandex.ru";
-//$to = "bmihh@yandex.ru";
+ // $to = "ekaterina.bidyanova@yandex.ru";
+
+$to = "bmihh@yandex.ru";
 	$from = "admin@blt-bereg.ru";
 
 	// тема письма
@@ -302,7 +307,7 @@ mysql_close($db);
 	<body>
 	  <p style="text-align: center; font-size: 22px; font-weight: bold; padding: 5px 0px">Новая решетка была добавлена в корзину на сайте "Балтийский берег"</p>
 	  <p style="">Номер проекта: '.$order["order_id"].'</p>
-	  <p style="">Ссылка на проект: <a href="http://ce77747.tmweb.ru/reshetki/?project='.$order["order_id"].'">http://ce77747.tmweb.ru/reshetki/?project='.$order["order_id"].'</a></p>
+	  <p style="">Ссылка на проект: <a href="http://blt-bereg.ru/razdvizhnyie-reshetki1/?project='.$order["order_id"].'">http://blt-bereg.ru/razdvizhnyie-reshetki1/?project='.$order["order_id"].'</a></p>
 	</body>
 	</html>
 	';
